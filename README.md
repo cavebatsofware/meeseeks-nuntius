@@ -42,7 +42,7 @@ This project is in early development. If you're interested in contributing or ha
 
 ## License
 
-*License to be determined*
+LGPL-3
 
 ---
 
