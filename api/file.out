@@ -1,0 +1,787 @@
+   Compiling api v0.1.0 (/home/cavebat/Source/meeseeks-nuntius/api)
+error[E0432]: unresolved import `tokio`
+ --> api/src/test_pgp.rs:5:9
+  |
+5 |     use tokio;
+  |         ^^^^^ no external crate `tokio`
+
+error[E0382]: borrow of moved value: `key_type_encrypt`
+   --> api/src/lib.rs:219:28
+    |
+145 |     let (key_type_primary, key_type_encrypt) = match algorithm {
+    |                            ---------------- move occurs because `key_type_encrypt` has type `std::option::Option<KeyType>`, which does not implement the `Copy` trait
+...
+155 |     let subkeys = if let Some(encrypt_key_type) = key_type_encrypt.into() {
+    |                                                                    ------ `key_type_encrypt` moved due to this method call
+...
+219 |         encryption_subkey: key_type_encrypt.is_some(),
+    |                            ^^^^^^^^^^^^^^^^ value borrowed here after move
+    |
+note: `into` takes ownership of the receiver `self`, which moves `key_type_encrypt`
+   --> /home/cavebat/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/mod.rs:451:13
+    |
+451 |     fn into(self) -> T;
+    |             ^^^^
+help: you can `clone` the value and consume it, but this might not be your desired behavior
+    |
+155 |     let subkeys = if let Some(encrypt_key_type) = key_type_encrypt.clone().into() {
+    |                                                                   ++++++++
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `api` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+  --> api/src/test_pgp.rs:15:23
+   |
+15 |         let request = GenerateKeysRequest {
+   |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+3  +     use crate::GenerateKeysRequest;
+   |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+  --> api/src/test_pgp.rs:19:28
+   |
+19 |             key_type: Some(KeyAlgorithm::EdDSA),
+   |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+   |
+help: consider importing this enum
+   |
+3  +     use crate::KeyAlgorithm;
+   |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+  --> api/src/test_pgp.rs:22:24
+   |
+22 |         let response = generate_openpgp_keys(request).await.unwrap();
+   |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this function
+   |
+3  +     use crate::generate_openpgp_keys;
+   |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+  --> api/src/test_pgp.rs:38:23
+   |
+38 |         let request = GenerateKeysRequest {
+   |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+3  +     use crate::GenerateKeysRequest;
+   |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+  --> api/src/test_pgp.rs:42:28
+   |
+42 |             key_type: Some(KeyAlgorithm::EdDSA),
+   |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+   |
+help: consider importing this enum
+   |
+3  +     use crate::KeyAlgorithm;
+   |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+  --> api/src/test_pgp.rs:45:24
+   |
+45 |         let response = generate_openpgp_keys(request).await.unwrap();
+   |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this function
+   |
+3  +     use crate::generate_openpgp_keys;
+   |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+  --> api/src/test_pgp.rs:54:23
+   |
+54 |         let request = GenerateKeysRequest {
+   |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+3  +     use crate::GenerateKeysRequest;
+   |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+  --> api/src/test_pgp.rs:58:28
+   |
+58 |             key_type: Some(KeyAlgorithm::EdDSA),
+   |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+   |
+help: consider importing this enum
+   |
+3  +     use crate::KeyAlgorithm;
+   |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+  --> api/src/test_pgp.rs:61:24
+   |
+61 |         let response = generate_openpgp_keys(request).await.unwrap();
+   |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this function
+   |
+3  +     use crate::generate_openpgp_keys;
+   |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+  --> api/src/test_pgp.rs:71:23
+   |
+71 |         let request = GenerateKeysRequest {
+   |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+3  +     use crate::GenerateKeysRequest;
+   |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+  --> api/src/test_pgp.rs:75:28
+   |
+75 |             key_type: Some(KeyAlgorithm::EdDSA),
+   |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+   |
+help: consider importing this enum
+   |
+3  +     use crate::KeyAlgorithm;
+   |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+  --> api/src/test_pgp.rs:78:24
+   |
+78 |         let response = generate_openpgp_keys(request).await.unwrap();
+   |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this function
+   |
+3  +     use crate::generate_openpgp_keys;
+   |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+  --> api/src/test_pgp.rs:88:23
+   |
+88 |         let request = GenerateKeysRequest {
+   |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+3  +     use crate::GenerateKeysRequest;
+   |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+  --> api/src/test_pgp.rs:92:28
+   |
+92 |             key_type: Some(KeyAlgorithm::EdDSA),
+   |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+   |
+help: consider importing this enum
+   |
+3  +     use crate::KeyAlgorithm;
+   |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+  --> api/src/test_pgp.rs:95:24
+   |
+95 |         let response = generate_openpgp_keys(request).await.unwrap();
+   |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this function
+   |
+3  +     use crate::generate_openpgp_keys;
+   |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:105:23
+    |
+105 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:109:28
+    |
+109 |             key_type: Some(KeyAlgorithm::RSA4096),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:112:24
+    |
+112 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:121:23
+    |
+121 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:125:28
+    |
+125 |             key_type: Some(KeyAlgorithm::ECDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:128:24
+    |
+128 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:137:23
+    |
+137 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:141:28
+    |
+141 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:144:24
+    |
+144 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:153:23
+    |
+153 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:160:24
+    |
+160 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:169:28
+    |
+169 |         let default_algo = KeyAlgorithm::default();
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:170:40
+    |
+170 |         assert!(matches!(default_algo, KeyAlgorithm::EdDSA));
+    |                                        ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:175:23
+    |
+175 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:179:28
+    |
+179 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:182:24
+    |
+182 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0425]: cannot find function `load_public_key` in this scope
+   --> api/src/test_pgp.rs:186:33
+    |
+186 |         let loaded_public_key = load_public_key(&keys.primary_key.public_key);
+    |                                 ^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::load_public_key;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:198:23
+    |
+198 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:202:28
+    |
+202 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:205:24
+    |
+205 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0425]: cannot find function `load_secret_key` in this scope
+   --> api/src/test_pgp.rs:209:33
+    |
+209 |         let loaded_secret_key = load_secret_key(&keys.primary_key.private_key, None);
+    |                                 ^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::load_secret_key;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:221:23
+    |
+221 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:225:28
+    |
+225 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:228:24
+    |
+228 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0425]: cannot find function `load_secret_key` in this scope
+   --> api/src/test_pgp.rs:232:33
+    |
+232 |         let loaded_secret_key = load_secret_key(&keys.primary_key.private_key, Some(TEST_PASSPHRASE));
+    |                                 ^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::load_secret_key;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:244:23
+    |
+244 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:248:28
+    |
+248 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:251:24
+    |
+251 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0425]: cannot find function `load_secret_key` in this scope
+   --> api/src/test_pgp.rs:255:33
+    |
+255 |         let loaded_secret_key = load_secret_key(&keys.primary_key.private_key, Some("wrong_passphrase"));
+    |                                 ^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::load_secret_key;
+    |
+
+error[E0425]: cannot find function `load_public_key` in this scope
+   --> api/src/test_pgp.rs:261:22
+    |
+261 |         let result = load_public_key("invalid armor text");
+    |                      ^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::load_public_key;
+    |
+
+error[E0425]: cannot find function `load_secret_key` in this scope
+   --> api/src/test_pgp.rs:267:22
+    |
+267 |         let result = load_secret_key("invalid armor text", None);
+    |                      ^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::load_secret_key;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:273:23
+    |
+273 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:277:28
+    |
+277 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:280:24
+    |
+280 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:297:23
+    |
+297 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:301:28
+    |
+301 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:304:24
+    |
+304 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:321:23
+    |
+321 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:325:28
+    |
+325 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:328:24
+    |
+328 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyGenerationError`
+   --> api/src/test_pgp.rs:338:21
+    |
+338 |         let error = KeyGenerationError::InvalidInput("test error".to_string());
+    |                     ^^^^^^^^^^^^^^^^^^ use of undeclared type `KeyGenerationError`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyGenerationError;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:347:24
+    |
+347 |         let request1 = GenerateKeysRequest {
+    |                        ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:351:28
+    |
+351 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:354:24
+    |
+354 |         let request2 = GenerateKeysRequest {
+    |                        ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:358:28
+    |
+358 |             key_type: Some(KeyAlgorithm::EdDSA),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:361:25
+    |
+361 |         let response1 = generate_openpgp_keys(request1).await.unwrap();
+    |                         ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:362:25
+    |
+362 |         let response2 = generate_openpgp_keys(request2).await.unwrap();
+    |                         ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0422]: cannot find struct, variant or union type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:376:23
+    |
+376 |         let request = GenerateKeysRequest {
+    |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `KeyAlgorithm`
+   --> api/src/test_pgp.rs:380:28
+    |
+380 |             key_type: Some(KeyAlgorithm::RSA4096),
+    |                            ^^^^^^^^^^^^ use of undeclared type `KeyAlgorithm`
+    |
+help: consider importing this enum
+    |
+3   +     use crate::KeyAlgorithm;
+    |
+
+error[E0412]: cannot find type `GenerateKeysRequest` in this scope
+   --> api/src/test_pgp.rs:385:35
+    |
+385 |         let deserialized_request: GenerateKeysRequest = serde_json::from_str(&serialized_request).unwrap();
+    |                                   ^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysRequest;
+    |
+
+error[E0425]: cannot find function `generate_openpgp_keys` in this scope
+   --> api/src/test_pgp.rs:390:24
+    |
+390 |         let response = generate_openpgp_keys(request).await.unwrap();
+    |                        ^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+3   +     use crate::generate_openpgp_keys;
+    |
+
+error[E0412]: cannot find type `GenerateKeysResponse` in this scope
+   --> api/src/test_pgp.rs:392:36
+    |
+392 |         let deserialized_response: GenerateKeysResponse = serde_json::from_str(&serialized_response).unwrap();
+    |                                    ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+3   +     use crate::GenerateKeysResponse;
+    |
+
+warning: unused import: `super::*`
+ --> api/src/test_pgp.rs:3:9
+  |
+3 |     use super::*;
+  |         ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `pgp::types::SecretKeyTrait`
+ --> api/src/test_pgp.rs:4:9
+  |
+4 |     use pgp::types::SecretKeyTrait;
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some errors have detailed explanations: E0382, E0412, E0422, E0425, E0432, E0433.
+For more information about an error, try `rustc --explain E0382`.
+warning: `api` (lib test) generated 2 warnings
+error: could not compile `api` (lib test) due to 69 previous errors; 2 warnings emitted

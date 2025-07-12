@@ -1,4 +1,4 @@
-pub mod pgp_mgr {
+pub mod generate {
     use dioxus::prelude::*;
     use pgp::composed::{
         ArmorOptions, Deserializable, KeyType, SecretKeyParamsBuilder, SignedPublicKey, SignedSecretKey, SubkeyParamsBuilder
