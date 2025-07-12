@@ -1,11 +1,13 @@
 //! This crate contains all shared fullstack server functions.
 use dioxus::prelude::*;
 
-#[derive(Debug)]
-struct User {
-    id: i32,
-    name: String,
-}
+// pub mod pgp_mgr;
+
+#[cfg(test)]
+mod test_pgp;
+
+#[cfg(not(target_arch = "wasm32"))]
+pub mod pgp_mgr;
 
 /// Echo the user input on the server.
 #[server(Echo)]
@@ -20,6 +22,11 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
 
     #[cfg(not(target_arch = "wasm32"))]
     {
+        #[derive(Debug)]
+        struct User {
+            id: i32,
+            name: String,
+        }
         let conn = rusqlite::Connection::open("local.db").expect("Failed to open database");
         conn.execute(
             "CREATE TABLE IF NOT EXISTS users (

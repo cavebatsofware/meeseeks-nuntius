@@ -5,8 +5,17 @@ edition = "2021"
 
 [dependencies]
 dioxus = { workspace = true, features = ["fullstack"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+hex = { workspace = true }
+zeroize = { workspace = true }
+chrono = { workspace = true }
+pgp = { workspace = true, optional = true }
+rand = { workspace = true, optional = true }
 rusqlite = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }
 
 [features]
-default = ["dep:rusqlite"]
-server = ["dioxus/server", "dep:rusqlite"]
+default = ["dep:rusqlite", "dep:tokio", "dep:rand", "dep:pgp"]
+server = ["dioxus/server", "dep:rusqlite", "dep:tokio", "dep:rand", "dep:pgp"]
+test = ["dioxus/server", "dep:rusqlite", "dep:tokio", "dep:rand", "dep:pgp"]
