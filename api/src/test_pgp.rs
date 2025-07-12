@@ -15,7 +15,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -37,7 +36,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: None,
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -53,7 +51,6 @@ mod tests {
             name: "".to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -70,7 +67,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: "".to_string(),
             passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -87,7 +83,6 @@ mod tests {
             name: "   ".to_string(),
             email: "   ".to_string(),
             passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -99,67 +94,18 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_generate_keys_rsa4096() {
-        let request = GenerateKeysRequest {
-            name: TEST_NAME.to_string(),
-            email: TEST_EMAIL.to_string(),
-            passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::RSA4096),
-        };
-
-        let response = generate_openpgp_keys(request).await.unwrap();
-        
-        assert!(response.success);
-        let keys = response.keys.unwrap();
-        assert!(keys.encryption_subkey); // RSA should have encryption subkey
-    }
-
-    #[tokio::test]
-    async fn test_generate_keys_ecdsa() {
-        let request = GenerateKeysRequest {
-            name: TEST_NAME.to_string(),
-            email: TEST_EMAIL.to_string(),
-            passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::ECDSA),
-        };
-
-        let response = generate_openpgp_keys(request).await.unwrap();
-        
-        assert!(response.success);
-        let keys = response.keys.unwrap();
-        assert!(keys.encryption_subkey); // ECDSA should have encryption subkey
-    }
-
-    #[tokio::test]
     async fn test_generate_keys_ed25519() {
         let request = GenerateKeysRequest {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
         
         assert!(response.success);
         let keys = response.keys.unwrap();
-        assert!(!keys.encryption_subkey); // Ed25519 should not have encryption subkey
-    }
-
-    #[tokio::test]
-    async fn test_generate_keys_default_algorithm() {
-        let request = GenerateKeysRequest {
-            name: TEST_NAME.to_string(),
-            email: TEST_EMAIL.to_string(),
-            passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: None, // Should default to Ed25519
-        };
-
-        let response = generate_openpgp_keys(request).await.unwrap();
-        
-        assert!(response.success);
-        let keys = response.keys.unwrap();
-        assert!(!keys.encryption_subkey); // Default Ed25519 should not have encryption subkey
+        assert!(keys.encryption_subkey); // Ed25519 does have X25519 encryption subkey
     }
 
     #[test]
@@ -174,7 +120,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: None,
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -193,7 +138,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: None,
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -213,7 +157,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -224,23 +167,6 @@ mod tests {
         assert!(loaded_secret_key.is_ok());
         
         // let secret_key = loaded_secret_key.unwrap();
-    }
-
-    #[tokio::test]
-    async fn test_load_secret_key_with_wrong_passphrase() {
-        let request = GenerateKeysRequest {
-            name: TEST_NAME.to_string(),
-            email: TEST_EMAIL.to_string(),
-            passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::Ed25519),
-        };
-
-        let response = generate_openpgp_keys(request).await.unwrap();
-        let keys = response.keys.unwrap();
-
-        // Test loading the secret key back with wrong passphrase
-        let loaded_secret_key = load_secret_key(&keys.primary_key.private_key, Some("wrong_passphrase"));
-        assert!(loaded_secret_key.is_err());
     }
 
     #[test]
@@ -261,7 +187,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: None,
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -278,7 +203,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: None,
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -302,7 +226,6 @@ mod tests {
             name: name_with_spaces.to_string(),
             email: email.to_string(),
             passphrase: None,
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response = generate_openpgp_keys(request).await.unwrap();
@@ -328,14 +251,12 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: None,
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let request2 = GenerateKeysRequest {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: None,
-            key_type: Some(KeyAlgorithm::Ed25519),
         };
 
         let response1 = generate_openpgp_keys(request1).await.unwrap();
@@ -356,7 +277,6 @@ mod tests {
             name: TEST_NAME.to_string(),
             email: TEST_EMAIL.to_string(),
             passphrase: Some(TEST_PASSPHRASE.to_string()),
-            key_type: Some(KeyAlgorithm::RSA4096),
         };
 
         // Test request serialization

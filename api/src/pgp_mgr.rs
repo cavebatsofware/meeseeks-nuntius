@@ -46,14 +46,11 @@ pub mod generate {
         pub name: String,
         pub email: String,
         pub passphrase: Option<String>,
-        pub key_type: Option<KeyAlgorithm>,
     }
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub enum KeyAlgorithm {   
-        RSA4096,
         Ed25519,
-        ECDSA,
     }
 
     impl Default for KeyAlgorithm {
@@ -111,7 +108,7 @@ pub mod generate {
         let password = request.passphrase
             .map(|p| Password::Static(Zeroizing::new(p.into())));
 
-        match generate_key_pair(&user_id, password.as_ref(), request.key_type.unwrap_or_default()) {
+        match generate_key_pair(&user_id, password.as_ref(), KeyAlgorithm::Ed25519) {
             Ok(keys) => Ok(GenerateKeysResponse {
                 success: true,
                 keys: Some(keys),
@@ -132,20 +129,15 @@ pub mod generate {
     ) -> Result<UserKeys, KeyGenerationError> {
         let mut rng = thread_rng();
 
-        // Determine key types
+        // use best available encryption by default
         let (key_type_primary, key_type_encrypt) = match algorithm {
-            KeyAlgorithm::RSA4096 => (KeyType::Rsa(4096), Some(KeyType::Rsa(4096))),
-            KeyAlgorithm::Ed25519 => (KeyType::Ed25519, None),
-            KeyAlgorithm::ECDSA => (
-                KeyType::ECDSA(pgp::crypto::ecc_curve::ECCCurve::P256),
-                Some(KeyType::ECDH(pgp::crypto::ecc_curve::ECCCurve::Curve25519))
-            ),
+            KeyAlgorithm::Ed25519 => (KeyType::Ed25519, Some(KeyType::X25519)), 
         };
-
-        // Build subkeys if needed (following rpgpie pattern)
-        let subkeys = if let Some(encrypt_key_type) = key_type_encrypt.clone().into() {
+        
+        // build subkeys
+        let subkeys = if let Some(encrypt_key_type) = key_type_encrypt.clone() {
             vec![SubkeyParamsBuilder::default()
-                .version(KeyVersion::V5)
+                .version(KeyVersion::V4)
                 .key_type(encrypt_key_type)
                 .can_encrypt(true)
                 .build()
@@ -154,10 +146,10 @@ pub mod generate {
             vec![]
         };
 
-        // Build primary key parameters (following rpgpie pattern)
+        // Build primary key parameters
         let mut key_params = SecretKeyParamsBuilder::default();
         key_params
-            .version(KeyVersion::V5)
+            .version(KeyVersion::V4)
             .key_type(key_type_primary)
             .can_certify(true)
             .can_sign(true)
