@@ -1,11 +1,6 @@
 //! This crate contains all shared fullstack server functions.
 use dioxus::prelude::*;
 
-// pub mod pgp_mgr;
-
-#[cfg(test)]
-mod test_pgp;
-
 #[cfg(not(target_arch = "wasm32"))]
 pub mod pgp_mgr;
 
