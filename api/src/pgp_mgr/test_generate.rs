@@ -1,8 +1,9 @@
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
     use tokio::test;
-    use crate::pgp_mgr::generate::*;
-    
+
+    use crate::pgp_mgr::generate::generate::*;
+
     // Test data constants
     const TEST_NAME: &str = "Test User";
     const TEST_EMAIL: &str = "test@example.com";
