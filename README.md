@@ -1,4 +1,7 @@
-# Secure Messaging Platform
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/9d509fb4-677a-4a0d-bc1e-ef104c98ba4c" />
+
+[中国人](https://github.com/cavebatsofware/meeseeks-nuntius/blob/main/README_ZH.md)
+# Secure Messaging Platform ***code meeseeks-nuntius***
 
 A cross-platform secure messaging application built with Dioxus, implementing end-to-end encryption using the OpenPGP standard and anonymous message relay.
 
