@@ -2,7 +2,10 @@
 use dioxus::prelude::*;
 
 #[cfg(not(target_arch = "wasm32"))]
-pub mod pgp_mgr;
+pub mod crypto;
+
+#[cfg(not(target_arch = "wasm32"))]
+pub mod persistence;
 
 /// Echo the user input on the server.
 #[server(Echo)]
@@ -17,31 +20,13 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
 
     #[cfg(not(target_arch = "wasm32"))]
     {
-        #[derive(Debug)]
-        struct User {
-            id: i32,
-            name: String,
-        }
-        let conn = rusqlite::Connection::open("local.db").expect("Failed to open database");
-        conn.execute(
-            "CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL)", ())?;
-        conn.execute("INSERT INTO users (name) values (?1)", ((input).clone(),))?;
-        
-        let mut stmt = conn.prepare("SELECT id, name FROM users")?;
-        let user_iter = stmt.query_map([], |row| {
-            Ok(User {
-                id: row.get(0)?,
-                name: row.get(1)?,
-            })
-        })?;
-
-        println!("Users Found:");
-        for user in user_iter {
-            println!("Found user {:?}", user.unwrap());
-        }
     }
 
     Ok(input)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(CreateParty)]
+pub async fn create_party(name: String) -> Result<String, ServerFnError> {
+    
 }
