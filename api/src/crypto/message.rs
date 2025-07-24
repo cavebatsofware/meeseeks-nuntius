@@ -61,12 +61,16 @@ pub mod exchange {
     use std::collections::HashSet;
     use serde::{Deserialize, Serialize};
 
+    use crate::persistence::database::sled::Entity;
+
     // Type alias for convenience
     type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
     /// Represents a party in the messaging system
     #[derive(Deserialize, Serialize, Debug, Clone)]
     pub struct Party {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        id: Option<String>,
         pub name: String,
         secret_key: [u8; 32],
         public_key: [u8; 32],
@@ -80,6 +84,7 @@ pub mod exchange {
             let public_key = secret_key.public_key();
             
             Self {
+                id: None,
                 name: name.to_string(),
                 secret_key: secret_key.to_bytes(),
                 public_key: public_key.to_bytes(),
@@ -89,12 +94,14 @@ pub mod exchange {
 
         /// Create a new party with given values
         pub fn from_values(
+            id: Option<String>,
             name: &str,
             secret_bytes: [u8; 32],
             public_bytes: [u8; 32],
             known_contacts: HashSet<[u8; 32]>
         ) -> Self {
             Self {
+                id,
                 name: name.to_string(),
                 secret_key: secret_bytes,
                 public_key: public_bytes,
@@ -102,16 +109,14 @@ pub mod exchange {
             }
         }
 
-                /// Serialize to JSON
+        /// Serialize to JSON - ID will be included if present
         pub fn to_json(&self) -> Result<String> {
-            serde_json::to_string(&self)
-                .map_err(|e| format!("JSON serialization error: {}", e).into())
+            Ok(serde_json::to_string(&self)?)
         }
 
-        /// Deserialize from JSON
+        /// Deserialize from JSON - ID will be restored if present
         pub fn from_json(json: &str) -> Result<Self> {
-            let result: Party = serde_json::from_str(json)?;
-            Ok(result)
+            Ok(serde_json::from_str(json)?)
         }
 
         /// Create a new party and immediately register known contacts
@@ -126,18 +131,19 @@ pub mod exchange {
             party
         }
 
-        /// Get the public key as bytes for sharing
+        /// Get the public key
+        pub fn public_key(&self) -> PublicKey {
+            PublicKey::from_bytes(self.public_key)
+        }
+
+        /// Get the public key as bytes
         pub fn public_key_bytes(&self) -> [u8; 32] {
             self.public_key
         }
 
-        /// Get the secret key as bytes for sharing
+        /// Get the secret key as bytes
         pub fn secret_key_bytes(&self) -> [u8; 32] {
             self.secret_key
-        }
-
-        pub fn get_public_key(&self) -> PublicKey {
-            PublicKey::from_bytes(self.public_key)
         }
 
         /// Add a contact to the known contacts list
@@ -158,14 +164,14 @@ pub mod exchange {
         }
 
         /// List all known contacts (their public keys)
-        pub fn get_contacts(&self) -> Vec<PublicKey> {
+        pub fn known_contacts(&self) -> Vec<PublicKey> {
             self.known_contacts.iter()
                 .map(|bytes| PublicKey::from(*bytes))
                 .collect()
         }
 
         /// List all known contacts (their public keys as byte arrays)
-        pub fn get_contacts_bytes(&self) -> HashSet<[u8; 32]> {
+        pub fn known_contacts_bytes(&self) -> HashSet<[u8; 32]> {
             self.known_contacts.clone()
         }
 
@@ -190,6 +196,7 @@ pub mod exchange {
                 .map_err(|e| format!("Encryption failed: {}", e))?;
 
             Ok(EncryptedMessage {
+                id: None,
                 sender_public: self.public_key,
                 ciphertext,
                 nonce: nonce.to_vec(),
@@ -204,12 +211,12 @@ pub mod exchange {
         /// Decrypt a message from another party
         pub fn decrypt_from(&mut self, message: &EncryptedMessage) -> Result<Vec<u8>> {
             // Add contact if not already known\
-            if !self.is_known_contact(&message.get_sender_public()) {
-                self.add_contact(&message.get_sender_public());
+            if !self.is_known_contact(&message.sender_public()) {
+                self.add_contact(&message.sender_public());
             }
             
             // Create a fresh crypto box for this message
-            let crypto_box = self.create_crypto_box(&message.get_sender_public());
+            let crypto_box = self.create_crypto_box(&message.sender_public());
             
             // Convert nonce back to the correct type
             if message.nonce.len() != 24 {
@@ -231,9 +238,26 @@ pub mod exchange {
         }
     }
 
+    /// Entity implementation for Party, common boilerplate
+    impl Entity for Party {
+        fn id(&self) -> Option<&str> {
+            self.id.as_deref()
+        }
+
+        fn set_id(&mut self, id: String) {
+            self.id = Some(id);
+        }
+
+        fn key_prefix() -> &'static str {
+            "party"
+        }
+    }
+
     /// An encrypted message that can be sent between parties
     #[derive(Deserialize, Serialize, Debug, Clone)]
     pub struct EncryptedMessage {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        id: Option<String>,
         sender_public: [u8; 32],
         pub ciphertext: Vec<u8>,
         pub nonce: Vec<u8>,
@@ -243,30 +267,43 @@ pub mod exchange {
         /// Create a new encrypted message
         pub fn new(sender_public: PublicKey, ciphertext: Vec<u8>, nonce: Vec<u8>) -> Self {
             Self {
+                id: None,
                 sender_public: sender_public.to_bytes(),
                 ciphertext,
                 nonce,
             }
         }
 
-        /// Serialize to JSON
+        /// Serialize to JSON - ID will be included if present
         pub fn to_json(&self) -> Result<String> {
-            serde_json::to_string(&self)
-                .map_err(|e| format!("JSON serialization error: {}", e).into())
+            Ok(serde_json::to_string(&self)?)
         }
 
-        /// Deserialize from JSON
+        /// Deserialize from JSON - ID will be restored if present
         pub fn from_json(json: &str) -> Result<Self> {
-            let result: EncryptedMessage = serde_json::from_str(json)?;
-            Ok(result)
+            Ok(serde_json::from_str(json)?)
         }
 
-        pub fn get_sender_public(&self) -> PublicKey {
+        pub fn sender_public(&self) -> PublicKey {
             PublicKey::from_bytes(self.sender_public)
         }
 
-        pub fn get_sender_public_bytes(&self) -> [u8; 32] {
+        pub fn sender_public_bytes(&self) -> [u8; 32] {
             self.sender_public
+        }
+    }
+
+    impl Entity for EncryptedMessage {
+        fn id(&self) -> Option<&str> {
+            self.id.as_deref()
+        }
+
+        fn set_id(&mut self, id: String) {
+            self.id = Some(id);
+        }
+
+        fn key_prefix() -> &'static str {
+            "encrypted_message"
         }
     }
 }
