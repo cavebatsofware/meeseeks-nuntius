@@ -59,16 +59,17 @@ pub mod exchange {
         ChaChaBox, PublicKey, SecretKey
     };
     use std::collections::HashSet;
+    use serde::{Deserialize, Serialize};
 
     // Type alias for convenience
     type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
     /// Represents a party in the messaging system
-    #[derive(Debug, Clone)]
+    #[derive(Deserialize, Serialize, Debug, Clone)]
     pub struct Party {
         pub name: String,
-        secret_key: SecretKey,
-        pub public_key: PublicKey,
+        secret_key: [u8; 32],
+        public_key: [u8; 32],
         known_contacts: HashSet<[u8; 32]>,
     }
 
@@ -80,8 +81,8 @@ pub mod exchange {
             
             Self {
                 name: name.to_string(),
-                secret_key,
-                public_key,
+                secret_key: secret_key.to_bytes(),
+                public_key: public_key.to_bytes(),
                 known_contacts: HashSet::new(),
             }
         }
@@ -95,10 +96,22 @@ pub mod exchange {
         ) -> Self {
             Self {
                 name: name.to_string(),
-                secret_key: SecretKey::from_bytes(secret_bytes),
-                public_key: PublicKey::from_bytes(public_bytes),
+                secret_key: secret_bytes,
+                public_key: public_bytes,
                 known_contacts,
             }
+        }
+
+                /// Serialize to JSON
+        pub fn to_json(&self) -> Result<String> {
+            serde_json::to_string(&self)
+                .map_err(|e| format!("JSON serialization error: {}", e).into())
+        }
+
+        /// Deserialize from JSON
+        pub fn from_json(json: &str) -> Result<Self> {
+            let result: Party = serde_json::from_str(json)?;
+            Ok(result)
         }
 
         /// Create a new party and immediately register known contacts
@@ -115,12 +128,16 @@ pub mod exchange {
 
         /// Get the public key as bytes for sharing
         pub fn public_key_bytes(&self) -> [u8; 32] {
-            self.public_key.to_bytes()
+            self.public_key
         }
 
         /// Get the secret key as bytes for sharing
         pub fn secret_key_bytes(&self) -> [u8; 32] {
-            self.secret_key.to_bytes()
+            self.secret_key
+        }
+
+        pub fn get_public_key(&self) -> PublicKey {
+            PublicKey::from_bytes(self.public_key)
         }
 
         /// Add a contact to the known contacts list
@@ -155,7 +172,7 @@ pub mod exchange {
         /// Create a crypto box for communication with another party
         fn create_crypto_box(&self, other_public: &PublicKey) -> ChaChaBox {
             // Use chacha20poly1305
-            ChaChaBox::new(other_public, &self.secret_key)
+            ChaChaBox::new(other_public, &SecretKey::from_bytes(self.secret_key))
         }
 
         /// Encrypt a message for another party
@@ -173,7 +190,7 @@ pub mod exchange {
                 .map_err(|e| format!("Encryption failed: {}", e))?;
 
             Ok(EncryptedMessage {
-                sender_public: self.public_key.clone(),
+                sender_public: self.public_key,
                 ciphertext,
                 nonce: nonce.to_vec(),
             })
@@ -187,12 +204,12 @@ pub mod exchange {
         /// Decrypt a message from another party
         pub fn decrypt_from(&mut self, message: &EncryptedMessage) -> Result<Vec<u8>> {
             // Add contact if not already known\
-            if !self.is_known_contact(&message.sender_public) {
-                self.add_contact(&message.sender_public);
+            if !self.is_known_contact(&message.get_sender_public()) {
+                self.add_contact(&message.get_sender_public());
             }
             
             // Create a fresh crypto box for this message
-            let crypto_box = self.create_crypto_box(&message.sender_public);
+            let crypto_box = self.create_crypto_box(&message.get_sender_public());
             
             // Convert nonce back to the correct type
             if message.nonce.len() != 24 {
@@ -215,74 +232,41 @@ pub mod exchange {
     }
 
     /// An encrypted message that can be sent between parties
-    #[derive(Debug, Clone)]
+    #[derive(Deserialize, Serialize, Debug, Clone)]
     pub struct EncryptedMessage {
-        pub sender_public: PublicKey,
+        sender_public: [u8; 32],
         pub ciphertext: Vec<u8>,
         pub nonce: Vec<u8>,
     }
 
     impl EncryptedMessage {
-        /// Serialize the message for transmission/storage
-        pub fn to_bytes(&self) -> Vec<u8> {
-            let mut result = Vec::new();
-            
-            // Add sender public key (32 bytes)
-            result.extend_from_slice(&self.sender_public.to_bytes());
-            
-            // Add nonce length (4 bytes) and nonce
-            result.extend_from_slice(&(self.nonce.len() as u32).to_be_bytes());
-            result.extend_from_slice(&self.nonce);
-            
-            // Add ciphertext length (4 bytes) and ciphertext
-            result.extend_from_slice(&(self.ciphertext.len() as u32).to_be_bytes());
-            result.extend_from_slice(&self.ciphertext);
-            
-            result
-        }
-
-        /// Deserialize a message from bytes
-        pub fn from_bytes(data: &[u8]) -> Result<Self> {
-            if data.len() < 40 { // 32 + 4 + 4 minimum
-                return Err("Invalid message format: too short".into());
-            }
-
-            let mut offset = 0;
-
-            // Extract sender public key (32 bytes)
-            let sender_bytes: [u8; 32] = data[offset..offset + 32].try_into()
-                .map_err(|_| "Invalid sender public key")?;
-            let sender_public = PublicKey::from(sender_bytes);
-            offset += 32;
-
-            // Extract nonce length and nonce
-            let nonce_len = u32::from_be_bytes(data[offset..offset + 4].try_into()
-                .map_err(|_| "Invalid nonce length")?) as usize;
-            offset += 4;
-            
-            if data.len() < offset + nonce_len + 4 {
-                return Err("Invalid message format: insufficient data for nonce".into());
-            }
-            
-            let nonce = data[offset..offset + nonce_len].to_vec();
-            offset += nonce_len;
-
-            // Extract ciphertext length and ciphertext
-            let ciphertext_len = u32::from_be_bytes(data[offset..offset + 4].try_into()
-                .map_err(|_| "Invalid ciphertext length")?) as usize;
-            offset += 4;
-            
-            if data.len() != offset + ciphertext_len {
-                return Err("Invalid message format: incorrect ciphertext length".into());
-            }
-            
-            let ciphertext = data[offset..offset + ciphertext_len].to_vec();
-
-            Ok(EncryptedMessage {
-                sender_public,
+        /// Create a new encrypted message
+        pub fn new(sender_public: PublicKey, ciphertext: Vec<u8>, nonce: Vec<u8>) -> Self {
+            Self {
+                sender_public: sender_public.to_bytes(),
                 ciphertext,
                 nonce,
-            })
+            }
+        }
+
+        /// Serialize to JSON
+        pub fn to_json(&self) -> Result<String> {
+            serde_json::to_string(&self)
+                .map_err(|e| format!("JSON serialization error: {}", e).into())
+        }
+
+        /// Deserialize from JSON
+        pub fn from_json(json: &str) -> Result<Self> {
+            let result: EncryptedMessage = serde_json::from_str(json)?;
+            Ok(result)
+        }
+
+        pub fn get_sender_public(&self) -> PublicKey {
+            PublicKey::from_bytes(self.sender_public)
+        }
+
+        pub fn get_sender_public_bytes(&self) -> [u8; 32] {
+            self.sender_public
         }
     }
 }
