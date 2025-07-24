@@ -1,49 +1,54 @@
 #[cfg(test)]
 mod tests {
+    use crate::crypto::message::exchange::Party;
     use crate::persistence::database::sled::Database;
-    use crate::persistence::models::local::*;
     use std::collections::HashSet;
+    use crypto_box::PublicKey;
     use tempfile::TempDir;
 
-    fn create_test_party_dto() -> PartyDTO {
-        let mut known_contacts = HashSet::new();
-        known_contacts.insert([1u8; 32]);
-        known_contacts.insert([2u8; 32]);
-        known_contacts.insert([3u8; 32]);
-
-        PartyDTO::new(
+    fn create_test_party() -> Party {
+        let known_contacts = [
+            &PublicKey::from_bytes(
+                [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11]
+            ),
+            &PublicKey::from_bytes(
+                [22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22]
+            ),
+            &PublicKey::from_bytes(
+                [33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33]
+            )
+        ];
+        Party::new_with_contacts(
             "Alice",
-            [42u8; 32], // secret key
-            [84u8; 32], // public key
-            known_contacts,
+            &known_contacts,
         )
     }
 
     #[test]
-    fn test_save_and_load_party_dto() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_save_and_load_party() -> Result<(), Box<dyn std::error::Error>> {
         // Create a temporary directory for the test database
         let temp_dir = TempDir::new()?;
         let db_path = temp_dir.path().join("test_db");
         let db = Database::new(db_path.to_str().unwrap())?;
 
         // Create test data
-        let party_dto = create_test_party_dto();
+        let party = create_test_party();
         let key = "party:alice";
 
-        // Save the PartyDTO
-        db.save(key, &party_dto)?;
+        // Save the Party
+        db.save(key, &party)?;
 
         // Load it back
-        let loaded_party_dto: Option<PartyDTO> = db.load(key)?;
+        let loaded_party: Option<Party> = db.load(key)?;
 
         // Verify it was loaded correctly
-        assert!(loaded_party_dto.is_some());
-        let loaded = loaded_party_dto.unwrap();
+        assert!(loaded_party.is_some());
+        let loaded = loaded_party.unwrap();
 
-        assert_eq!(loaded.name, party_dto.name);
-        assert_eq!(loaded.secret_key, party_dto.secret_key);
-        assert_eq!(loaded.public_key, party_dto.public_key);
-        assert_eq!(loaded.known_contacts, party_dto.known_contacts);
+        assert_eq!(loaded.name, party.name);
+        assert_eq!(loaded.secret_key_bytes(), party.secret_key_bytes());
+        assert_eq!(loaded.public_key_bytes(), party.public_key_bytes());
+        assert_eq!(loaded.get_contacts_bytes(), party.get_contacts_bytes());
 
         Ok(())
     }
@@ -73,7 +78,7 @@ mod tests {
             contacts.insert([99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99]); // Common contact
             contacts.insert([100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]); // Another contact
             
-            let party_dto = PartyDTO::new(name, *secret_key, *public_key, contacts);
+            let party_dto = Party::from_values(name, *secret_key, *public_key, contacts);
             db.save(&format!("party:{}", name), &party_dto)?;
         }
 
@@ -83,16 +88,16 @@ mod tests {
 
         // Verify we can load each one
         for (name, secret_key, public_key) in parties {
-            let loaded: Option<PartyDTO> = db.load(&format!("party:{}", name))?;
+            let loaded: Option<Party> = db.load(&format!("party:{}", name))?;
             assert!(loaded.is_some());
             
             let party = loaded.unwrap();
             assert_eq!(party.name, name);
-            assert_eq!(party.secret_key, secret_key);
-            assert_eq!(party.public_key, public_key);
-            assert!(party.known_contacts.contains(&[99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99]));
-            assert!(party.known_contacts.contains(&[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]));
-            assert_eq!(party.known_contacts.len(), 2);
+            assert_eq!(party.secret_key_bytes(), secret_key);
+            assert_eq!(party.public_key_bytes(), public_key);
+            assert!(party.get_contacts_bytes().contains(&[99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99]));
+            assert!(party.get_contacts_bytes().contains(&[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]));
+            assert_eq!(party.get_contacts().len(), 2);
         }
 
         Ok(())
@@ -105,22 +110,30 @@ mod tests {
         let db = Database::new(db_path.to_str().unwrap())?;
 
         let key = "party:alice";
-        let mut party_dto = create_test_party_dto();
+        let mut party = create_test_party();
 
         // Save initial version
-        db.save(key, &party_dto)?;
+        db.save(key, &party)?;
 
         // Update the party (add a new contact)
-        party_dto.known_contacts.insert([99u8; 32]);
-        db.save(key, &party_dto)?;
+        party.add_contact(
+            &PublicKey::from_bytes(
+                [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+            )
+        );
+        db.save(key, &party)?;
 
         // Load and verify the update
-        let loaded: Option<PartyDTO> = db.load(key)?;
+        let loaded: Option<Party> = db.load(key)?;
         assert!(loaded.is_some());
         
         let loaded_party = loaded.unwrap();
-        assert_eq!(loaded_party.known_contacts.len(), 4); // Original 3 + 1 new
-        assert!(loaded_party.known_contacts.contains(&[99u8; 32]));
+        assert_eq!(loaded_party.get_contacts().len(), 4); // Original 3 + 1 new
+        assert!(loaded_party.get_contacts().contains(
+            &PublicKey::from_bytes(
+                [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100])
+            )
+        );
 
         Ok(())
     }
@@ -132,20 +145,20 @@ mod tests {
         let db = Database::new(db_path.to_str().unwrap())?;
 
         let key = "party:alice";
-        let party_dto = create_test_party_dto();
+        let party_dto = create_test_party();
 
         // Save the party
         db.save(key, &party_dto)?;
 
         // Verify it exists
-        let loaded: Option<PartyDTO> = db.load(key)?;
+        let loaded: Option<Party> = db.load(key)?;
         assert!(loaded.is_some());
 
         // Delete it
         db.delete(key)?;
 
         // Verify it's gone
-        let loaded_after_delete: Option<PartyDTO> = db.load(key)?;
+        let loaded_after_delete: Option<Party> = db.load(key)?;
         assert!(loaded_after_delete.is_none());
 
         Ok(())
@@ -158,7 +171,7 @@ mod tests {
         let db = Database::new(db_path.to_str().unwrap())?;
 
         // Try to load a party that doesn't exist
-        let loaded: Option<PartyDTO> = db.load("party:nonexistent")?;
+        let loaded: Option<Party> = db.load("party:nonexistent")?;
         assert!(loaded.is_none());
 
         Ok(())
@@ -170,24 +183,20 @@ mod tests {
         let db_path = temp_dir.path().join("test_db");
         let db = Database::new(db_path.to_str().unwrap())?;
 
-        let party_dto = create_test_party_dto();
+        let original_party = create_test_party();
         
-        // Test round-trip conversion: DTO -> Party -> DTO
-        let party = party_dto.to_party();
-        assert_eq!(party.name, party_dto.name);
-        assert_eq!(party.secret_key_bytes(), party_dto.secret_key);
-        assert_eq!(party.public_key_bytes(), party_dto.public_key);
-        assert_eq!(party.get_contacts_bytes(), party_dto.known_contacts);
-        let converted_back = PartyDTO::from_party(&party);
-
-        assert_eq!(party_dto.name, converted_back.name);
-        assert_eq!(party_dto.secret_key, converted_back.secret_key);
-        assert_eq!(party_dto.public_key, converted_back.public_key);
-        assert_eq!(party_dto.known_contacts, converted_back.known_contacts);
+        // Test round-trip conversion: Party -> JSON -> Party
+        let party = Party::from_json(
+            original_party.to_json().unwrap().as_str()
+        ).unwrap();
+        assert_eq!(party.name, original_party.name);
+        assert_eq!(party.secret_key_bytes(), original_party.secret_key_bytes());
+        assert_eq!(party.public_key_bytes(), original_party.public_key_bytes());
+        assert_eq!(party.get_contacts_bytes(), original_party.get_contacts_bytes());
 
         // Test saving the converted DTO
-        db.save("party:converted", &converted_back)?;
-        let loaded: Option<PartyDTO> = db.load("party:converted")?;
+        db.save("party:converted", &party)?;
+        let loaded: Option<Party> = db.load("party:converted")?;
         assert!(loaded.is_some());
 
         Ok(())
