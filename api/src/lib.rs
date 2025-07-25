@@ -28,5 +28,6 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
 #[cfg(not(target_arch = "wasm32"))]
 #[server(CreateParty)]
 pub async fn create_party(name: String) -> Result<String, ServerFnError> {
+    let party = Party::new(name);
     
 }

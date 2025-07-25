@@ -359,11 +359,11 @@ mod test_exchange {
         println!("\n{}📝 Original message: \"{}\"{}", GREEN, message, RESET);
 
         println!("\n{}🔒 ALICE ENCRYPTING MESSAGE FOR BOB{}", YELLOW, RESET);
-        let encrypted = alice.encrypt_string_for(&bob.get_public_key(), message).unwrap();
+        let encrypted = alice.encrypt_string_for(&bob.public_key(), message).unwrap();
         print_success("Message encrypted successfully!");
         print_info(&format!("Alice now has {} known contacts", alice.contact_count()));
 
-        print_hex_data("Sender Public Key", &encrypted.get_sender_public_bytes(), MAGENTA);
+        print_hex_data("Sender Public Key", &encrypted.sender_public_bytes(), MAGENTA);
         print_hex_data("Nonce", &encrypted.nonce, CYAN);
         print_hex_data("Ciphertext", &encrypted.ciphertext, RED);
 
@@ -396,7 +396,7 @@ mod test_exchange {
         let alice_message = "Hi Bob, how are you?";
         println!("\n{}👩 Alice's message: \"{}\"{}", GREEN, alice_message, RESET);
         
-        let alice_encrypted = alice.encrypt_string_for(&bob.get_public_key(), alice_message).unwrap();
+        let alice_encrypted = alice.encrypt_string_for(&bob.public_key(), alice_message).unwrap();
         print_success("Alice's message encrypted");
         print_info(&format!("Alice known contacts: {}", alice.contact_count()));
 
@@ -409,7 +409,7 @@ mod test_exchange {
         let bob_message = "Hi Alice! I'm doing great, thanks for asking!";
         println!("\n{}👨 Bob's reply: \"{}\"{}", BLUE, bob_message, RESET);
         
-        let bob_encrypted = bob.encrypt_string_for(&alice.get_public_key(), bob_message).unwrap();
+        let bob_encrypted = bob.encrypt_string_for(&alice.public_key(), bob_message).unwrap();
         print_success("Bob's message encrypted");
         print_info(&format!("Bob known contacts: {}", bob.contact_count()));
 
@@ -438,7 +438,7 @@ mod test_exchange {
 
         // Encrypt and serialize
         println!("\n{}📤 SERIALIZATION PHASE{}", YELLOW, RESET);
-        let encrypted = alice.encrypt_string_for(&bob.get_public_key(), original_message).unwrap();
+        let encrypted = alice.encrypt_string_for(&bob.public_key(), original_message).unwrap();
         let serialized = encrypted.to_json().unwrap();
         print_success("Message encrypted and serialized");
         print_str_data("Serialized message", &serialized.as_str(), CYAN);
@@ -476,7 +476,7 @@ mod test_exchange {
         println!("\n{}🤐 Secret message: \"{}\"{}", GREEN, secret_message, RESET);
 
         println!("\n{}🔒 ALICE ENCRYPTING FOR BOB{}", YELLOW, RESET);
-        let encrypted = alice.encrypt_string_for(&bob.get_public_key(), secret_message).unwrap();
+        let encrypted = alice.encrypt_string_for(&bob.public_key(), secret_message).unwrap();
         print_success("Message encrypted for Bob");
 
         println!("\n{}👨 BOB ATTEMPTING TO DECRYPT{}", BLUE, RESET);
@@ -517,22 +517,22 @@ mod test_exchange {
         print_info("Testing pre-established contact functionality");
 
         // Create a party with pre-established contacts
-        let contacts = [&alice.get_public_key(), &bob.get_public_key()];
+        let contacts = [&alice.public_key(), &bob.public_key()];
         let mut dave = Party::new_with_contacts("Dave", &contacts);
         
         print_info(&format!("Dave created with {} pre-registered contacts", dave.contact_count()));
         
         // IMPORTANT: For bidirectional communication, recipients also need Dave's key
-        alice.add_contact(&dave.get_public_key());
-        bob.add_contact(&dave.get_public_key());
+        alice.add_contact(&dave.public_key());
+        bob.add_contact(&dave.public_key());
         
         print_info("Alice and Bob have been given Dave's public key for bidirectional communication");
         
         // Verify Dave can communicate with pre-registered contacts
         let message = "Hello everyone!";
-        
-        let to_alice = dave.encrypt_string_for(&alice.get_public_key(), message).unwrap();
-        let to_bob = dave.encrypt_string_for(&bob.get_public_key(), message).unwrap();
+
+        let to_alice = dave.encrypt_string_for(&alice.public_key(), message).unwrap();
+        let to_bob = dave.encrypt_string_for(&bob.public_key(), message).unwrap();
         
         print_success("✓ Dave encrypted messages for pre-registered contacts");
         
@@ -545,11 +545,11 @@ mod test_exchange {
         print_success("✓ Alice and Bob successfully decrypted Dave's messages");
         
         // Dave establishes contact with Charlie on-demand
-        let to_charlie = dave.encrypt_string_for(&charlie.get_public_key(), message).unwrap();
+        let to_charlie = dave.encrypt_string_for(&charlie.public_key(), message).unwrap();
         print_success("✓ Dave encrypted message for new contact (Charlie)");
         
         // Charlie needs Dave's key to decrypt
-        charlie.add_contact(&dave.get_public_key());
+        charlie.add_contact(&dave.public_key());
         let charlie_received = charlie.decrypt_string_from(&to_charlie).unwrap();
         assert_eq!(charlie_received, message);
         print_success("✓ Charlie successfully decrypted Dave's message");
@@ -557,14 +557,14 @@ mod test_exchange {
         print_info(&format!("Dave now has {} total contacts", dave.contact_count()));
         
         // Verify contact list
-        let dave_contacts = dave.get_contacts();
+        let dave_contacts = dave.known_contacts();
         assert_eq!(dave_contacts.len(), 3);
         print_success("✓ Contact list management working correctly");
         
         // Test bidirectional communication
         println!("\n{}🔄 Testing bidirectional communication{}", YELLOW, RESET);
         let reply_message = "Hi Dave! Nice to meet you!";
-        let alice_reply = alice.encrypt_string_for(&dave.get_public_key(), reply_message).unwrap();
+        let alice_reply = alice.encrypt_string_for(&dave.public_key(), reply_message).unwrap();
         let dave_received = dave.decrypt_string_from(&alice_reply).unwrap();
         assert_eq!(dave_received, reply_message);
         print_success("✓ Bidirectional communication working correctly");
@@ -593,14 +593,14 @@ mod test_exchange {
         // Multiple encryptions - each creates a fresh crypto box
         println!("\n{}🔒 MULTIPLE ENCRYPTIONS{}", YELLOW, RESET);
         let start_time = std::time::Instant::now();
-        let encrypted1 = alice.encrypt_string_for(&bob.get_public_key(), test_message).unwrap();
+        let encrypted1 = alice.encrypt_string_for(&bob.public_key(), test_message).unwrap();
         let first_encrypt_time = start_time.elapsed();
         print_success(&format!("First encryption completed in {:?}", first_encrypt_time));
         print_info(&format!("Alice known contacts: {}", alice.contact_count()));
 
         let start_time = std::time::Instant::now();
         for _n in 0..1000 {
-            let encrypted2 = alice.encrypt_string_for(&bob.get_public_key(), "Second message").unwrap();
+            let encrypted2 = alice.encrypt_string_for(&bob.public_key(), "Second message").unwrap();
             // Verify different nonces
             assert_ne!(encrypted1.nonce, encrypted2.nonce);
         }
@@ -647,23 +647,23 @@ mod test_exchange {
         print_info("Alice starts with 0 contacts");
 
         // Add contacts manually
-        alice.add_contact(&bob.get_public_key());
-        alice.add_contact(&charlie.get_public_key());
+        alice.add_contact(&bob.public_key());
+        alice.add_contact(&charlie.public_key());
 
         print_success(&format!("Alice manually registered {} contacts", alice.contact_count()));
 
         // Check if contacts are known
-        assert!(alice.is_known_contact(&bob.get_public_key()));
-        assert!(alice.is_known_contact(&charlie.get_public_key()));
+        assert!(alice.is_known_contact(&bob.public_key()));
+        assert!(alice.is_known_contact(&charlie.public_key()));
         print_success("✓ Contact recognition working correctly");
 
         // Adding same contact twice shouldn't increase count
-        alice.add_contact(&bob.get_public_key());
+        alice.add_contact(&bob.public_key());
         assert_eq!(alice.contact_count(), 2);
         print_success("✓ Duplicate contact addition handled correctly");
 
         // List contacts
-        let contacts = alice.get_contacts();
+        let contacts = alice.known_contacts();
         assert_eq!(contacts.len(), 2);
         print_success("✓ Contact listing working correctly");
 
