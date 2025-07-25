@@ -147,7 +147,6 @@ mod tests {
         let temp_dir = TempDir::new()?;
         let db_path = temp_dir.path().join("test_db");
         let db = Database::new(db_path.to_str().unwrap())?;
-
         let mut party = create_test_party();
 
         // Save the party

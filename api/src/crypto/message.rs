@@ -108,7 +108,6 @@ pub mod exchange {
                 known_contacts,
             }
         }
-
         /// Serialize to JSON - ID will be included if present
         pub fn to_json(&self) -> Result<String> {
             Ok(serde_json::to_string(&self)?)

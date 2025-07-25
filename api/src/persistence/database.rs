@@ -4,7 +4,6 @@ pub mod sled {
     use sled::{Db};
 
     // Entity trait
-    // requires ID field to be skipped during serialization
     // provides key prefix for database operations
     pub trait Entity: Serialize + for<'de> Deserialize<'de> {
         fn id(&self) -> Option<&str>;

@@ -530,7 +530,7 @@ mod test_exchange {
         
         // Verify Dave can communicate with pre-registered contacts
         let message = "Hello everyone!";
-        
+
         let to_alice = dave.encrypt_string_for(&alice.public_key(), message).unwrap();
         let to_bob = dave.encrypt_string_for(&bob.public_key(), message).unwrap();
         
