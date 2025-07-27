@@ -21,7 +21,7 @@ mod tests {
     use crate::persistence::database::{Database, Entity};
     use std::collections::HashSet;
     use crypto_box::PublicKey;
-    use tempfile::TempDir;
+    use serial_test::serial;
 
     fn create_test_party() -> Party {
         let known_contacts = [
@@ -42,11 +42,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_save_and_load_party() -> Result<(), Box<dyn std::error::Error>> {
-        // Create a temporary directory for the test database
-        let temp_dir = TempDir::new()?;
-        let db_path = temp_dir.path().join("test_db");
-        let db = Database::new(db_path.to_str().unwrap())?;
+        let db = Database::new();
+        let _ = db.clear();
 
         // Create test data
         let mut party = create_test_party();
@@ -70,10 +69,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_multiple_parties() -> Result<(), Box<dyn std::error::Error>> {
-        let temp_dir = TempDir::new()?;
-        let db_path = temp_dir.path().join("test_db");
-        let db = Database::new(db_path.to_str().unwrap())?;
+        let db = Database::new();
+        let _ = db.clear();
 
         // Create multiple parties with consistent key lengths
         let parties = vec![
@@ -127,10 +126,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_update_party() -> Result<(), Box<dyn std::error::Error>> {
-        let temp_dir = TempDir::new()?;
-        let db_path = temp_dir.path().join("test_db");
-        let db = Database::new(db_path.to_str().unwrap())?;
+        let db = Database::new();
+        let _ = db.clear();
         let mut party = create_test_party();
 
         // Save initial version
@@ -160,10 +159,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_delete_party() -> Result<(), Box<dyn std::error::Error>> {
-        let temp_dir = TempDir::new()?;
-        let db_path = temp_dir.path().join("test_db");
-        let db = Database::new(db_path.to_str().unwrap())?;
+        let db = Database::new();
+        let _ = db.clear();
         let mut party = create_test_party();
 
         // Save the party
@@ -185,10 +184,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_load_nonexistent_party() -> Result<(), Box<dyn std::error::Error>> {
-        let temp_dir = TempDir::new()?;
-        let db_path = temp_dir.path().join("test_db");
-        let db = Database::new(db_path.to_str().unwrap())?;
+        let db = Database::new();
+        let _ = db.clear();
 
         // Try to load a party that doesn't exist
         let loaded: Option<Party> = db.load_entity("party:nonexistent")?;
@@ -198,10 +197,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_party_dto_conversion() -> Result<(), Box<dyn std::error::Error>> {
-        let temp_dir = TempDir::new()?;
-        let db_path = temp_dir.path().join("test_db");
-        let db = Database::new(db_path.to_str().unwrap())?;
+        let db = Database::new();
+        let _ = db.clear();
 
         let original_party = create_test_party();
         
@@ -223,8 +222,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_id_consistency() {
-        let db = Database::new("test_db").unwrap();
+        let db = Database::new();
+        let _ = db.clear();
         
         // Create and save party
         let mut party = Party::new("Alice");
@@ -246,11 +247,10 @@ mod tests {
     }
 
     // Helper function to create a test database
-    fn create_test_db() -> (Database, TempDir) {
-        let temp_dir = TempDir::new().unwrap();
-        let db_path = temp_dir.path().join("test.db");
-        let db = Database::new(db_path.to_str().unwrap()).unwrap();
-        (db, temp_dir)
+    fn create_test_db() -> Database{
+        let db = Database::new();
+        let _ = db.clear();
+        db
     }
     
     // Helper function to create a test EncryptedMessage
@@ -267,8 +267,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_save_encrypted_message_generates_id() {
-        let (db, _temp_dir) = create_test_db();
+        let db = create_test_db();
+
         let mut message = create_test_message();
         
         // Initially no ID
@@ -284,8 +286,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_save_and_load_encrypted_message() {
-        let (db, _temp_dir) = create_test_db();
+        let db = create_test_db();
+
         let mut original_message = create_test_message();
         
         // Save the message
@@ -305,8 +309,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_update_encrypted_message() {
-        let (db, _temp_dir) = create_test_db();
+        let db = create_test_db();
+        
         let mut message = create_test_message();
         
         // Save initial message
@@ -328,8 +334,9 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_load_all_encrypted_messages() {
-        let (db, _temp_dir) = create_test_db();
+        let db = create_test_db();
         
         // Create and save multiple messages
         let mut message1 = create_test_message();
@@ -361,8 +368,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_delete_encrypted_message() {
-        let (db, _temp_dir) = create_test_db();
+        let db = create_test_db();
+
         let mut message = create_test_message();
         
         // Save the message
@@ -382,8 +391,10 @@ mod tests {
     }
 
     #[test]
+    #[serial(local_db)]
     fn test_encrypted_message_json_serialization_with_id() {
-        let (db, _temp_dir) = create_test_db();
+        let db = create_test_db();
+
         let mut message = create_test_message();
         
         // Save to get an ID

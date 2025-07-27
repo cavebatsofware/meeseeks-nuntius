@@ -15,6 +15,7 @@
  *  along with meeseeks-nuntius.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use std::sync::LazyLock;
 use serde::{Deserialize, Serialize};
 use sled::{Db};
 
@@ -27,14 +28,20 @@ pub trait Entity: Serialize + for<'de> Deserialize<'de> {
 }
 
 pub struct Database {
-    db: Db,
+    db: &'static Db,
 }
 
+static DATABASE: LazyLock<Db> = LazyLock::new(|| {
+    sled::open("app.sled").expect("Failed to open database")
+});
+
 impl Database {
-    pub fn new(path: &str) -> sled::Result<Self> {
-        Ok(Database {
-            db: sled::open(path)?,
-        })
+    pub fn new() -> Self {
+        Database { db: &DATABASE }
+    }
+
+    pub fn clear(&self) -> std::result::Result<(), sled::Error> {
+        self.db.clear()
     }
 
     fn generate_unique_key(&self, prefix: &str) -> Result<String, Box<dyn std::error::Error>> {
