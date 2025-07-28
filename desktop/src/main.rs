@@ -3,20 +3,20 @@ use dioxus::prelude::*;
 
 use ui::Navbar;
 use views::{Blog, Home};
-
+use views::PartyDashboard;
 mod views;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
 enum Route {
-    #[layout(DesktopNavbar)]
+    #[layout(PartyDashboard)]
     #[route("/")]
     Home {},
     #[route("/blog/:id")]
     Blog { id: i32 },
 }
 
-const MAIN_CSS: Asset = asset!("/assets/main.css");
+const MAIN_CSS: Asset = asset!("/assets/party_dash.css");
 
 fn main() {
     //dioxus_logger::init(Level::INFO).expect("failed to init logger");

@@ -24,6 +24,8 @@ pub mod crypto;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod persistence;
 
+// use crate::persistence::database::*;
+
 /// Echo the user input on the server.
 #[server(Echo)]
 pub async fn echo(input: String) -> Result<String, ServerFnError> {
@@ -45,6 +47,7 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
 #[cfg(not(target_arch = "wasm32"))]
 #[server(CreateParty)]
 pub async fn create_party(name: String) -> Result<String, ServerFnError> {
-    let party = Party::new(name);
-    
+    use crate::crypto::message::Party;
+    let party = Party::new(&name);
+    Ok(String::new())
 }
