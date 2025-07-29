@@ -1,31 +1,77 @@
-// src/i18n/mod.rs - I18n module for meeseeks-nuntius (Dioxus 0.6.x)
+/*  This file is part of a secure messaging project codename meeseeks-nuntius
+ *  Copyright (C) 2025 Grant DeFayette
+ *
+ *  meeseeks-nuntius is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  meeseeks-nuntius is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with meeseeks-nuntius.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
-use dioxus::prelude::*;
-use rust_i18n::{i18n, t};
-use std::rc::Rc;
-
-// Initialize i18n with locales directory
-i18n!("locales", fallback = "en");
+use serde_yml;
+use std::collections::HashMap;
 
 #[derive(Clone)]
 pub struct I18nContext {
-    pub current_locale: Signal<String>,
+    pub current_locale: String,
     pub available_locales: Vec<String>,
+    translations: HashMap<String, HashMap<String, String>>,
 }
 
 impl PartialEq for I18nContext {
     fn eq(&self, other: &Self) -> bool {
-        self.current_locale.read().as_str() == other.current_locale.read().as_str()
+        self.current_locale == other.current_locale
             && self.available_locales == other.available_locales
     }
 }
 
+// Include translation files at compile time
+const EN_TRANSLATIONS: &str = include_str!("../../locales/en.yml");
+const ES_TRANSLATIONS: &str = include_str!("../../locales/es.yml");
+const FR_TRANSLATIONS: &str = include_str!("../../locales/fr.yml");
+const DE_TRANSLATIONS: &str = include_str!("../../locales/de.yml");
+const ZH_TRANSLATIONS: &str = include_str!("../../locales/zh.yml");
+const ZH_TW_TRANSLATIONS: &str = include_str!("../../locales/zh-TW.yml");
+const AR_TRANSLATIONS: &str = include_str!("../../locales/ar.yml");
+const JA_TRANSLATIONS: &str = include_str!("../../locales/ja.yml");
+
 impl I18nContext {
     pub fn new(initial_locale: &str) -> Self {
-        rust_i18n::set_locale(initial_locale);
-        
+        let mut translations = HashMap::new();
+
+        // Load all translations from embedded YAML
+        let locales = [
+            ("en", EN_TRANSLATIONS),
+            ("es", ES_TRANSLATIONS),
+            ("fr", FR_TRANSLATIONS),
+            ("de", DE_TRANSLATIONS),
+            ("zh", ZH_TRANSLATIONS),
+            ("zh-TW", ZH_TW_TRANSLATIONS),
+            ("ar", AR_TRANSLATIONS),
+            ("ja", JA_TRANSLATIONS),
+        ];
+
+        for (locale_code, yaml_content) in locales {
+            match load_translations_from_yaml(yaml_content) {
+                Ok(locale_translations) => {
+                    translations.insert(locale_code.to_string(), locale_translations);
+                }
+                Err(e) => {
+                    eprintln!("Failed to load translations for {}: {}", locale_code, e);
+                    // Continue with other locales
+                }
+            }
+        }
+
         Self {
-            current_locale: Signal::new(initial_locale.to_string()),
+            current_locale: initial_locale.to_string(),
             available_locales: vec![
                 "en".to_string(),
                 "es".to_string(),
@@ -36,98 +82,97 @@ impl I18nContext {
                 "ar".to_string(),
                 "ja".to_string(),
             ],
+            translations,
         }
     }
-    
-    pub fn get_current_locale(&self) -> String {
-        self.current_locale.read().clone()
+
+    pub fn get_current_locale(&self) -> &str {
+        &self.current_locale
     }
-    
+
     pub fn change_locale(&mut self, locale: &str) {
         if self.available_locales.contains(&locale.to_string()) {
-            rust_i18n::set_locale(locale);
-            *self.current_locale.write() = locale.to_string();
+            self.current_locale = locale.to_string();
         }
+    }
+
+    pub fn translate(&self, key: &str) -> String {
+        let current_locale = &self.current_locale;
+
+        // Try current locale first
+        if let Some(locale_map) = self.translations.get(current_locale) {
+            if let Some(translation) = get_nested_value(locale_map, key) {
+                return translation;
+            }
+        }
+
+        // Fallback to English
+        if let Some(en_map) = self.translations.get("en") {
+            if let Some(translation) = get_nested_value(en_map, key) {
+                return translation;
+            }
+        }
+
+        // Return the key itself if no translation found
+        key.to_string()
     }
 }
 
-// Hook for easy access to translations in components
-pub fn use_i18n() -> Signal<I18nContext> {
-    use_context::<Signal<I18nContext>>()
+// Parse YAML and flatten nested keys (e.g., "nav.messages" from nested structure)
+pub fn load_translations_from_yaml(
+    yaml_content: &str,
+) -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
+    let yaml_value: serde_yml::Value = serde_yml::from_str(yaml_content)?;
+    let mut flat_map = HashMap::new();
+
+    if let serde_yml::Value::Mapping(map) = yaml_value {
+        flatten_yaml_map(&map, "", &mut flat_map);
+    }
+
+    Ok(flat_map)
 }
 
-// Provider component to wrap your app
-#[component]
-pub fn I18nProvider(children: Element) -> Element {
-    let i18n_context = use_signal(|| I18nContext::new(&get_initial_locale()));
-    
-    use_context_provider(|| i18n_context);
+// Recursively flatten nested YAML structure
+fn flatten_yaml_map(map: &serde_yml::Mapping, prefix: &str, result: &mut HashMap<String, String>) {
+    for (key, value) in map {
+        if let serde_yml::Value::String(key_str) = key {
+            let full_key = if prefix.is_empty() {
+                key_str.clone()
+            } else {
+                format!("{}.{}", prefix, key_str)
+            };
 
-    rsx! { {children} }
-}
-
-// Get initial locale from browser/system preferences
-fn get_initial_locale() -> String {
-    // This would need platform-specific implementation
-    // For now, default to English
-    "en".to_string()
-}
-
-// Save locale preference (platform-specific)
-fn save_locale_preference(_locale: &str) {
-    // Implementation would depend on platform:
-    // - Web: localStorage
-    // - Desktop: config file
-    // - Mobile: platform preferences
-}
-
-// Convenience macro for translations
-#[macro_export]
-macro_rules! tr {
-    ($key:expr) => {
-        t!($key)
-    };
-    ($key:expr, $($args:tt)*) => {
-        rust_i18n::t!($key, $($args)*)
-    };
-}
-
-// Language switcher component for settings
-#[component]
-pub fn LanguageSwitcher() -> Element {
-    let mut i18n = use_i18n();
-    
-    rsx! {
-        div { class: "language-switcher",
-            label { 
-                r#for: "language-select",
-                class: "language-label",
-                {tr!("settings.language")}
-            }
-            select {
-                id: "language-select",
-                class: "language-select",
-                value: "{i18n.read().get_current_locale()}",
-                onchange: move |evt: FormEvent| {
-                    i18n.write().change_locale(&evt.value());
-                },
-                {i18n.read().available_locales.iter().map(|locale| rsx! {
-                    option {
-                        value: "{locale}",
-                        selected: i18n.read().get_current_locale() == *locale,
-                        {get_language_name(locale)}
-                    }
-                })}
+            match value {
+                serde_yml::Value::String(val) => {
+                    result.insert(full_key, val.clone());
+                }
+                serde_yml::Value::Mapping(nested_map) => {
+                    flatten_yaml_map(nested_map, &full_key, result);
+                }
+                serde_yml::Value::Number(n) => {
+                    result.insert(full_key, n.to_string());
+                }
+                serde_yml::Value::Bool(b) => {
+                    result.insert(full_key, b.to_string());
+                }
+                _ => {
+                    // Skip other types (null, sequence, etc.)
+                }
             }
         }
     }
+}
+
+// Get value from flattened map (supports dot notation)
+fn get_nested_value(map: &HashMap<String, String>, key: &str) -> Option<String> {
+    map.get(key).cloned()
 }
 
 // Helper function to get human-readable language names
-fn get_language_name(locale: &str) -> &'static str {
+pub fn get_language_name(locale: &str) -> &'static str {
     match locale {
         "en" => "English",
-        "es" => "Español", 
+        "es" => "Español",
         "fr" => "Français",
         "de" => "Deutsch",
         "zh" => "中文 (简体)",
@@ -135,128 +180,6 @@ fn get_language_name(locale: &str) -> &'static str {
         "ar" => "العربية",
         "ja" => "日本語",
         _ => "Unknown",
-    }
-}
-
-// Utility component for displaying translated text with fallback
-#[derive(Props, Clone, PartialEq)]
-pub struct TranslatedTextProps {
-    key: String,
-    #[props(optional)]
-    fallback: Option<String>,
-    #[props(optional)]
-    class: Option<String>,
-    #[props(optional)]
-    interpolations: Option<std::collections::HashMap<String, String>>,
-}
-
-#[component]
-pub fn TranslatedText(props: TranslatedTextProps) -> Element {
-    let _i18n = use_i18n(); // Ensure we re-render when locale changes
-    
-    let text = t!(&props.key);
-    let display_text = if text == props.key && props.fallback.is_some() {
-        // Translation key not found, use fallback
-        props.fallback.as_ref().unwrap()
-    } else {
-        &text
-    };
-    
-    // Apply interpolations if provided
-    let final_text = if let Some(interpolations) = &props.interpolations {
-        let mut result = display_text.to_string();
-        for (key, value) in interpolations {
-            result = result.replace(&format!("{{{}}}", key), value);
-        }
-        result
-    } else {
-        display_text.to_string()
-    };
-    
-    rsx! {
-        span { 
-            class: props.class.as_deref().unwrap_or(""),
-            {final_text}
-        }
-    }
-}
-
-// Specialized component for error messages with automatic error prefix
-#[derive(Props, Clone, PartialEq)]
-pub struct ErrorTextProps {
-    error_key: String,
-    #[props(optional)]
-    class: Option<String>,
-    #[props(optional)]
-    fallback: Option<String>,
-}
-
-#[component]
-pub fn ErrorText(props: ErrorTextProps) -> Element {
-    let _i18n = use_i18n();
-    
-    let error_translation_key = format!("errors.{}", props.error_key);
-    let text = t!(&error_translation_key);
-    
-    let display_text = if text == error_translation_key {
-        // Specific error not found, try generic or fallback
-        props.fallback.as_deref().unwrap_or(&t!("errors.generic"))
-    } else {
-        &text
-    };
-    
-    rsx! {
-        span { 
-            class: format!("error-text {}", props.class.as_deref().unwrap_or("")),
-            {display_text}
-        }
-    }
-}
-
-// Component for displaying status with color indicators
-#[derive(Props, Clone, PartialEq)]
-pub struct StatusTextProps {
-    status_key: String,
-    #[props(optional)]
-    show_indicator: Option<bool>,
-    #[props(optional)]
-    class: Option<String>,
-}
-
-#[component]
-pub fn StatusText(props: StatusTextProps) -> Element {
-    let _i18n = use_i18n();
-    
-    let status_translation_key = format!("status.{}", props.status_key);
-    let text = t!(&status_translation_key);
-    
-    let status_class = format!("status-{}", props.status_key);
-    let show_indicator = props.show_indicator.unwrap_or(false);
-    
-    rsx! {
-        span { 
-            class: format!("status-text {} {}", status_class, props.class.as_deref().unwrap_or("")),
-            if show_indicator {
-                span { class: "status-indicator", "●" }
-            }
-            {text}
-        }
-    }
-}
-
-// Hook for translating error messages
-pub fn use_error_translation() -> impl Fn(&str) -> String {
-    let _i18n = use_i18n();
-    
-    move |error_key: &str| {
-        let key = format!("errors.{}", error_key);
-        let translated = t!(&key);
-        if translated == key {
-            // Fallback to generic error message
-            t!("errors.generic")
-        } else {
-            translated
-        }
     }
 }
 

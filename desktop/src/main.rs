@@ -2,8 +2,8 @@ use dioxus::prelude::*;
 // use tracing::Level;
 
 use ui::Navbar;
-use views::{Blog, Home};
 use views::PartyDashboard;
+use views::{Blog, Home};
 mod views;
 
 #[derive(Debug, Clone, Routable, PartialEq)]

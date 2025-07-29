@@ -37,10 +37,6 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
     #[cfg(target_arch = "wasm32")]
     println!("Running on WASM (web)");
 
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-    }
-
     Ok(input)
 }
 

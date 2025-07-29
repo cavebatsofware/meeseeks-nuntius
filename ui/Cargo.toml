@@ -7,3 +7,4 @@ edition = "2021"
 dioxus = { workspace = true }
 api = { workspace = true }
 rust-i18n = { workspace = true }
+serde_yml = { workspace = true }

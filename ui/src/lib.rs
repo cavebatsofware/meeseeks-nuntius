@@ -11,3 +11,5 @@ pub use echo::Echo;
 
 mod i18n_context;
 pub use i18n_context::I18nContext;
+
+mod test_i18n_context;

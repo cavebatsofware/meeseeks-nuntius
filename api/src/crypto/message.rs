@@ -18,7 +18,7 @@
 pub mod aes256_gcm {
     use aes_gcm::{
         aead::{Aead, AeadCore, KeyInit, OsRng},
-        Aes256Gcm, Nonce, Key
+        Aes256Gcm, Key, Nonce,
     };
 
     // Type alias for convenience
@@ -32,14 +32,15 @@ pub mod aes256_gcm {
     /// Encrypt plaintext using AES-256-GCM
     pub fn encrypt(key: &Key<Aes256Gcm>, plaintext: &[u8]) -> Result<(Vec<u8>, Vec<u8>)> {
         let cipher = Aes256Gcm::new(key);
-        
+
         // Generate a random nonce (96-bit for GCM)
         let nonce = Aes256Gcm::generate_nonce(&mut OsRng);
-        
+
         // Encrypt the plaintext
-        let ciphertext = cipher.encrypt(&nonce, plaintext)
+        let ciphertext = cipher
+            .encrypt(&nonce, plaintext)
             .map_err(|e| format!("Encryption failed: {}", e))?;
-        
+
         // Return both ciphertext and nonce (nonce is needed for decryption)
         Ok((ciphertext, nonce.to_vec()))
     }
@@ -47,14 +48,15 @@ pub mod aes256_gcm {
     /// Decrypt ciphertext using AES-256-GCM
     pub fn decrypt(key: &Key<Aes256Gcm>, ciphertext: &[u8], nonce: &[u8]) -> Result<Vec<u8>> {
         let cipher = Aes256Gcm::new(key);
-        
+
         // Convert nonce back to the correct type
         let nonce = Nonce::from_slice(nonce);
-        
+
         // Decrypt the ciphertext
-        let plaintext = cipher.decrypt(nonce, ciphertext)
+        let plaintext = cipher
+            .decrypt(nonce, ciphertext)
             .map_err(|e| format!("Decryption failed: {}", e))?;
-        
+
         Ok(plaintext)
     }
 
@@ -72,10 +74,10 @@ pub mod aes256_gcm {
 
 use crypto_box::{
     aead::{Aead, AeadCore, OsRng},
-    ChaChaBox, PublicKey, SecretKey
+    ChaChaBox, PublicKey, SecretKey,
 };
-use std::collections::HashSet;
 use serde::{Deserialize, Serialize};
+use std::collections::HashSet;
 
 use crate::persistence::database::Entity;
 
@@ -98,7 +100,7 @@ impl Party {
     pub fn new(name: &str) -> Self {
         let secret_key = SecretKey::generate(&mut OsRng);
         let public_key = secret_key.public_key();
-        
+
         Self {
             id: None,
             name: name.to_string(),
@@ -114,7 +116,7 @@ impl Party {
         name: &str,
         secret_bytes: [u8; 32],
         public_bytes: [u8; 32],
-        known_contacts: HashSet<[u8; 32]>
+        known_contacts: HashSet<[u8; 32]>,
     ) -> Self {
         Self {
             id,
@@ -137,12 +139,12 @@ impl Party {
     /// Create a new party and immediately register known contacts
     pub fn new_with_contacts(name: &str, other_parties: &[&PublicKey]) -> Self {
         let mut party = Self::new(name);
-        
+
         // Register all contacts
         for other_public in other_parties {
             party.add_contact(other_public);
         }
-        
+
         party
     }
 
@@ -180,7 +182,8 @@ impl Party {
 
     /// List all known contacts (their public keys)
     pub fn known_contacts(&self) -> Vec<PublicKey> {
-        self.known_contacts.iter()
+        self.known_contacts
+            .iter()
             .map(|bytes| PublicKey::from(*bytes))
             .collect()
     }
@@ -197,17 +200,22 @@ impl Party {
     }
 
     /// Encrypt a message for another party
-    pub fn encrypt_for(&mut self, recipient_public: &PublicKey, plaintext: &[u8]) -> Result<EncryptedMessage> {
+    pub fn encrypt_for(
+        &mut self,
+        recipient_public: &PublicKey,
+        plaintext: &[u8],
+    ) -> Result<EncryptedMessage> {
         // Add contact if not already known
         if !self.is_known_contact(recipient_public) {
             self.add_contact(&recipient_public);
         }
-        
+
         // Create a fresh crypto box for this message
         let crypto_box = self.create_crypto_box(recipient_public);
         let nonce = ChaChaBox::generate_nonce(&mut OsRng);
-        
-        let ciphertext = crypto_box.encrypt(&nonce, plaintext)
+
+        let ciphertext = crypto_box
+            .encrypt(&nonce, plaintext)
             .map_err(|e| format!("Encryption failed: {}", e))?;
 
         Ok(EncryptedMessage {
@@ -219,7 +227,11 @@ impl Party {
     }
 
     /// Encrypt a string message for another party
-    pub fn encrypt_string_for(&mut self, recipient_public: &PublicKey, plaintext: &str) -> Result<EncryptedMessage> {
+    pub fn encrypt_string_for(
+        &mut self,
+        recipient_public: &PublicKey,
+        plaintext: &str,
+    ) -> Result<EncryptedMessage> {
         self.encrypt_for(recipient_public, plaintext.as_bytes())
     }
 
@@ -229,18 +241,22 @@ impl Party {
         if !self.is_known_contact(&message.sender_public()) {
             self.add_contact(&message.sender_public());
         }
-        
+
         // Create a fresh crypto box for this message
         let crypto_box = self.create_crypto_box(&message.sender_public());
-        
+
         // Convert nonce back to the correct type
         if message.nonce.len() != 24 {
             return Err("Invalid nonce length".into());
         }
-        let nonce_array: [u8; 24] = message.nonce.clone().try_into()
+        let nonce_array: [u8; 24] = message
+            .nonce
+            .clone()
+            .try_into()
             .map_err(|_| "Failed to convert nonce")?;
-        
-        let plaintext = crypto_box.decrypt(&nonce_array.into(), &*message.ciphertext)
+
+        let plaintext = crypto_box
+            .decrypt(&nonce_array.into(), &*message.ciphertext)
             .map_err(|e| format!("Decryption failed: {}", e))?;
 
         Ok(plaintext)
