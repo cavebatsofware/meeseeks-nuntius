@@ -1,0 +1,102 @@
+# Application General
+app:
+  name: "Meeseeks Nuntius"
+  tagline: "Messagerie sécurisée et anonyme"
+
+# Navigation
+nav:
+  messages: "Messages"
+  contacts: "Contacts"
+  settings: "Paramètres"
+  about: "À propos"
+
+# Authentication
+auth:
+  generate_identity: "Générer une identité"
+  identity_generated: "Identité générée avec succès"
+  public_key: "Clé publique"
+  private_key: "Clé privée"
+  backup_keys: "Sauvegardez vos clés"
+  import_identity: "Importer l'identité"
+  export_identity: "Exporter l'identité"
+
+# Messaging
+messages:
+  compose: "Rédiger un message"
+  send: "Envoyer"
+  reply: "Répondre"
+  delete: "Supprimer"
+  empty_state: "Aucun message pour le moment"
+  encrypted: "Chiffré"
+  anonymous: "Anonyme"
+  message_sent: "Message envoyé en toute sécurité"
+  message_received: "Nouveau message reçu"
+  placeholder: "Tapez votre message sécurisé..."
+
+# Contacts
+contacts:
+  add_contact: "Ajouter un contact"
+  contact_name: "Nom du contact"
+  public_key: "Clé publique"
+  add: "Ajouter"
+  edit: "Modifier"
+  remove: "Supprimer"
+  empty_state: "Aucun contact ajouté pour le moment"
+  invalid_key: "Format de clé publique invalide"
+
+# Settings
+settings:
+  title: "Paramètres"
+  language: "Langue"
+  appearance: "Apparence"
+  security: "Sécurité"
+  privacy: "Confidentialité"
+  notifications: "Notifications"
+  relay_server: "Serveur relais"
+  server_url: "URL du serveur"
+  connection_status: "État de la connexion"
+  connected: "Connecté"
+  disconnected: "Déconnecté"
+  connecting: "Connexion en cours..."
+
+# Security
+security:
+  end_to_end_encryption: "Chiffrement de bout en bout"
+  forward_secrecy: "Confidentialité persistante"
+  metadata_protection: "Protection des métadonnées"
+  anonymous_relay: "Relais anonyme"
+  verify_identity: "Vérifier l'identité"
+  fingerprint: "Empreinte numérique"
+
+# Errors
+errors:
+  generic: "Une erreur s'est produite"
+  network: "Erreur de connexion réseau"
+  encryption: "Erreur de chiffrement"
+  invalid_identity: "Identité invalide"
+  message_failed: "Échec de l'envoi du message"
+  contact_exists: "Le contact existe déjà"
+  invalid_server: "URL de serveur invalide"
+  connection_failed: "Échec de la connexion au serveur"
+
+# Actions
+actions:
+  save: "Enregistrer"
+  cancel: "Annuler"
+  delete: "Supprimer"
+  edit: "Modifier"
+  copy: "Copier"
+  paste: "Coller"
+  import: "Importer"
+  export: "Exporter"
+  refresh: "Actualiser"
+  connect: "Connecter"
+  disconnect: "Déconnecter"
+
+# Status
+status:
+  online: "En ligne"
+  offline: "Hors ligne"
+  away: "Absent"
+  busy: "Occupé"
+  

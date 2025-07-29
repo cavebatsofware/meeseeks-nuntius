@@ -1,7 +1,7 @@
 <img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/9d509fb4-677a-4a0d-bc1e-ef104c98ba4c" />
 
 [English]](https://github.com/cavebatsofware/meeseeks-nuntius/blob/main/README.md)
-# 安全消息项目 ***代号 meeseeks-nuntius***
+# 安全消息项目 ***代号 meeseeks-nuntius 短暂的-信使*** 
 
 一个使用 Dioxus 构建的跨平台安全消息应用程序，采用端到端加密，利用 [RustCrypto](https://github.com/RustCrypto/nacl-compat/tree/master/crypto_box) 并实现匿名消息中继。
 

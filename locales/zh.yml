@@ -1,0 +1,102 @@
+# Application General
+app:
+  name: "Meeseeks Nuntius"
+  tagline: "安全匿名消息应用"
+
+# Navigation
+nav:
+  messages: "消息"
+  contacts: "联系人"
+  settings: "设置"
+  about: "关于"
+
+# Authentication
+auth:
+  generate_identity: "生成身份"
+  identity_generated: "身份生成成功"
+  public_key: "公钥"
+  private_key: "私钥"
+  backup_keys: "备份您的密钥"
+  import_identity: "导入身份"
+  export_identity: "导出身份"
+
+# Messaging
+messages:
+  compose: "撰写消息"
+  send: "发送"
+  reply: "回复"
+  delete: "删除"
+  empty_state: "暂无消息"
+  encrypted: "已加密"
+  anonymous: "匿名"
+  message_sent: "消息已安全发送"
+  message_received: "收到新消息"
+  placeholder: "输入您的安全消息..."
+
+# Contacts
+contacts:
+  add_contact: "添加联系人"
+  contact_name: "联系人姓名"
+  public_key: "公钥"
+  add: "添加"
+  edit: "编辑"
+  remove: "移除"
+  empty_state: "暂未添加联系人"
+  invalid_key: "公钥格式无效"
+
+# Settings
+settings:
+  title: "设置"
+  language: "语言"
+  appearance: "外观"
+  security: "安全"
+  privacy: "隐私"
+  notifications: "通知"
+  relay_server: "中继服务器"
+  server_url: "服务器地址"
+  connection_status: "连接状态"
+  connected: "已连接"
+  disconnected: "已断开"
+  connecting: "连接中..."
+
+# Security
+security:
+  end_to_end_encryption: "端到端加密"
+  forward_secrecy: "前向保密"
+  metadata_protection: "元数据保护"
+  anonymous_relay: "匿名中继"
+  verify_identity: "验证身份"
+  fingerprint: "指纹"
+
+# Errors
+errors:
+  generic: "发生错误"
+  network: "网络连接错误"
+  encryption: "加密错误"
+  invalid_identity: "无效身份"
+  message_failed: "消息发送失败"
+  contact_exists: "联系人已存在"
+  invalid_server: "无效的服务器地址"
+  connection_failed: "连接服务器失败"
+
+# Actions
+actions:
+  save: "保存"
+  cancel: "取消"
+  delete: "删除"
+  edit: "编辑"
+  copy: "复制"
+  paste: "粘贴"
+  import: "导入"
+  export: "导出"
+  refresh: "刷新"
+  connect: "连接"
+  disconnect: "断开连接"
+
+# Status
+status:
+  online: "在线"
+  offline: "离线"
+  away: "离开"
+  busy: "忙碌"
+  

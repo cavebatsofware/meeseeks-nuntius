@@ -16,7 +16,8 @@
  */
 
 use serde::{Deserialize, Serialize};
-use sled::{Db};
+use sled::Db;
+use std::sync::LazyLock;
 
 // Entity trait
 // provides key prefix for database operations
@@ -27,25 +28,30 @@ pub trait Entity: Serialize + for<'de> Deserialize<'de> {
 }
 
 pub struct Database {
-    db: Db,
+    db: &'static Db,
 }
 
+static DATABASE: LazyLock<Db> =
+    LazyLock::new(|| sled::open("app.sled").expect("Failed to open database"));
+
 impl Database {
-    pub fn new(path: &str) -> sled::Result<Self> {
-        Ok(Database {
-            db: sled::open(path)?,
-        })
+    pub fn new() -> Self {
+        Database { db: &DATABASE }
+    }
+
+    pub fn clear(&self) -> std::result::Result<(), sled::Error> {
+        self.db.clear()
     }
 
     fn generate_unique_key(&self, prefix: &str) -> Result<String, Box<dyn std::error::Error>> {
         let id = self.db.generate_id()?;
-        
+
         let key = if prefix.is_empty() {
             id.to_string()
         } else {
             format!("{}:{}", prefix, id.to_string())
         };
-        
+
         Ok(key)
     }
 
@@ -65,7 +71,7 @@ impl Database {
             entity.set_id(new_id.clone());
             new_id
         };
-        
+
         let json = serde_json::to_vec(&entity)?;
         self.db.insert(&key, json)?;
         Ok(key)
@@ -78,14 +84,14 @@ impl Database {
     ) -> Result<Option<T>, Box<dyn std::error::Error>> {
         if let Some(bytes) = self.db.get(key)? {
             let entity: T = serde_json::from_slice(&bytes)?;
-            
+
             // Optional: Validate that stored ID matches the key
             if let Some(stored_id) = entity.id() {
                 if stored_id != key {
                     eprintln!("Warning: ID mismatch - key: {}, stored: {}", key, stored_id);
                 }
             }
-            
+
             Ok(Some(entity))
         } else {
             Ok(None)
@@ -93,10 +99,7 @@ impl Database {
     }
 
     // Update entity - maintains ID consistency
-    pub fn update_entity<T: Entity>(
-        &self,
-        entity: &T,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn update_entity<T: Entity>(&self, entity: &T) -> Result<(), Box<dyn std::error::Error>> {
         if let Some(id) = entity.id() {
             let json = serde_json::to_vec(entity)?;
             self.db.insert(id, json)?;
@@ -111,36 +114,7 @@ impl Database {
         &self,
         prefix: &str,
     ) -> Result<Vec<T>, Box<dyn std::error::Error>> {
-
-    println!("\n=== Direct Sled Test ===");
-    
-    // List ALL keys
-    println!("All keys in database:");
-    for item in self.db.iter() {
-        if let Ok((key, _)) = item {
-            println!("  Key: {:?} => String: {:?}", 
-                key.as_ref(), 
-                String::from_utf8_lossy(&key)
-            );
-        }
-    }
-    
-    // Test scan_prefix
-    println!("\nScanning for prefix 'party':");
-    let mut count = 0;
-    for item in self.db.scan_prefix(b"party") {
-        if let Ok((key, value)) = item {
-            count += 1;
-            println!("  Found: {:?} => {:?}", 
-                String::from_utf8_lossy(&key),
-                String::from_utf8_lossy(&value)
-            );
-        }
-    }
-    println!("Total found with prefix 'party': {}", count);
-
         let mut results = Vec::new();
-        println!("db length: {}", self.db.len());
         let prefix_bytes: &[u8] = prefix.as_bytes();
         self.db.scan_prefix(prefix_bytes).for_each(|row| {
             let (key, value) = row.unwrap();
@@ -148,14 +122,16 @@ impl Database {
             let entity: T = serde_json::from_slice(&value).unwrap();
             if let Some(stored_id) = entity.id() {
                 if stored_id != key_str {
-                    eprintln!("Warning: ID mismatch - key: {}, stored: {}", key_str, stored_id);
+                    eprintln!(
+                        "Warning: ID mismatch - key: {}, stored: {}",
+                        key_str, stored_id
+                    );
                 }
             }
-            
+
             results.push(entity);
         });
-        
-        
+
         Ok(results)
     }
 

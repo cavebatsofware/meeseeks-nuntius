@@ -1,0 +1,102 @@
+# Application General
+app:
+  name: "Meeseeks Nuntius"
+  tagline: "Secure Anonymous Messaging"
+
+# Navigation
+nav:
+  messages: "Messages"
+  contacts: "Contacts"
+  settings: "Settings"
+  about: "About"
+
+# Authentication
+auth:
+  generate_identity: "Generate Identity"
+  identity_generated: "Identity Generated Successfully"
+  public_key: "Public Key"
+  private_key: "Private Key"
+  backup_keys: "Backup Your Keys"
+  import_identity: "Import Identity"
+  export_identity: "Export Identity"
+
+# Messaging
+messages:
+  compose: "Compose Message"
+  send: "Send"
+  reply: "Reply"
+  delete: "Delete"
+  empty_state: "No messages yet"
+  encrypted: "Encrypted"
+  anonymous: "Anonymous"
+  message_sent: "Message sent securely"
+  message_received: "New message received"
+  placeholder: "Type your secure message..."
+
+# Contacts
+contacts:
+  add_contact: "Add Contact"
+  contact_name: "Contact Name"
+  public_key: "Public Key"
+  add: "Add"
+  edit: "Edit"
+  remove: "Remove"
+  empty_state: "No contacts added yet"
+  invalid_key: "Invalid public key format"
+
+# Settings
+settings:
+  title: "Settings"
+  language: "Language"
+  appearance: "Appearance"
+  security: "Security"
+  privacy: "Privacy"
+  notifications: "Notifications"
+  relay_server: "Relay Server"
+  server_url: "Server URL"
+  connection_status: "Connection Status"
+  connected: "Connected"
+  disconnected: "Disconnected"
+  connecting: "Connecting..."
+
+# Security
+security:
+  end_to_end_encryption: "End-to-End Encryption"
+  forward_secrecy: "Forward Secrecy"
+  metadata_protection: "Metadata Protection"
+  anonymous_relay: "Anonymous Relay"
+  verify_identity: "Verify Identity"
+  fingerprint: "Fingerprint"
+
+# Errors
+errors:
+  generic: "An error occurred"
+  network: "Network connection error"
+  encryption: "Encryption error"
+  invalid_identity: "Invalid identity"
+  message_failed: "Failed to send message"
+  contact_exists: "Contact already exists"
+  invalid_server: "Invalid server URL"
+  connection_failed: "Failed to connect to server"
+
+# Actions
+actions:
+  save: "Save"
+  cancel: "Cancel"
+  delete: "Delete"
+  edit: "Edit"
+  copy: "Copy"
+  paste: "Paste"
+  import: "Import"
+  export: "Export"
+  refresh: "Refresh"
+  connect: "Connect"
+  disconnect: "Disconnect"
+
+# Status
+status:
+  online: "Online"
+  offline: "Offline"
+  away: "Away"
+  busy: "Busy"
+  

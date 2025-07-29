@@ -1,0 +1,102 @@
+# Application General
+app:
+  name: "Meeseeks Nuntius"
+  tagline: "Sichere anonyme Nachrichtenübertragung"
+
+# Navigation
+nav:
+  messages: "Nachrichten"
+  contacts: "Kontakte"
+  settings: "Einstellungen"
+  about: "Über"
+
+# Authentication
+auth:
+  generate_identity: "Identität generieren"
+  identity_generated: "Identität erfolgreich generiert"
+  public_key: "Öffentlicher Schlüssel"
+  private_key: "Privater Schlüssel"
+  backup_keys: "Sichern Sie Ihre Schlüssel"
+  import_identity: "Identität importieren"
+  export_identity: "Identität exportieren"
+
+# Messaging
+messages:
+  compose: "Nachricht verfassen"
+  send: "Senden"
+  reply: "Antworten"
+  delete: "Löschen"
+  empty_state: "Noch keine Nachrichten"
+  encrypted: "Verschlüsselt"
+  anonymous: "Anonym"
+  message_sent: "Nachricht sicher gesendet"
+  message_received: "Neue Nachricht erhalten"
+  placeholder: "Geben Sie Ihre sichere Nachricht ein..."
+
+# Contacts
+contacts:
+  add_contact: "Kontakt hinzufügen"
+  contact_name: "Kontaktname"
+  public_key: "Öffentlicher Schlüssel"
+  add: "Hinzufügen"
+  edit: "Bearbeiten"
+  remove: "Entfernen"
+  empty_state: "Noch keine Kontakte hinzugefügt"
+  invalid_key: "Ungültiges Format für öffentlichen Schlüssel"
+
+# Settings
+settings:
+  title: "Einstellungen"
+  language: "Sprache"
+  appearance: "Darstellung"
+  security: "Sicherheit"
+  privacy: "Datenschutz"
+  notifications: "Benachrichtigungen"
+  relay_server: "Relay-Server"
+  server_url: "Server-URL"
+  connection_status: "Verbindungsstatus"
+  connected: "Verbunden"
+  disconnected: "Getrennt"
+  connecting: "Verbindung wird hergestellt..."
+
+# Security
+security:
+  end_to_end_encryption: "Ende-zu-Ende-Verschlüsselung"
+  forward_secrecy: "Forward Secrecy"
+  metadata_protection: "Metadatenschutz"
+  anonymous_relay: "Anonymer Relay"
+  verify_identity: "Identität überprüfen"
+  fingerprint: "Fingerabdruck"
+
+# Errors
+errors:
+  generic: "Ein Fehler ist aufgetreten"
+  network: "Netzwerkverbindungsfehler"
+  encryption: "Verschlüsselungsfehler"
+  invalid_identity: "Ungültige Identität"
+  message_failed: "Nachricht konnte nicht gesendet werden"
+  contact_exists: "Kontakt existiert bereits"
+  invalid_server: "Ungültige Server-URL"
+  connection_failed: "Verbindung zum Server fehlgeschlagen"
+
+# Actions
+actions:
+  save: "Speichern"
+  cancel: "Abbrechen"
+  delete: "Löschen"
+  edit: "Bearbeiten"
+  copy: "Kopieren"
+  paste: "Einfügen"
+  import: "Importieren"
+  export: "Exportieren"
+  refresh: "Aktualisieren"
+  connect: "Verbinden"
+  disconnect: "Trennen"
+
+# Status
+status:
+  online: "Online"
+  offline: "Offline"
+  away: "Abwesend"
+  busy: "Beschäftigt"
+  
