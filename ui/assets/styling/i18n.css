@@ -1,0 +1,33 @@
+/* Language Switcher */
+.language-switcher {
+    /* Your custom container styling */
+}
+
+.language-label {
+    /* Your label styling */
+}
+
+.language-select {
+    /* Your select dropdown styling */
+}
+
+/* Status Indicators */
+.status-text {
+    /* Base status text styling */
+}
+
+.status-online { color: #00ff00; }
+.status-offline { color: #888888; }
+.status-away { color: #ffaa00; }
+.status-busy { color: #ff0000; }
+
+.status-indicator {
+    /* Indicator dot styling */
+    margin-right: 0.5rem;
+}
+
+/* Error Messages */
+.error-text {
+    /* Your error styling */
+    color: #cc0000;
+}

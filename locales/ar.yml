@@ -1,0 +1,102 @@
+# Application General
+app:
+  name: "Meeseeks Nuntius"
+  tagline: "تطبيق مراسلة آمن ومجهول"
+
+# Navigation
+nav:
+  messages: "الرسائل"
+  contacts: "جهات الاتصال"
+  settings: "الإعدادات"
+  about: "حول"
+
+# Authentication
+auth:
+  generate_identity: "إنشاء هوية"
+  identity_generated: "تم إنشاء الهوية بنجاح"
+  public_key: "المفتاح العام"
+  private_key: "المفتاح الخاص"
+  backup_keys: "احتفظ بنسخة احتياطية من مفاتيحك"
+  import_identity: "استيراد الهوية"
+  export_identity: "تصدير الهوية"
+
+# Messaging
+messages:
+  compose: "إنشاء رسالة"
+  send: "إرسال"
+  reply: "رد"
+  delete: "حذف"
+  empty_state: "لا توجد رسائل بعد"
+  encrypted: "مشفر"
+  anonymous: "مجهول"
+  message_sent: "تم إرسال الرسالة بأمان"
+  message_received: "تم استلام رسالة جديدة"
+  placeholder: "اكتب رسالتك الآمنة..."
+
+# Contacts
+contacts:
+  add_contact: "إضافة جهة اتصال"
+  contact_name: "اسم جهة الاتصال"
+  public_key: "المفتاح العام"
+  add: "إضافة"
+  edit: "تعديل"
+  remove: "إزالة"
+  empty_state: "لم يتم إضافة جهات اتصال بعد"
+  invalid_key: "تنسيق المفتاح العام غير صحيح"
+
+# Settings
+settings:
+  title: "الإعدادات"
+  language: "اللغة"
+  appearance: "المظهر"
+  security: "الأمان"
+  privacy: "الخصوصية"
+  notifications: "الإشعارات"
+  relay_server: "خادم التوجيه"
+  server_url: "عنوان الخادم"
+  connection_status: "حالة الاتصال"
+  connected: "متصل"
+  disconnected: "غير متصل"
+  connecting: "جاري الاتصال..."
+
+# Security
+security:
+  end_to_end_encryption: "التشفير من الطرف إلى الطرف"
+  forward_secrecy: "السرية الأمامية"
+  metadata_protection: "حماية البيانات الوصفية"
+  anonymous_relay: "التوجيه المجهول"
+  verify_identity: "التحقق من الهوية"
+  fingerprint: "البصمة الرقمية"
+
+# Errors
+errors:
+  generic: "حدث خطأ"
+  network: "خطأ في اتصال الشبكة"
+  encryption: "خطأ في التشفير"
+  invalid_identity: "هوية غير صحيحة"
+  message_failed: "فشل في إرسال الرسالة"
+  contact_exists: "جهة الاتصال موجودة بالفعل"
+  invalid_server: "عنوان خادم غير صحيح"
+  connection_failed: "فشل في الاتصال بالخادم"
+
+# Actions
+actions:
+  save: "حفظ"
+  cancel: "إلغاء"
+  delete: "حذف"
+  edit: "تعديل"
+  copy: "نسخ"
+  paste: "لصق"
+  import: "استيراد"
+  export: "تصدير"
+  refresh: "تحديث"
+  connect: "اتصال"
+  disconnect: "قطع الاتصال"
+
+# Status
+status:
+  online: "متصل"
+  offline: "غير متصل"
+  away: "غائب"
+  busy: "مشغول"
+  

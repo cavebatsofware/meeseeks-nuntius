@@ -1,0 +1,102 @@
+# Application General
+app:
+  name: "Meeseeks Nuntius"
+  tagline: "安全な匿名メッセージアプリ"
+
+# Navigation
+nav:
+  messages: "メッセージ"
+  contacts: "連絡先"
+  settings: "設定"
+  about: "このアプリについて"
+
+# Authentication
+auth:
+  generate_identity: "アイデンティティを生成"
+  identity_generated: "アイデンティティの生成が完了しました"
+  public_key: "公開鍵"
+  private_key: "秘密鍵"
+  backup_keys: "鍵をバックアップする"
+  import_identity: "アイデンティティをインポート"
+  export_identity: "アイデンティティをエクスポート"
+
+# Messaging
+messages:
+  compose: "メッセージを作成"
+  send: "送信"
+  reply: "返信"
+  delete: "削除"
+  empty_state: "まだメッセージがありません"
+  encrypted: "暗号化済み"
+  anonymous: "匿名"
+  message_sent: "メッセージが安全に送信されました"
+  message_received: "新しいメッセージを受信しました"
+  placeholder: "安全なメッセージを入力してください..."
+
+# Contacts
+contacts:
+  add_contact: "連絡先を追加"
+  contact_name: "連絡先の名前"
+  public_key: "公開鍵"
+  add: "追加"
+  edit: "編集"
+  remove: "削除"
+  empty_state: "まだ連絡先が追加されていません"
+  invalid_key: "公開鍵の形式が無効です"
+
+# Settings
+settings:
+  title: "設定"
+  language: "言語"
+  appearance: "外観"
+  security: "セキュリティ"
+  privacy: "プライバシー"
+  notifications: "通知"
+  relay_server: "リレーサーバー"
+  server_url: "サーバーURL"
+  connection_status: "接続状態"
+  connected: "接続済み"
+  disconnected: "切断済み"
+  connecting: "接続中..."
+
+# Security
+security:
+  end_to_end_encryption: "エンドツーエンド暗号化"
+  forward_secrecy: "前方秘匿性"
+  metadata_protection: "メタデータ保護"
+  anonymous_relay: "匿名リレー"
+  verify_identity: "アイデンティティを確認"
+  fingerprint: "フィンガープリント"
+
+# Errors
+errors:
+  generic: "エラーが発生しました"
+  network: "ネットワーク接続エラー"
+  encryption: "暗号化エラー"
+  invalid_identity: "無効なアイデンティティ"
+  message_failed: "メッセージの送信に失敗しました"
+  contact_exists: "連絡先は既に存在します"
+  invalid_server: "無効なサーバーURL"
+  connection_failed: "サーバーへの接続に失敗しました"
+
+# Actions
+actions:
+  save: "保存"
+  cancel: "キャンセル"
+  delete: "削除"
+  edit: "編集"
+  copy: "コピー"
+  paste: "貼り付け"
+  import: "インポート"
+  export: "エクスポート"
+  refresh: "更新"
+  connect: "接続"
+  disconnect: "切断"
+
+# Status
+status:
+  online: "オンライン"
+  offline: "オフライン"
+  away: "離席中"
+  busy: "取り込み中"
+  

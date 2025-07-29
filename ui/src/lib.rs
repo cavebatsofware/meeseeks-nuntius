@@ -8,3 +8,6 @@ pub use navbar::Navbar;
 
 mod echo;
 pub use echo::Echo;
+
+mod i18n_context;
+pub use i18n_context::I18nContext;
