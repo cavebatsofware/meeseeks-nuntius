@@ -137,8 +137,6 @@ mod tests {
             let id = db.save_entity(&mut party)?;
             party_keys.push(id);
         }
-        let f = db.flush().unwrap();
-        println!("flush: {}", f);
 
         // List all party keys
         let party_keys: Vec<Party> = db.load_all_entities(Party::key_prefix()).unwrap();
@@ -279,7 +277,7 @@ mod tests {
 
         // Test JSON serialization includes ID
         let json = party.to_json().unwrap();
-        assert!(json.contains(&format!("\"id\":\"{}\"", id)));
+        assert!(json.contains(&format!("\"id\":\"{id}\"")));
 
         // Load and verify
         let loaded = db.load_entity::<Party>(&id).unwrap().unwrap();

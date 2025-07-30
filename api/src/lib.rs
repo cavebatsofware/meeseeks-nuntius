@@ -44,6 +44,6 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
 #[server(CreateParty)]
 pub async fn create_party(name: String) -> Result<String, ServerFnError> {
     use crate::crypto::message::Party;
-    let party = Party::new(&name);
+    let _party = Party::new(&name);
     Ok(String::new())
 }

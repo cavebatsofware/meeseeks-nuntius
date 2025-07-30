@@ -1,4 +1,4 @@
-name: ✅ Cargo Check
+name: 🔬 Cargo Check
 on:
   push:
     branches:

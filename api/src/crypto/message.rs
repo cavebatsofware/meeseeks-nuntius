@@ -39,7 +39,7 @@ pub mod aes256_gcm {
         // Encrypt the plaintext
         let ciphertext = cipher
             .encrypt(&nonce, plaintext)
-            .map_err(|e| format!("Encryption failed: {}", e))?;
+            .map_err(|e| format!("Encryption failed: {e}"))?;
 
         // Return both ciphertext and nonce (nonce is needed for decryption)
         Ok((ciphertext, nonce.to_vec()))
@@ -55,7 +55,7 @@ pub mod aes256_gcm {
         // Decrypt the ciphertext
         let plaintext = cipher
             .decrypt(nonce, ciphertext)
-            .map_err(|e| format!("Decryption failed: {}", e))?;
+            .map_err(|e| format!("Decryption failed: {e}"))?;
 
         Ok(plaintext)
     }
@@ -207,7 +207,7 @@ impl Party {
     ) -> Result<EncryptedMessage> {
         // Add contact if not already known
         if !self.is_known_contact(recipient_public) {
-            self.add_contact(&recipient_public);
+            self.add_contact(recipient_public);
         }
 
         // Create a fresh crypto box for this message
@@ -216,7 +216,7 @@ impl Party {
 
         let ciphertext = crypto_box
             .encrypt(&nonce, plaintext)
-            .map_err(|e| format!("Encryption failed: {}", e))?;
+            .map_err(|e| format!("Encryption failed: {e}"))?;
 
         Ok(EncryptedMessage {
             id: None,
@@ -257,7 +257,7 @@ impl Party {
 
         let plaintext = crypto_box
             .decrypt(&nonce_array.into(), &*message.ciphertext)
-            .map_err(|e| format!("Decryption failed: {}", e))?;
+            .map_err(|e| format!("Decryption failed: {e}"))?;
 
         Ok(plaintext)
     }

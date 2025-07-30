@@ -34,6 +34,12 @@ pub struct Database {
 static DATABASE: LazyLock<Db> =
     LazyLock::new(|| sled::open("app.sled").expect("Failed to open database"));
 
+impl Default for Database {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Database {
     pub fn new() -> Self {
         Database { db: &DATABASE }
@@ -49,7 +55,7 @@ impl Database {
         let key = if prefix.is_empty() {
             id.to_string()
         } else {
-            format!("{}:{}", prefix, id.to_string())
+            format!("{}:{}", prefix, id)
         };
 
         Ok(key)
@@ -88,7 +94,7 @@ impl Database {
             // Optional: Validate that stored ID matches the key
             if let Some(stored_id) = entity.id() {
                 if stored_id != key {
-                    eprintln!("Warning: ID mismatch - key: {}, stored: {}", key, stored_id);
+                    eprintln!("Warning: ID mismatch - key: {key}, stored: {stored_id}");
                 }
             }
 
@@ -123,8 +129,7 @@ impl Database {
             if let Some(stored_id) = entity.id() {
                 if stored_id != key_str {
                     eprintln!(
-                        "Warning: ID mismatch - key: {}, stored: {}",
-                        key_str, stored_id
+                        "Warning: ID mismatch - key: {key_str}, stored: {stored_id}"
                     );
                 }
             }
