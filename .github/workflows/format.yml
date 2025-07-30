@@ -3,11 +3,10 @@ name: 💾 Cargo Format
 on:
   push:
     branches:
-      - master
-      - feat/serde_yml
+      - main
   pull_request:
     branches:
-      - feat/serde_yml
+      - main
   release:
     types: [created]
 

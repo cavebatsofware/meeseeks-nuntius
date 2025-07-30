@@ -13,6 +13,10 @@ jobs:
     name: Check
     runs-on: ubuntu-latest
     steps:
+      - name: Install GLib development packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglib2.0-dev
       - uses: hecrj/setup-rust-action@v2.0.1
         with:
           components: clippy

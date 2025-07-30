@@ -1,6 +1,6 @@
 name: 🏭 Cargo Test
 
-on: [pull_request, push]
+on: [pull_request]
 jobs:
   test-lib:
     name: Test library
@@ -8,10 +8,14 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        toolchain: [stable, nightly]
+        toolchain: [stable]
     continue-on-error: true
 
     steps:
+      - name: Install GLib development packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglib2.0-dev
       # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
