@@ -1,11 +1,15 @@
 use dioxus::prelude::*;
 
+use crate::i18n_context::{get_language_name, get_text_direction};
+
 const ECHO_CSS: Asset = asset!("/assets/styling/echo.css");
 
 /// Echo component that demonstrates fullstack server functions.
 #[component]
 pub fn Echo() -> Element {
-    let mut response = use_signal(|| String::new());
+    let mut response = use_signal(String::new);
+    let _ = get_language_name("en");
+    let _ = get_text_direction("en");
 
     rsx! {
         document::Link { rel: "stylesheet", href: ECHO_CSS }

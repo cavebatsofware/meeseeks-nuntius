@@ -55,7 +55,7 @@ impl Database {
         let key = if prefix.is_empty() {
             id.to_string()
         } else {
-            format!("{}:{}", prefix, id)
+            format!("{prefix}:{id}")
         };
 
         Ok(key)
@@ -128,9 +128,7 @@ impl Database {
             let entity: T = serde_json::from_slice(&value).unwrap();
             if let Some(stored_id) = entity.id() {
                 if stored_id != key_str {
-                    eprintln!(
-                        "Warning: ID mismatch - key: {key_str}, stored: {stored_id}"
-                    );
+                    eprintln!("Warning: ID mismatch - key: {key_str}, stored: {stored_id}");
                 }
             }
 

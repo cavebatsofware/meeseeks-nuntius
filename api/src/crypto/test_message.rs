@@ -35,9 +35,7 @@ mod test_utils {
     pub const BOLD: &str = "\x1b[1m";
 
     pub fn print_separator() {
-        println!(
-            "{CYAN}═══════════════════════════════════════════════════════════{RESET}"
-        );
+        println!("{CYAN}═══════════════════════════════════════════════════════════{RESET}");
     }
 
     pub fn print_test_header(test_name: &str, emoji: &str) {
@@ -124,9 +122,7 @@ mod test_aes {
         assert_eq!(decrypted, plaintext);
         print_success("✓ Decrypted text matches original plaintext!");
 
-        println!(
-            "{BOLD}🎉 Basic encryption/decryption test PASSED!{RESET}\n"
-        );
+        println!("{BOLD}🎉 Basic encryption/decryption test PASSED!{RESET}\n");
     }
 
     #[test]
@@ -205,9 +201,7 @@ mod test_aes {
             }
         }
 
-        println!(
-            "{BOLD}🛡️  Security test PASSED - wrong keys cannot decrypt!{RESET}\n"
-        );
+        println!("{BOLD}🛡️  Security test PASSED - wrong keys cannot decrypt!{RESET}\n");
     }
 
     #[test]
@@ -235,9 +229,7 @@ mod test_aes {
         let wrong_nonce = vec![0u8; 12]; // GCM nonce is 12 bytes
         print_hex_data("Wrong nonce (all zeros)", &wrong_nonce, RED);
 
-        println!(
-            "\n{YELLOW}🔓 ATTEMPTING DECRYPTION WITH WRONG NONCE{RESET}"
-        );
+        println!("\n{YELLOW}🔓 ATTEMPTING DECRYPTION WITH WRONG NONCE{RESET}");
         let result = decrypt(&key, &ciphertext, &wrong_nonce);
 
         match result {
@@ -277,10 +269,7 @@ mod test_aes {
         let decrypted = decrypt(&key, &ciphertext, &nonce).unwrap();
         print_success("Empty data decryption successful!");
 
-        println!(
-            "{GREEN}Decrypted length: {} bytes{RESET}",
-            decrypted.len()
-        );
+        println!("{GREEN}Decrypted length: {} bytes{RESET}", decrypted.len());
 
         assert_eq!(decrypted, plaintext);
         print_success("✓ Empty data round-trip successful!");
@@ -315,10 +304,7 @@ mod test_aes {
         ));
 
         print_hex_data("Nonce", &nonce, CYAN);
-        println!(
-            "{RED}Ciphertext length: {} bytes{RESET}",
-            ciphertext.len()
-        );
+        println!("{RED}Ciphertext length: {} bytes{RESET}", ciphertext.len());
 
         // Show first few bytes of ciphertext
         let cipher_sample = &ciphertext[..std::cmp::min(32, ciphertext.len())];
@@ -332,17 +318,12 @@ mod test_aes {
             "Large data decryption successful in {decrypt_time:?}!"
         ));
 
-        println!(
-            "{GREEN}Decrypted length: {} bytes{RESET}",
-            decrypted.len()
-        );
+        println!("{GREEN}Decrypted length: {} bytes{RESET}", decrypted.len());
 
         assert_eq!(decrypted, plaintext);
         print_success("✓ Large data integrity verified!");
 
-        println!(
-            "{BLUE}📊 Performance: Encrypt {encrypt_time:?}, Decrypt {decrypt_time:?}{RESET}"
-        );
+        println!("{BLUE}📊 Performance: Encrypt {encrypt_time:?}, Decrypt {decrypt_time:?}{RESET}");
         println!("{BOLD}🎉 Large data test PASSED!{RESET}\n");
     }
 
@@ -473,9 +454,7 @@ mod test_exchange {
 
         // Alice to Bob
         let alice_message = "Hi Bob, how are you?";
-        println!(
-            "\n{GREEN}👩 Alice's message: \"{alice_message}\"{RESET}"
-        );
+        println!("\n{GREEN}👩 Alice's message: \"{alice_message}\"{RESET}");
 
         let alice_encrypted = alice
             .encrypt_string_for(&bob.public_key(), alice_message)
@@ -499,9 +478,7 @@ mod test_exchange {
         print_info(&format!("Bob known contacts: {}", bob.contact_count()));
 
         let alice_decrypted = alice.decrypt_string_from(&bob_encrypted).unwrap();
-        println!(
-            "{GREEN}👩 Alice received: \"{alice_decrypted}\"{RESET}"
-        );
+        println!("{GREEN}👩 Alice received: \"{alice_decrypted}\"{RESET}");
         print_info(&format!("Alice known contacts: {}", alice.contact_count()));
         assert_eq!(alice_decrypted, bob_message);
 
@@ -562,9 +539,7 @@ mod test_exchange {
         print_party_info(&eve);
 
         let secret_message = "This is for Bob's eyes only!";
-        println!(
-            "\n{GREEN}🤐 Secret message: \"{secret_message}\"{RESET}"
-        );
+        println!("\n{GREEN}🤐 Secret message: \"{secret_message}\"{RESET}");
 
         println!("\n{YELLOW}🔒 ALICE ENCRYPTING FOR BOB{RESET}");
         let encrypted = alice
@@ -595,9 +570,7 @@ mod test_exchange {
             }
         }
 
-        println!(
-            "{BOLD}🛡️  Security test PASSED - only Bob can read his messages!{RESET}\n"
-        );
+        println!("{BOLD}🛡️  Security test PASSED - only Bob can read his messages!{RESET}\n");
     }
 
     #[test]
@@ -669,9 +642,7 @@ mod test_exchange {
         print_success("✓ Contact list management working correctly");
 
         // Test bidirectional communication
-        println!(
-            "\n{YELLOW}🔄 Testing bidirectional communication{RESET}"
-        );
+        println!("\n{YELLOW}🔄 Testing bidirectional communication{RESET}");
         let reply_message = "Hi Dave! Nice to meet you!";
         let alice_reply = alice
             .encrypt_string_for(&dave.public_key(), reply_message)
@@ -750,9 +721,7 @@ mod test_exchange {
         println!("  1k decryption: {decrypt_time:?}");
         print_info("Note: Each encryption creates a fresh ChaChaBox (correct pattern)");
 
-        println!(
-            "{BOLD}🎉 crypto_box creation pattern test PASSED!{RESET}\n"
-        );
+        println!("{BOLD}🎉 crypto_box creation pattern test PASSED!{RESET}\n");
     }
 
     #[test]
