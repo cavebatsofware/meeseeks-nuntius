@@ -15,7 +15,6 @@
  *  along with meeseeks-nuntius.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use serde_yml;
 use std::collections::HashMap;
 
 #[derive(Clone)]
@@ -64,7 +63,7 @@ impl I18nContext {
                     translations.insert(locale_code.to_string(), locale_translations);
                 }
                 Err(e) => {
-                    eprintln!("Failed to load translations for {}: {}", locale_code, e);
+                    eprintln!("Failed to load translations for {locale_code}: {e}");
                     // Continue with other locales
                 }
             }
@@ -139,7 +138,7 @@ fn flatten_yaml_map(map: &serde_yml::Mapping, prefix: &str, result: &mut HashMap
             let full_key = if prefix.is_empty() {
                 key_str.clone()
             } else {
-                format!("{}.{}", prefix, key_str)
+                format!("{prefix}.{key_str}")
             };
 
             match value {
