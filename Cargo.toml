@@ -20,7 +20,7 @@ crypto_box = { version = "0.9.1" }
 rand = { version = "0.8.5" }
 sled = { version = "0.34.7" }
 rust-i18n = { version = "3.1.5" }
-tokio = { version = "1.46.1", features = ["full"] }
+tokio = { version = "1.47.1", features = ["full"] }
 
 # workspace
 ui = { path = "ui" }
