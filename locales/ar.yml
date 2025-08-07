@@ -120,4 +120,11 @@ rooms:
   management: "إدارة الغرف"
   urgent: "عاجل"
   new: "جديد"
+  loading: "جاري تحميل الغرف..."
+  default_description: "غرفة تواصل آمنة"
+  enter_name: "أدخل اسم الغرفة"
+  enter_description: "أدخل وصف الغرفة (اختياري)"
+  create: "إنشاء"
+  cancel: "إلغاء"
+  creating: "جاري الإنشاء..."
   

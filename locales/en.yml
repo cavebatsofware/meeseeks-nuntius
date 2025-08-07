@@ -120,4 +120,11 @@ rooms:
   management: "Room Management"
   urgent: "Urgent"
   new: "New"
+  loading: "Loading rooms..."
+  default_description: "Secure communication room"
+  enter_name: "Enter room name"
+  enter_description: "Enter room description (optional)"
+  create: "Create"
+  cancel: "Cancel"
+  creating: "Creating..."
   

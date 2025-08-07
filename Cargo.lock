@@ -1062,7 +1062,10 @@ dependencies = [
 name = "desktop"
 version = "0.1.0"
 dependencies = [
+ "api",
  "dioxus",
+ "serde",
+ "serde_json",
  "ui",
 ]
 

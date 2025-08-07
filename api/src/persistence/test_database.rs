@@ -130,6 +130,8 @@ mod tests {
             let mut room = Room::from_values(
                 Some(id.to_string()),
                 name,
+                "Test room description",
+                0,
                 *secret_key,
                 *public_key,
                 contacts,

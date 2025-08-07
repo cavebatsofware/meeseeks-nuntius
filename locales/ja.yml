@@ -120,4 +120,11 @@ rooms:
   management: "ルーム管理"
   urgent: "緊急"
   new: "新着"
+  loading: "ルームを読み込み中..."
+  default_description: "セキュア通信ルーム"
+  enter_name: "ルーム名を入力"
+  enter_description: "ルームの説明を入力（任意）"
+  create: "作成"
+  cancel: "キャンセル"
+  creating: "作成中..."
   

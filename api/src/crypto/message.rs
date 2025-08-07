@@ -319,6 +319,8 @@ pub struct Room {
     #[serde(skip_serializing_if = "Option::is_none")]
     id: Option<String>,
     pub name: String,
+    pub description: String,
+    pub member_count: u32,
     secret_key: [u8; 32],
     public_key: [u8; 32],
     known_contacts: HashSet<[u8; 32]>,
@@ -333,6 +335,8 @@ impl Room {
         Self {
             id: None,
             name: name.to_string(),
+            description: String::new(),
+            member_count: 0,
             secret_key: secret_key.to_bytes(),
             public_key: public_key.to_bytes(),
             known_contacts: HashSet::new(),
@@ -343,6 +347,8 @@ impl Room {
     pub fn from_values(
         id: Option<String>,
         name: &str,
+        description: &str,
+        member_count: u32,
         secret_bytes: [u8; 32],
         public_bytes: [u8; 32],
         known_contacts: HashSet<[u8; 32]>,
@@ -350,6 +356,8 @@ impl Room {
         Self {
             id,
             name: name.to_string(),
+            description: description.to_string(),
+            member_count,
             secret_key: secret_bytes,
             public_key: public_bytes,
             known_contacts,
