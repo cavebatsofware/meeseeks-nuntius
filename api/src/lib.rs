@@ -46,7 +46,10 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
 
 #[cfg(not(target_arch = "wasm32"))]
 #[server(CreateRoom)]
-pub async fn create_room(name: String, description: Option<String>) -> Result<String, ServerFnError> {
+pub async fn create_room(
+    name: String,
+    description: Option<String>,
+) -> Result<String, ServerFnError> {
     let db = Database::new();
     let mut room = Room::new(&name);
     if let Some(desc) = description {
