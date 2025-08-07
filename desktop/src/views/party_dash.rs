@@ -1,7 +1,7 @@
-use dioxus::prelude::*;
-use ui::I18nContext;
 use api::{create_room, get_all_rooms};
+use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
+use ui::I18nContext;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct RoomData {
@@ -561,7 +561,7 @@ fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
                 // Room creation form
                 div {
                     class: "create-room-form",
-                    
+
                     input {
                         r#type: "text",
                         placeholder: "{props.i18n.translate(\"rooms.enter_name\")}",
@@ -595,17 +595,17 @@ fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
                             }
                         }
                     }
-                    
+
                     textarea {
                         placeholder: "{props.i18n.translate(\"rooms.enter_description\")}",
                         class: "room-description-input",
                         value: "{room_description()}",
                         oninput: move |evt| room_description.set(evt.value())
                     }
-                    
+
                     div {
                         class: "form-actions",
-                        
+
                         button {
                             class: "create-button",
                             disabled: creating() || room_name().trim().is_empty(),
@@ -635,14 +635,14 @@ fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
                                     });
                                 }
                             },
-                            
+
                             if creating() {
                                 "{props.i18n.translate(\"rooms.creating\")}"
                             } else {
                                 "{props.i18n.translate(\"rooms.create\")}"
                             }
                         }
-                        
+
                         button {
                             class: "cancel-button",
                             onclick: move |_| {
@@ -650,7 +650,7 @@ fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
                                 room_name.set(String::new());
                                 room_description.set(String::new());
                             },
-                            
+
                             "{props.i18n.translate(\"rooms.cancel\")}"
                         }
                     }
