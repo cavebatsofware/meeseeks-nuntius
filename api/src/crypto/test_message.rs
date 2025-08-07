@@ -778,8 +778,8 @@ mod test_contact {
     use crate::crypto::message::*;
     use crate::crypto::test_message::test_utils::*;
     use crate::persistence::database::Entity;
-    use crypto_box::{PublicKey, SecretKey};
     use crypto_box::aead::OsRng;
+    use crypto_box::{PublicKey, SecretKey};
     use serial_test::serial;
     use std::collections::HashSet;
 
@@ -1031,8 +1031,14 @@ mod test_contact {
         assert_eq!(contact2.display_name(), "Janey");
         print_success("✓ Display name with nickname uses nickname");
 
-        println!("{GREEN}Display name (no nickname): \"{}\"{RESET}", contact1.display_name());
-        println!("{CYAN}Display name (with nickname): \"{}\"{RESET}", contact2.display_name());
+        println!(
+            "{GREEN}Display name (no nickname): \"{}\"{RESET}",
+            contact1.display_name()
+        );
+        println!(
+            "{CYAN}Display name (with nickname): \"{}\"{RESET}",
+            contact2.display_name()
+        );
 
         println!("{BOLD}🎉 Display name test PASSED!{RESET}\n");
     }
@@ -1098,7 +1104,11 @@ mod test_contact {
         assert!(names.contains(&"Charlie"));
         assert!(!names.contains(&"Bob")); // Bob's key wasn't in search set
 
-        print_success(&format!("✓ Found {} contacts from {} search keys", found_contacts.len(), search_keys.len()));
+        print_success(&format!(
+            "✓ Found {} contacts from {} search keys",
+            found_contacts.len(),
+            search_keys.len()
+        ));
         print_info("Found contacts: Alice, Charlie (Bob excluded as expected)");
 
         println!("{BOLD}🎉 Find by public keys test PASSED!{RESET}\n");
