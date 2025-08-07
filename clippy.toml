@@ -6,3 +6,7 @@ await-holding-invalid-types = [
   "dioxus_signals::Write",
   { path = "dioxus_signals::Write", reason = "Write should not be held over an await point. This will cause any reads or writes to fail while the await is pending since the write borrow is still active." },
 ]
+
+# Suppress redundant closure warnings for Dioxus signals which require closures, not function pointers
+# These are false positives as use_signal specifically requires closures, not function pointers
+avoid-breaking-exported-api = false
