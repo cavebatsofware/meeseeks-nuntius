@@ -99,4 +99,25 @@ status:
   offline: "オフライン"
   away: "離席中"
   busy: "取り込み中"
+
+# Room Dashboard
+room_dashboard:
+  title: "ルームダッシュボード"
+  subtitle: "おかえりなさい。コミュニケーションの概要をご覧ください。"
+  sections:
+    top_rooms: "主要なコミュニケーションルーム"
+    latest_messages: "最新の未読メッセージ"
+  search_placeholder: "ルームやメッセージを検索..."
+  create_room_subtitle: "新しい会話を始める。"
+  enter: "参加"
+  separator: " の "
+  
+# Room Management
+rooms:
+  dashboard: "ルームダッシュボード"
+  create_new: "新しいルームを作成"
+  select: "ルームを選択"
+  management: "ルーム管理"
+  urgent: "緊急"
+  new: "新着"
   

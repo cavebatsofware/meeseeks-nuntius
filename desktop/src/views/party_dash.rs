@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use ui::I18nContext;
 
 const DASHBOARD_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1H7V7H1V1ZM9 1H15V7H9V1ZM1 9H7V15H1V9ZM9 9H15V15H9V9Z' fill='%23ffffff'/%3E%3C/svg%3E";
 const SEARCH_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 12A5 5 0 1 0 7 2a5 5 0 0 0 0 10ZM13 13l-3-3' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
@@ -26,10 +27,12 @@ const IMG_IMG: &str = "https://images.unsplash.com/photo-1472099645785-5658abf4f
 
 #[derive(Props, Clone, PartialEq)]
 pub struct PartyDashboardProps {
-    #[props(default = "Bruce W.".to_string())]
+    #[props(default = "Thom T.".to_string())]
     username: String,
     #[props(default = "View Profile".to_string())]
     user_subtitle: String,
+    #[props(default = I18nContext::new("en"))]
+    i18n: I18nContext,
 }
 
 #[component]
@@ -79,15 +82,15 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
 
                         span {
                             class: "nav-text",
-                            "Party Dashboard"
+                            "{props.i18n.translate(\"rooms.dashboard\")}"
                         }
                     }
 
                     // Other menu items
-                    MenuItemComponent { icon: IMG_FRAME1, text: "Create New Party" }
-                    MenuItemComponent { icon: IMG_FRAME2, text: "Select Party" }
-                    MenuItemComponent { icon: IMG_FRAME3, text: "Party Management" }
-                    MenuItemComponent { icon: IMG_FRAME4, text: "Settings" }
+                    MenuItemComponent { icon: IMG_FRAME1, text: props.i18n.translate("rooms.create_new") }
+                    MenuItemComponent { icon: IMG_FRAME2, text: props.i18n.translate("rooms.select") }
+                    MenuItemComponent { icon: IMG_FRAME3, text: props.i18n.translate("rooms.management") }
+                    MenuItemComponent { icon: IMG_FRAME4, text: props.i18n.translate("nav.settings") }
                 }
 
                 // User profile section
@@ -147,12 +150,12 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
 
                             h1 {
                                 class: "page-title",
-                                "Party Dashboard"
+                                "{props.i18n.translate(\"room_dashboard.title\")}"
                             }
 
                             p {
                                 class: "page-subtitle",
-                                "Welcome back, here's your communication snapshot."
+                                "{props.i18n.translate(\"room_dashboard.subtitle\")}"
                             }
                         }
 
@@ -172,7 +175,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
 
                                 input {
                                     r#type: "text",
-                                    placeholder: "Search parties or messages...",
+                                    placeholder: "{props.i18n.translate(\"room_dashboard.search_placeholder\")}",
                                     class: "search-input"
                                 }
                             }
@@ -212,7 +215,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
 
                         h2 {
                             class: "section-title",
-                            "Top Communication Parties"
+                            "{props.i18n.translate(\"room_dashboard.sections.top_rooms\")}"
                         }
 
                         div {
@@ -222,18 +225,20 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                             PartyCardComponent {
                                 title: "Project Overlord",
                                 description: "High-priority discussion channel.",
-                                badge_text: "3 New",
+                                badge_text: format!("3 {}", props.i18n.translate("rooms.new")),
                                 badge_color: "cyan",
-                                member_count: "+5"
+                                member_count: "+5",
+                                i18n: props.i18n.clone()
                             }
 
                             // Stealth Ops
                             PartyCardComponent {
                                 title: "Stealth Ops",
                                 description: "Encrypted tactical comms.",
-                                badge_text: "Urgent",
+                                badge_text: props.i18n.translate("rooms.urgent"),
                                 badge_color: "purple",
-                                member_count: ""
+                                member_count: "",
+                                i18n: props.i18n.clone()
                             }
 
                             // R&D Division
@@ -242,7 +247,8 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                                 description: "Next-gen tech brainstorming.",
                                 badge_text: "",
                                 badge_color: "",
-                                member_count: ""
+                                member_count: "",
+                                i18n: props.i18n.clone()
                             }
 
                             // Create New Party
@@ -261,12 +267,12 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
 
                                 h3 {
                                     class: "create-title",
-                                    "Create New Party"
+                                    "{props.i18n.translate(\"rooms.create_new\")}"
                                 }
 
                                 p {
                                     class: "create-subtitle",
-                                    "Start a new conversation."
+                                    "{props.i18n.translate(\"room_dashboard.create_room_subtitle\")}"
                                 }
                             }
                         }
@@ -278,7 +284,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
 
                         h2 {
                             class: "section-title",
-                            "Latest Unread Messages"
+                            "{props.i18n.translate(\"room_dashboard.sections.latest_messages\")}"
                         }
 
                         div {
@@ -290,7 +296,8 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                                 party: "Project Overlord",
                                 message: "The latest schematics are ready for review. Please check the encrypted folder.",
                                 time: "2 min ago",
-                                is_first: true
+                                is_first: true,
+                                i18n: props.i18n.clone()
                             }
 
                             MessageComponent {
@@ -299,7 +306,8 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                                 party: "Stealth Ops",
                                 message: "Confirmed. Target acquired. Awaiting final command for phase two.",
                                 time: "15 min ago",
-                                is_first: false
+                                is_first: false,
+                                i18n: props.i18n.clone()
                             }
 
                             MessageComponent {
@@ -308,7 +316,8 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                                 party: "Project Overlord",
                                 message: "I've bypassed their firewall. The data stream is now open. Be quick.",
                                 time: "48 min ago",
-                                is_first: false
+                                is_first: false,
+                                i18n: props.i18n.clone()
                             }
 
                             MessageComponent {
@@ -317,7 +326,8 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                                 party: "R&D Division",
                                 message: "The prototype's energy signature is unstable. I recommend we run more diagnostics.",
                                 time: "1 hour ago",
-                                is_first: false
+                                is_first: false,
+                                i18n: props.i18n.clone()
                             }
                         }
                     }
@@ -330,7 +340,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
 #[derive(Props, Clone, PartialEq)]
 struct MenuItemProps {
     icon: &'static str,
-    text: &'static str,
+    text: String,
 }
 
 #[component]
@@ -360,6 +370,7 @@ struct PartyCardProps {
     badge_text: String,
     badge_color: String,
     member_count: String,
+    i18n: I18nContext,
 }
 
 #[component]
@@ -416,7 +427,7 @@ fn PartyCardComponent(props: PartyCardProps) -> Element {
                 button {
                     class: "enter-button",
 
-                    "Enter"
+                    "{props.i18n.translate(\"room_dashboard.enter\")}"
 
                     img {
                         src: IMG_FRAME8,
@@ -437,6 +448,7 @@ struct MessageProps {
     message: String,
     time: String,
     is_first: bool,
+    i18n: I18nContext,
 }
 
 #[component]
@@ -466,7 +478,7 @@ fn MessageComponent(props: MessageProps) -> Element {
                         }
                         span {
                             class: "separator",
-                            " in "
+                            "{props.i18n.translate(\"room_dashboard.separator\")}"
                         }
                         span {
                             class: "party-name",

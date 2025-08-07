@@ -24,7 +24,11 @@ pub mod crypto;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod persistence;
 
-// use crate::persistence::database::*;
+#[cfg(not(target_arch = "wasm32"))]
+use crate::persistence::database::{Database, Entity};
+
+#[cfg(not(target_arch = "wasm32"))]
+use crate::crypto::message::{Room, Contact};
 
 /// Echo the user input on the server.
 #[server(Echo)]
@@ -41,9 +45,123 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-#[server(CreateParty)]
-pub async fn create_party(name: String) -> Result<String, ServerFnError> {
-    use crate::crypto::message::Party;
-    let _party = Party::new(&name);
-    Ok(String::new())
+#[server(CreateRoom)]
+pub async fn create_room(name: String) -> Result<String, ServerFnError> {
+    let db = Database::new();
+    let mut room = Room::new(&name);
+    db.save_entity(&mut room).map_err(|e| ServerFnError::new(e.to_string()))
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(GetRoom)]
+pub async fn get_room(id: String) -> Result<Option<String>, ServerFnError> {
+    let db = Database::new();
+    match db.load_entity::<Room>(&id).map_err(|e| ServerFnError::new(e.to_string()))? {
+        Some(room) => Ok(Some(room.to_json().map_err(|e| ServerFnError::new(e.to_string()))?)),
+        None => Ok(None),
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(UpdateRoom)]
+pub async fn update_room(room_json: String) -> Result<(), ServerFnError> {
+    let db = Database::new();
+    let room = Room::from_json(&room_json).map_err(|e| ServerFnError::new(e.to_string()))?;
+    db.update_entity(&room).map_err(|e| ServerFnError::new(e.to_string()))?;
+    Ok(())
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(DeleteRoom)]
+pub async fn delete_room(id: String) -> Result<(), ServerFnError> {
+    let db = Database::new();
+    db.delete::<Room>(&id).map_err(|e| ServerFnError::new(e.to_string()))?;
+    Ok(())
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(GetAllRooms)]
+pub async fn get_all_rooms() -> Result<Vec<String>, ServerFnError> {
+    let db = Database::new();
+    let rooms = db.load_all_entities::<Room>(Room::key_prefix()).map_err(|e| ServerFnError::new(e.to_string()))?;
+    let mut result = Vec::new();
+    for room in rooms {
+        result.push(room.to_json().map_err(|e| ServerFnError::new(e.to_string()))?);
+    }
+    Ok(result)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(FindRoomByName)]
+pub async fn find_room_by_name(name: String) -> Result<Option<String>, ServerFnError> {
+    let db = Database::new();
+    match db.find_entity::<Room, _>(Room::key_prefix(), |room| room.name == name).map_err(|e| ServerFnError::new(e.to_string()))? {
+        Some(room) => Ok(Some(room.to_json().map_err(|e| ServerFnError::new(e.to_string()))?)),
+        None => Ok(None),
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(CreateContact)]
+pub async fn create_contact(name: String, public_key: String) -> Result<String, ServerFnError> {
+    let db = Database::new();
+    use crypto_box::PublicKey;
+    
+    let public_key_bytes: [u8; 32] = hex::decode(&public_key).map_err(|e| ServerFnError::new(e.to_string()))?
+        .try_into()
+        .map_err(|_| ServerFnError::new("Invalid public key length"))?;
+    let public_key = PublicKey::from(public_key_bytes);
+    
+    let mut contact = Contact::new(&name, &public_key);
+    db.save_entity(&mut contact).map_err(|e| ServerFnError::new(e.to_string()))
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(GetContact)]
+pub async fn get_contact(id: String) -> Result<Option<String>, ServerFnError> {
+    let db = Database::new();
+    match db.load_entity::<Contact>(&id).map_err(|e| ServerFnError::new(e.to_string()))? {
+        Some(contact) => Ok(Some(contact.to_json().map_err(|e| ServerFnError::new(e.to_string()))?)),
+        None => Ok(None),
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(UpdateContact)]
+pub async fn update_contact(contact_json: String) -> Result<(), ServerFnError> {
+    let db = Database::new();
+    let contact = Contact::from_json(&contact_json).map_err(|e| ServerFnError::new(e.to_string()))?;
+    db.update_entity(&contact).map_err(|e| ServerFnError::new(e.to_string()))?;
+    Ok(())
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(DeleteContact)]
+pub async fn delete_contact(id: String) -> Result<(), ServerFnError> {
+
+    let db = Database::new();
+    db.delete::<Contact>(&id).map_err(|e| ServerFnError::new(e.to_string()))?;
+    Ok(())
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(GetAllContacts)]
+pub async fn get_all_contacts() -> Result<Vec<String>, ServerFnError> {
+    let db = Database::new();
+    let contacts = db.load_all_entities::<Contact>(Contact::key_prefix()).map_err(|e| ServerFnError::new(e.to_string()))?;
+    let mut result = Vec::new();
+    for contact in contacts {
+        result.push(contact.to_json().map_err(|e| ServerFnError::new(e.to_string()))?);
+    }
+    Ok(result)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[server(FindContactByName)]
+pub async fn find_contact_by_name(name: String) -> Result<Option<String>, ServerFnError> {
+    let db = Database::new();
+    match db.find_entity::<Contact, _>(Contact::key_prefix(), |contact| contact.name == name).map_err(|e| ServerFnError::new(e.to_string()))? {
+        Some(contact) => Ok(Some(contact.to_json().map_err(|e| ServerFnError::new(e.to_string()))?)),
+        None => Ok(None),
+    }
 }

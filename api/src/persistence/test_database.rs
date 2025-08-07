@@ -17,13 +17,13 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::crypto::message::{EncryptedMessage, Party};
+    use crate::crypto::message::{Contact, EncryptedMessage, Room};
     use crate::persistence::database::{Database, Entity};
     use crypto_box::PublicKey;
     use serial_test::serial;
     use std::collections::HashSet;
 
-    fn create_test_party() -> Party {
+    fn create_test_room() -> Room {
         let known_contacts = [
             &PublicKey::from_bytes([
                 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
@@ -38,32 +38,32 @@ mod tests {
                 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33,
             ]),
         ];
-        Party::new_with_contacts("Alice", &known_contacts)
+        Room::new_with_contacts("Alice", &known_contacts)
     }
 
     #[test]
     #[serial(local_db)]
-    fn test_save_and_load_party() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_save_and_load_room() -> Result<(), Box<dyn std::error::Error>> {
         let db = Database::new();
         let _ = db.clear();
 
         // Create test data
-        let mut party = create_test_party();
+        let mut room = create_test_room();
 
-        // Save the Party
-        let key = db.save_entity(&mut party)?;
+        // Save the Room
+        let key = db.save_entity(&mut room)?;
 
         // Load it back
-        let loaded_party: Option<Party> = db.load_entity(&key)?;
+        let loaded_room: Option<Room> = db.load_entity(&key)?;
 
         // Verify it was loaded correctly
-        assert!(loaded_party.is_some());
-        let loaded = loaded_party.unwrap();
+        assert!(loaded_room.is_some());
+        let loaded = loaded_room.unwrap();
 
-        assert_eq!(loaded.name, party.name);
-        assert_eq!(loaded.secret_key_bytes(), party.secret_key_bytes());
-        assert_eq!(loaded.public_key_bytes(), party.public_key_bytes());
-        assert_eq!(loaded.known_contacts_bytes(), party.known_contacts_bytes());
+        assert_eq!(loaded.name, room.name);
+        assert_eq!(loaded.secret_key_bytes(), room.secret_key_bytes());
+        assert_eq!(loaded.public_key_bytes(), room.public_key_bytes());
+        assert_eq!(loaded.known_contacts_bytes(), room.known_contacts_bytes());
 
         Ok(())
     }
@@ -77,7 +77,7 @@ mod tests {
         // Create multiple parties with consistent key lengths
         let parties = vec![
             (
-                "party:alice",
+                "room:alice",
                 "alice",
                 [
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -89,7 +89,7 @@ mod tests {
                 ],
             ),
             (
-                "party:bob",
+                "room:bob",
                 "bob",
                 [
                     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
@@ -101,7 +101,7 @@ mod tests {
                 ],
             ),
             (
-                "party:charlie",
+                "room:charlie",
                 "charlie",
                 [
                     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -114,7 +114,7 @@ mod tests {
             ),
         ];
 
-        let mut party_keys = Vec::new();
+        let mut room_keys = Vec::new();
         // Save all parties
         for (id, name, secret_key, public_key) in &parties {
             let mut contacts = HashSet::new();
@@ -127,39 +127,39 @@ mod tests {
                 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
             ]); // Another contact
 
-            let mut party = Party::from_values(
+            let mut room = Room::from_values(
                 Some(id.to_string()),
                 name,
                 *secret_key,
                 *public_key,
                 contacts,
             );
-            let id = db.save_entity(&mut party)?;
-            party_keys.push(id);
+            let id = db.save_entity(&mut room)?;
+            room_keys.push(id);
         }
 
-        // List all party keys
-        let party_keys: Vec<Party> = db.load_all_entities(Party::key_prefix()).unwrap();
-        assert_eq!(party_keys.len(), 3);
+        // List all room keys
+        let room_keys: Vec<Room> = db.load_all_entities(Room::key_prefix()).unwrap();
+        assert_eq!(room_keys.len(), 3);
 
         // Verify we can load each one
         for (id, name, secret_key, public_key) in parties {
-            let loaded: Option<Party> = db.load_entity(id)?;
+            let loaded: Option<Room> = db.load_entity(id)?;
             assert!(loaded.is_some());
 
-            let party = loaded.unwrap();
-            assert_eq!(party.name, name);
-            assert_eq!(party.secret_key_bytes(), secret_key);
-            assert_eq!(party.public_key_bytes(), public_key);
-            assert!(party.known_contacts_bytes().contains(&[
+            let room = loaded.unwrap();
+            assert_eq!(room.name, name);
+            assert_eq!(room.secret_key_bytes(), secret_key);
+            assert_eq!(room.public_key_bytes(), public_key);
+            assert!(room.known_contacts_bytes().contains(&[
                 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
                 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99
             ]));
-            assert!(party.known_contacts_bytes().contains(&[
+            assert!(room.known_contacts_bytes().contains(&[
                 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
                 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100
             ]));
-            assert_eq!(party.known_contacts().len(), 2);
+            assert_eq!(room.known_contacts().len(), 2);
         }
 
         Ok(())
@@ -167,28 +167,28 @@ mod tests {
 
     #[test]
     #[serial(local_db)]
-    fn test_update_party() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_update_room() -> Result<(), Box<dyn std::error::Error>> {
         let db = Database::new();
         let _ = db.clear();
-        let mut party = create_test_party();
+        let mut room = create_test_room();
 
         // Save initial version
-        db.save_entity(&mut party)?;
+        db.save_entity(&mut room)?;
 
-        // Update the party (add a new contact)
-        party.add_contact(&PublicKey::from_bytes([
+        // Update the room (add a new contact)
+        room.add_contact(&PublicKey::from_bytes([
             100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
             100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
         ]));
-        let key = db.save_entity(&mut party)?;
+        let key = db.save_entity(&mut room)?;
 
         // Load and verify the update
-        let loaded: Option<Party> = db.load_entity(&key)?;
+        let loaded: Option<Room> = db.load_entity(&key)?;
         assert!(loaded.is_some());
 
-        let loaded_party = loaded.unwrap();
-        assert_eq!(loaded_party.known_contacts().len(), 4); // Original 3 + 1 new
-        assert!(loaded_party
+        let loaded_room = loaded.unwrap();
+        assert_eq!(loaded_room.known_contacts().len(), 4); // Original 3 + 1 new
+        assert!(loaded_room
             .known_contacts()
             .contains(&PublicKey::from_bytes([
                 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
@@ -200,24 +200,24 @@ mod tests {
 
     #[test]
     #[serial(local_db)]
-    fn test_delete_party() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_delete_room() -> Result<(), Box<dyn std::error::Error>> {
         let db = Database::new();
         let _ = db.clear();
-        let mut party = create_test_party();
+        let mut room = create_test_room();
 
-        // Save the party
-        let key = db.save_entity(&mut party)?;
+        // Save the room
+        let key = db.save_entity(&mut room)?;
 
         // Verify it exists
-        let loaded: Option<Party> = db.load_entity(&key)?;
+        let loaded: Option<Room> = db.load_entity(&key)?;
         assert!(loaded.is_some());
 
         // Delete it
-        let deleted: Party = db.delete(&key)?;
+        let deleted: Room = db.delete(&key)?;
         assert!(deleted.name == "Alice");
 
         // Verify it's gone
-        let loaded_after_delete: Option<Party> = db.load_entity(&key)?;
+        let loaded_after_delete: Option<Room> = db.load_entity(&key)?;
         assert!(loaded_after_delete.is_none());
 
         Ok(())
@@ -225,12 +225,12 @@ mod tests {
 
     #[test]
     #[serial(local_db)]
-    fn test_load_nonexistent_party() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_load_nonexistent_room() -> Result<(), Box<dyn std::error::Error>> {
         let db = Database::new();
         let _ = db.clear();
 
-        // Try to load a party that doesn't exist
-        let loaded: Option<Party> = db.load_entity("party:nonexistent")?;
+        // Try to load a room that doesn't exist
+        let loaded: Option<Room> = db.load_entity("room:nonexistent")?;
         assert!(loaded.is_none());
 
         Ok(())
@@ -238,25 +238,25 @@ mod tests {
 
     #[test]
     #[serial(local_db)]
-    fn test_party_dto_conversion() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_room_dto_conversion() -> Result<(), Box<dyn std::error::Error>> {
         let db = Database::new();
         let _ = db.clear();
 
-        let original_party = create_test_party();
+        let original_room = create_test_room();
 
-        // Test round-trip conversion: Party -> JSON -> Party
-        let mut party = Party::from_json(original_party.to_json().unwrap().as_str()).unwrap();
-        assert_eq!(party.name, original_party.name);
-        assert_eq!(party.secret_key_bytes(), original_party.secret_key_bytes());
-        assert_eq!(party.public_key_bytes(), original_party.public_key_bytes());
+        // Test round-trip conversion: Room -> JSON -> Room
+        let mut room = Room::from_json(original_room.to_json().unwrap().as_str()).unwrap();
+        assert_eq!(room.name, original_room.name);
+        assert_eq!(room.secret_key_bytes(), original_room.secret_key_bytes());
+        assert_eq!(room.public_key_bytes(), original_room.public_key_bytes());
         assert_eq!(
-            party.known_contacts_bytes(),
-            original_party.known_contacts_bytes()
+            room.known_contacts_bytes(),
+            original_room.known_contacts_bytes()
         );
 
         // Test saving the converted DTO
-        let id = db.save_entity(&mut party)?;
-        let loaded: Option<Party> = db.load_entity(&id)?;
+        let id = db.save_entity(&mut room)?;
+        let loaded: Option<Room> = db.load_entity(&id)?;
         assert!(loaded.is_some());
 
         Ok(())
@@ -268,19 +268,19 @@ mod tests {
         let db = Database::new();
         let _ = db.clear();
 
-        // Create and save party
-        let mut party = Party::new("Alice");
-        let id = db.save_entity(&mut party).unwrap();
+        // Create and save room
+        let mut room = Room::new("Alice");
+        let id = db.save_entity(&mut room).unwrap();
 
         // Verify ID is set
-        assert_eq!(party.id(), Some(id.as_str()));
+        assert_eq!(room.id(), Some(id.as_str()));
 
         // Test JSON serialization includes ID
-        let json = party.to_json().unwrap();
+        let json = room.to_json().unwrap();
         assert!(json.contains(&format!("\"id\":\"{id}\"")));
 
         // Load and verify
-        let loaded = db.load_entity::<Party>(&id).unwrap().unwrap();
+        let loaded = db.load_entity::<Room>(&id).unwrap().unwrap();
         assert_eq!(loaded.id(), Some(id.as_str()));
 
         // Update and verify
@@ -301,6 +301,13 @@ mod tests {
         let nonce = vec![9, 8, 7, 6, 5, 4, 3, 2, 1];
 
         EncryptedMessage::new(PublicKey::from_bytes(sender_public), ciphertext, nonce)
+    }
+
+    fn create_test_contact() -> Contact {
+        use crypto_box::SecretKey;
+        let secret_key = SecretKey::generate(&mut crypto_box::aead::OsRng);
+        let public_key = secret_key.public_key();
+        Contact::new("Alice", &public_key)
     }
 
     #[test]
@@ -462,5 +469,139 @@ mod tests {
         );
         assert_eq!(restored.ciphertext, message.ciphertext);
         assert_eq!(restored.nonce, message.nonce);
+    }
+
+    #[test]
+    #[serial(local_db)]
+    fn test_save_and_load_contact() -> Result<(), Box<dyn std::error::Error>> {
+        let db = Database::new();
+        let _ = db.clear();
+
+        let mut contact = create_test_contact();
+
+        let key = db.save_entity(&mut contact)?;
+
+        let loaded_contact: Option<Contact> = db.load_entity(&key)?;
+
+        assert!(loaded_contact.is_some());
+        let loaded = loaded_contact.unwrap();
+
+        assert_eq!(loaded.name, contact.name);
+        assert_eq!(loaded.public_key, contact.public_key);
+        assert_eq!(loaded.nickname, contact.nickname);
+        assert_eq!(loaded.email, contact.email);
+        assert_eq!(loaded.verified, contact.verified);
+        assert_eq!(loaded.blocked, contact.blocked);
+        assert_eq!(loaded.created_at, contact.created_at);
+
+        Ok(())
+    }
+
+    #[test]
+    #[serial(local_db)]
+    fn test_multiple_contacts() -> Result<(), Box<dyn std::error::Error>> {
+        let db = Database::new();
+        let _ = db.clear();
+
+        use crypto_box::SecretKey;
+        let contacts_data = vec![
+            ("contact:alice", "Alice", "alice@example.com"),
+            ("contact:bob", "Bob", "bob@example.com"), 
+            ("contact:charlie", "Charlie", "charlie@example.com"),
+        ];
+
+        let mut contact_keys = Vec::new();
+        for (id, name, email) in &contacts_data {
+            let secret_key = SecretKey::generate(&mut crypto_box::aead::OsRng);
+            let public_key = secret_key.public_key();
+            let mut contact = Contact::builder(name.to_string(), public_key.to_bytes())
+                .with_id(Some(id.to_string()))
+                .with_nickname(Some(format!("nickname_{}", name.to_lowercase())))
+                .with_email(Some(email.to_string()))
+                .with_verified(name == &"Alice")
+                .with_blocked(false)
+                .with_created_at(1640995200)
+                .with_last_seen(Some(1640995300))
+                .build();
+            let key = db.save_entity(&mut contact)?;
+            contact_keys.push(key);
+        }
+
+        let all_contacts: Vec<Contact> = db.load_all_entities(Contact::key_prefix()).unwrap();
+        assert_eq!(all_contacts.len(), 3);
+
+        for (id, name, email) in contacts_data {
+            let loaded: Option<Contact> = db.load_entity(id)?;
+            assert!(loaded.is_some());
+
+            let contact = loaded.unwrap();
+            assert_eq!(contact.name, name);
+            assert_eq!(contact.email, Some(email.to_string()));
+            assert_eq!(contact.nickname, Some(format!("nickname_{}", name.to_lowercase())));
+            assert_eq!(contact.verified, name == "Alice");
+            assert!(!contact.blocked);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    #[serial(local_db)]
+    fn test_update_contact() -> Result<(), Box<dyn std::error::Error>> {
+        let db = Database::new();
+        let _ = db.clear();
+        let mut contact = create_test_contact();
+
+        db.save_entity(&mut contact)?;
+
+        contact.set_nickname(Some("Ally".to_string()));
+        contact.set_email(Some("alice@newdomain.com".to_string()));
+        contact.set_verified(true);
+        contact.update_last_seen();
+        let key = db.save_entity(&mut contact)?;
+
+        let loaded: Option<Contact> = db.load_entity(&key)?;
+        assert!(loaded.is_some());
+
+        let loaded_contact = loaded.unwrap();
+        assert_eq!(loaded_contact.nickname, Some("Ally".to_string()));
+        assert_eq!(loaded_contact.email, Some("alice@newdomain.com".to_string()));
+        assert!(loaded_contact.verified);
+        assert!(loaded_contact.last_seen.is_some());
+
+        Ok(())
+    }
+
+    #[test]
+    #[serial(local_db)]
+    fn test_delete_contact() -> Result<(), Box<dyn std::error::Error>> {
+        let db = Database::new();
+        let _ = db.clear();
+        let mut contact = create_test_contact();
+
+        let key = db.save_entity(&mut contact)?;
+
+        let loaded: Option<Contact> = db.load_entity(&key)?;
+        assert!(loaded.is_some());
+
+        let deleted: Contact = db.delete(&key)?;
+        assert!(deleted.name == "Alice");
+
+        let loaded_after_delete: Option<Contact> = db.load_entity(&key)?;
+        assert!(loaded_after_delete.is_none());
+
+        Ok(())
+    }
+
+    #[test]
+    #[serial(local_db)]
+    fn test_load_nonexistent_contact() -> Result<(), Box<dyn std::error::Error>> {
+        let db = Database::new();
+        let _ = db.clear();
+
+        let loaded: Option<Contact> = db.load_entity("contact:nonexistent")?;
+        assert!(loaded.is_none());
+
+        Ok(())
     }
 }

@@ -99,4 +99,25 @@ status:
   offline: "غير متصل"
   away: "غائب"
   busy: "مشغول"
+
+# Room Dashboard
+room_dashboard:
+  title: "لوحة الغرف"
+  subtitle: "مرحبًا بعودتك، إليك ملخص التواصل الخاص بك."
+  sections:
+    top_rooms: "أهم غرف التواصل"
+    latest_messages: "أحدث الرسائل غير المقروءة"
+  search_placeholder: "البحث في الغرف أو الرسائل..."
+  create_room_subtitle: "بدء محادثة جديدة."
+  enter: "دخول"
+  separator: " في "
+  
+# Room Management
+rooms:
+  dashboard: "لوحة الغرف"
+  create_new: "إنشاء غرفة جديدة"
+  select: "اختيار غرفة"
+  management: "إدارة الغرف"
+  urgent: "عاجل"
+  new: "جديد"
   

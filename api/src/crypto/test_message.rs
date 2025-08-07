@@ -1,5 +1,5 @@
 /*  This file is part of a secure messaging project codename meeseeks-nuntius
- *  Copyright (C) 2025  Grant DeFayette
+ *  Copyright (C) 2025 Grant DeFayette
  *
  *  meeseeks-nuntius is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -381,11 +381,11 @@ mod test_exchange {
     use crate::crypto::test_message::test_utils::*;
     use serial_test::serial;
 
-    fn print_party_info(party: &Party) {
-        println!("{YELLOW}👤 Party: {}{RESET}", party.name);
+    fn print_room_info(room: &Room) {
+        println!("{YELLOW}👤 Room: {}{RESET}", room.name);
         print_hex_data(
-            &format!("{}'s Public Key", party.name),
-            &party.public_key_bytes(),
+            &format!("{}'s Public Key", room.name),
+            &room.public_key_bytes(),
             MAGENTA,
         );
     }
@@ -395,13 +395,13 @@ mod test_exchange {
     fn test_basic_messaging() {
         print_test_header("Basic crypto_box Messaging", "💬");
 
-        // Create two parties
-        let mut alice = Party::new("Alice");
-        let mut bob = Party::new("Bob");
+        // Create two rooms
+        let mut alice = Room::new("Alice");
+        let mut bob = Room::new("Bob");
 
-        print_info("Created two parties for secure communication");
-        print_party_info(&alice);
-        print_party_info(&bob);
+        print_info("Created two rooms for secure communication");
+        print_room_info(&alice);
+        print_room_info(&bob);
 
         let message = "Hello Bob! This is a secret message from Alice.";
         println!("\n{GREEN}📝 Original message: \"{message}\"{RESET}");
@@ -445,12 +445,12 @@ mod test_exchange {
     fn test_bidirectional_messaging() {
         print_test_header("Bidirectional Messaging", "🔄");
 
-        let mut alice = Party::new("Alice");
-        let mut bob = Party::new("Bob");
+        let mut alice = Room::new("Alice");
+        let mut bob = Room::new("Bob");
 
-        print_info("Testing two-way communication between parties");
-        print_party_info(&alice);
-        print_party_info(&bob);
+        print_info("Testing two-way communication between rooms");
+        print_room_info(&alice);
+        print_room_info(&bob);
 
         // Alice to Bob
         let alice_message = "Hi Bob, how are you?";
@@ -483,7 +483,7 @@ mod test_exchange {
         assert_eq!(alice_decrypted, bob_message);
 
         print_success("✓ Bidirectional communication successful!");
-        print_success("✓ Both parties have registered each other as contacts!");
+        print_success("✓ Both rooms have registered each other as contacts!");
         println!("{BOLD}🎉 Bidirectional messaging test PASSED!{RESET}\n");
     }
 
@@ -492,8 +492,8 @@ mod test_exchange {
     fn test_message_serialization() {
         print_test_header("Message Serialization", "📦");
 
-        let mut alice = Party::new("Alice");
-        let mut bob = Party::new("Bob");
+        let mut alice = Room::new("Alice");
+        let mut bob = Room::new("Bob");
 
         print_info("Testing message serialization for network transmission");
 
@@ -529,14 +529,14 @@ mod test_exchange {
     fn test_wrong_recipient_fails() {
         print_test_header("Wrong Recipient Security", "🚫");
 
-        let mut alice = Party::new("Alice");
-        let mut bob = Party::new("Bob");
-        let mut eve = Party::new("Eve"); // Eavesdropper
+        let mut alice = Room::new("Alice");
+        let mut bob = Room::new("Bob");
+        let mut eve = Room::new("Eve"); // Eavesdropper
 
         print_info("Testing that only intended recipients can decrypt messages");
-        print_party_info(&alice);
-        print_party_info(&bob);
-        print_party_info(&eve);
+        print_room_info(&alice);
+        print_room_info(&bob);
+        print_room_info(&eve);
 
         let secret_message = "This is for Bob's eyes only!";
         println!("\n{GREEN}🤐 Secret message: \"{secret_message}\"{RESET}");
@@ -578,15 +578,15 @@ mod test_exchange {
     fn test_contact_management() {
         print_test_header("Contact Management", "📇");
 
-        let mut alice = Party::new("Alice");
-        let mut bob = Party::new("Bob");
-        let mut charlie = Party::new("Charlie");
+        let mut alice = Room::new("Alice");
+        let mut bob = Room::new("Bob");
+        let mut charlie = Room::new("Charlie");
 
         print_info("Testing pre-established contact functionality");
 
-        // Create a party with pre-established contacts
+        // Create a room with pre-established contacts
         let contacts = [&alice.public_key(), &bob.public_key()];
-        let mut dave = Party::new_with_contacts("Dave", &contacts);
+        let mut dave = Room::new_with_contacts("Dave", &contacts);
 
         print_info(&format!(
             "Dave created with {} pre-registered contacts",
@@ -665,8 +665,8 @@ mod test_exchange {
     fn test_crypto_box_creation() {
         print_test_header("crypto_box Performance metrics", "⚡");
 
-        let mut alice = Party::new("Alice");
-        let mut bob = Party::new("Bob");
+        let mut alice = Room::new("Alice");
+        let mut bob = Room::new("Bob");
 
         print_info("Testing that new crypto boxes are created for each message");
 
@@ -729,9 +729,9 @@ mod test_exchange {
     fn test_contact_registration() {
         print_test_header("Contact Registration", "📋");
 
-        let mut alice = Party::new("Alice");
-        let bob = Party::new("Bob");
-        let charlie = Party::new("Charlie");
+        let mut alice = Room::new("Alice");
+        let bob = Room::new("Bob");
+        let charlie = Room::new("Charlie");
 
         print_info("Testing contact registration without communication");
 
@@ -770,5 +770,477 @@ mod test_exchange {
         }
 
         println!("{BOLD}🎉 Contact registration test PASSED!{RESET}\n");
+    }
+}
+
+#[cfg(test)]
+mod test_contact {
+    use crate::crypto::message::*;
+    use crate::crypto::test_message::test_utils::*;
+    use crate::persistence::database::Entity;
+    use crypto_box::{PublicKey, SecretKey};
+    use crypto_box::aead::OsRng;
+    use serial_test::serial;
+    use std::collections::HashSet;
+
+    fn create_test_public_key() -> PublicKey {
+        let secret_key = SecretKey::generate(&mut OsRng);
+        secret_key.public_key()
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_contact_creation_new() {
+        print_test_header("Contact Creation (new)", "👤");
+
+        let public_key = create_test_public_key();
+        let name = "Alice Smith";
+
+        print_info("Testing basic contact creation");
+        println!("{GREEN}Name: \"{name}\"{RESET}");
+        print_hex_data("Public Key", &public_key.to_bytes(), MAGENTA);
+
+        let contact = Contact::new(name, &public_key);
+
+        assert_eq!(contact.name, name);
+        assert_eq!(contact.public_key, public_key.to_bytes());
+        assert_eq!(contact.nickname, None);
+        assert_eq!(contact.email, None);
+        assert!(!contact.verified);
+        assert!(!contact.blocked);
+        assert_eq!(contact.last_seen, None);
+        assert!(contact.id().is_none());
+        assert!(contact.created_at > 0);
+
+        print_success("✓ Contact created with correct default values");
+        print_info(&format!("Created at timestamp: {}", contact.created_at));
+
+        println!("{BOLD}🎉 Contact creation test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_contact_creation_builder_pattern() {
+        print_test_header("Contact Creation (Builder Pattern)", "🏗️");
+
+        let public_key = create_test_public_key();
+        let id = Some("contact_123".to_string());
+        let name = "Bob Jones".to_string();
+        let nickname = Some("Bobby".to_string());
+        let email = Some("bob@example.com".to_string());
+        let verified = true;
+        let blocked = false;
+        let created_at = 1234567890u64;
+        let last_seen = Some(1234567900u64);
+
+        print_info("Testing contact creation using builder pattern");
+
+        let contact = Contact::builder(name.clone(), public_key.to_bytes())
+            .with_id(id.clone())
+            .with_nickname(nickname.clone())
+            .with_email(email.clone())
+            .with_verified(verified)
+            .with_blocked(blocked)
+            .with_created_at(created_at)
+            .with_last_seen(last_seen)
+            .build();
+
+        assert_eq!(contact.id(), id.as_deref());
+        assert_eq!(contact.name, name);
+        assert_eq!(contact.public_key, public_key.to_bytes());
+        assert_eq!(contact.nickname, nickname);
+        assert_eq!(contact.email, email);
+        assert_eq!(contact.verified, verified);
+        assert_eq!(contact.blocked, blocked);
+        assert_eq!(contact.created_at, created_at);
+        assert_eq!(contact.last_seen, last_seen);
+
+        print_success("✓ Contact created with all specified values using builder pattern");
+
+        println!("{BOLD}🎉 Builder pattern creation test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_contact_public_key_methods() {
+        print_test_header("Public Key Methods", "🔑");
+
+        let public_key = create_test_public_key();
+        let contact = Contact::new("Test User", &public_key);
+
+        print_info("Testing public key accessor methods");
+        print_hex_data("Original Key", &public_key.to_bytes(), MAGENTA);
+
+        let retrieved_key = contact.public_key();
+        let retrieved_bytes = contact.public_key_bytes();
+
+        assert_eq!(retrieved_key.to_bytes(), public_key.to_bytes());
+        assert_eq!(retrieved_bytes, public_key.to_bytes());
+
+        print_hex_data("Retrieved Key", &retrieved_key.to_bytes(), CYAN);
+        print_hex_data("Retrieved Bytes", &retrieved_bytes, CYAN);
+
+        print_success("✓ Public key methods return correct values");
+
+        println!("{BOLD}🎉 Public key methods test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_contact_setters() {
+        print_test_header("Contact Setters", "✏️");
+
+        let public_key = create_test_public_key();
+        let mut contact = Contact::new("Test User", &public_key);
+
+        print_info("Testing all setter methods");
+
+        // Test nickname setter
+        contact.set_nickname(Some("Tester".to_string()));
+        assert_eq!(contact.nickname, Some("Tester".to_string()));
+        print_success("✓ Nickname setter working");
+
+        contact.set_nickname(None);
+        assert_eq!(contact.nickname, None);
+        print_success("✓ Nickname can be cleared");
+
+        // Test email setter
+        contact.set_email(Some("test@example.com".to_string()));
+        assert_eq!(contact.email, Some("test@example.com".to_string()));
+        print_success("✓ Email setter working");
+
+        contact.set_email(None);
+        assert_eq!(contact.email, None);
+        print_success("✓ Email can be cleared");
+
+        // Test verified setter
+        contact.set_verified(true);
+        assert!(contact.verified);
+        print_success("✓ Verified setter working (true)");
+
+        contact.set_verified(false);
+        assert!(!contact.verified);
+        print_success("✓ Verified setter working (false)");
+
+        // Test blocked setter
+        contact.set_blocked(true);
+        assert!(contact.blocked);
+        print_success("✓ Blocked setter working (true)");
+
+        contact.set_blocked(false);
+        assert!(!contact.blocked);
+        print_success("✓ Blocked setter working (false)");
+
+        println!("{BOLD}🎉 Contact setters test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_update_last_seen() {
+        print_test_header("Update Last Seen", "⏰");
+
+        let public_key = create_test_public_key();
+        let mut contact = Contact::new("Test User", &public_key);
+
+        print_info("Testing last seen timestamp updates");
+
+        // Initially no last seen
+        assert_eq!(contact.last_seen, None);
+        print_info("Initial last_seen: None");
+
+        let before_update = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+
+        // Small delay to ensure timestamp difference
+        std::thread::sleep(std::time::Duration::from_millis(1));
+
+        contact.update_last_seen();
+
+        let after_update = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+
+        assert!(contact.last_seen.is_some());
+        let last_seen = contact.last_seen.unwrap();
+        assert!(last_seen >= before_update && last_seen <= after_update);
+
+        print_success("✓ Last seen timestamp updated correctly");
+        print_info(&format!("Last seen: {last_seen}"));
+
+        println!("{BOLD}🎉 Update last seen test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_contact_serialization() {
+        print_test_header("Contact Serialization", "📦");
+
+        let public_key = create_test_public_key();
+        let mut contact = Contact::new("Serialize Test", &public_key);
+        contact.set_nickname(Some("Tester".to_string()));
+        contact.set_email(Some("test@example.com".to_string()));
+        contact.set_verified(true);
+        contact.update_last_seen();
+
+        print_info("Testing JSON serialization/deserialization");
+
+        // Serialize
+        let json = contact.to_json().unwrap();
+        print_success("✓ Contact serialized to JSON");
+        print_str_data("JSON", &json, CYAN);
+
+        // Deserialize
+        let deserialized = Contact::from_json(&json).unwrap();
+        print_success("✓ Contact deserialized from JSON");
+
+        // Verify all fields match
+        assert_eq!(deserialized.name, contact.name);
+        assert_eq!(deserialized.public_key, contact.public_key);
+        assert_eq!(deserialized.nickname, contact.nickname);
+        assert_eq!(deserialized.email, contact.email);
+        assert_eq!(deserialized.verified, contact.verified);
+        assert_eq!(deserialized.blocked, contact.blocked);
+        assert_eq!(deserialized.created_at, contact.created_at);
+        assert_eq!(deserialized.last_seen, contact.last_seen);
+
+        print_success("✓ All fields preserved through serialization");
+
+        println!("{BOLD}🎉 Contact serialization test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_display_name() {
+        print_test_header("Display Name", "🏷️");
+
+        let public_key = create_test_public_key();
+
+        print_info("Testing display name logic");
+
+        // Without nickname, should return name
+        let contact1 = Contact::new("John Doe", &public_key);
+        assert_eq!(contact1.display_name(), "John Doe");
+        print_success("✓ Display name without nickname uses name");
+
+        // With nickname, should return nickname
+        let mut contact2 = Contact::new("Jane Smith", &public_key);
+        contact2.set_nickname(Some("Janey".to_string()));
+        assert_eq!(contact2.display_name(), "Janey");
+        print_success("✓ Display name with nickname uses nickname");
+
+        println!("{GREEN}Display name (no nickname): \"{}\"{RESET}", contact1.display_name());
+        println!("{CYAN}Display name (with nickname): \"{}\"{RESET}", contact2.display_name());
+
+        println!("{BOLD}🎉 Display name test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_find_by_public_key() {
+        print_test_header("Find by Public Key", "🔍");
+
+        let public_key1 = create_test_public_key();
+        let public_key2 = create_test_public_key();
+        let public_key3 = create_test_public_key();
+
+        let contact1 = Contact::new("Alice", &public_key1);
+        let contact2 = Contact::new("Bob", &public_key2);
+        let contacts = vec![contact1, contact2];
+
+        print_info("Testing contact search by public key");
+        print_info(&format!("Contact list has {} contacts", contacts.len()));
+
+        // Find existing contact
+        let found = Contact::find_by_public_key(&contacts, &public_key1.to_bytes());
+        assert!(found.is_some());
+        assert_eq!(found.unwrap().name, "Alice");
+        print_success("✓ Found existing contact by public key");
+
+        // Try to find non-existing contact
+        let not_found = Contact::find_by_public_key(&contacts, &public_key3.to_bytes());
+        assert!(not_found.is_none());
+        print_success("✓ Correctly returned None for non-existing key");
+
+        println!("{BOLD}🎉 Find by public key test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_find_by_public_keys() {
+        print_test_header("Find by Public Keys", "🔍");
+
+        let public_key1 = create_test_public_key();
+        let public_key2 = create_test_public_key();
+        let public_key3 = create_test_public_key();
+        let public_key4 = create_test_public_key();
+
+        let contact1 = Contact::new("Alice", &public_key1);
+        let contact2 = Contact::new("Bob", &public_key2);
+        let contact3 = Contact::new("Charlie", &public_key3);
+        let contacts = vec![contact1, contact2, contact3];
+
+        print_info("Testing batch contact search by public keys");
+
+        // Create set of keys to search for
+        let mut search_keys = HashSet::new();
+        search_keys.insert(public_key1.to_bytes());
+        search_keys.insert(public_key3.to_bytes());
+        search_keys.insert(public_key4.to_bytes()); // This one won't be found
+
+        let found_contacts = Contact::find_by_public_keys(&contacts, &search_keys);
+
+        assert_eq!(found_contacts.len(), 2); // Only Alice and Charlie should be found
+        let names: Vec<&str> = found_contacts.iter().map(|c| c.name.as_str()).collect();
+        assert!(names.contains(&"Alice"));
+        assert!(names.contains(&"Charlie"));
+        assert!(!names.contains(&"Bob")); // Bob's key wasn't in search set
+
+        print_success(&format!("✓ Found {} contacts from {} search keys", found_contacts.len(), search_keys.len()));
+        print_info("Found contacts: Alice, Charlie (Bob excluded as expected)");
+
+        println!("{BOLD}🎉 Find by public keys test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_filter_non_blocked() {
+        print_test_header("Filter Non-Blocked", "🚫");
+
+        let public_key1 = create_test_public_key();
+        let public_key2 = create_test_public_key();
+        let public_key3 = create_test_public_key();
+
+        let mut contact1 = Contact::new("Alice", &public_key1);
+        let mut contact2 = Contact::new("Bob", &public_key2);
+        let contact3 = Contact::new("Charlie", &public_key3);
+
+        // Block Alice and Bob
+        contact1.set_blocked(true);
+        contact2.set_blocked(true);
+        // Charlie remains unblocked
+
+        let contacts = vec![contact1, contact2, contact3];
+
+        print_info("Testing non-blocked contact filtering");
+        print_info("Alice: blocked, Bob: blocked, Charlie: not blocked");
+
+        let non_blocked = Contact::filter_non_blocked(&contacts);
+
+        assert_eq!(non_blocked.len(), 1);
+        assert_eq!(non_blocked[0].name, "Charlie");
+
+        print_success("✓ Only non-blocked contact returned");
+        print_info(&format!("Non-blocked contacts: {}", non_blocked[0].name));
+
+        println!("{BOLD}🎉 Filter non-blocked test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_filter_verified() {
+        print_test_header("Filter Verified", "✅");
+
+        let public_key1 = create_test_public_key();
+        let public_key2 = create_test_public_key();
+        let public_key3 = create_test_public_key();
+
+        let mut contact1 = Contact::new("Alice", &public_key1);
+        let contact2 = Contact::new("Bob", &public_key2);
+        let mut contact3 = Contact::new("Charlie", &public_key3);
+
+        // Verify Alice and Charlie
+        contact1.set_verified(true);
+        contact3.set_verified(true);
+        // Bob remains unverified
+
+        let contacts = vec![contact1, contact2, contact3];
+
+        print_info("Testing verified contact filtering");
+        print_info("Alice: verified, Bob: not verified, Charlie: verified");
+
+        let verified = Contact::filter_verified(&contacts);
+
+        assert_eq!(verified.len(), 2);
+        let names: Vec<&str> = verified.iter().map(|c| c.name.as_str()).collect();
+        assert!(names.contains(&"Alice"));
+        assert!(names.contains(&"Charlie"));
+        assert!(!names.contains(&"Bob"));
+
+        print_success("✓ Only verified contacts returned");
+        print_info("Verified contacts: Alice, Charlie");
+
+        println!("{BOLD}🎉 Filter verified test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_entity_trait() {
+        print_test_header("Entity Trait Implementation", "🏢");
+
+        let public_key = create_test_public_key();
+        let mut contact = Contact::new("Entity Test", &public_key);
+
+        print_info("Testing Entity trait implementation");
+
+        // Initially no ID
+        assert!(contact.id().is_none());
+        print_success("✓ New contact has no ID");
+
+        // Set ID
+        let test_id = "contact_12345".to_string();
+        contact.set_id(test_id.clone());
+        assert_eq!(contact.id(), Some(test_id.as_str()));
+        print_success("✓ ID set correctly");
+
+        // Check key prefix
+        assert_eq!(Contact::key_prefix(), "contact");
+        print_success("✓ Key prefix is correct");
+
+        print_info(&format!("Contact ID: {:?}", contact.id()));
+        print_info(&format!("Key prefix: {}", Contact::key_prefix()));
+
+        println!("{BOLD}🎉 Entity trait test PASSED!{RESET}\n");
+    }
+
+    #[test]
+    #[serial(contact)]
+    fn test_contact_edge_cases() {
+        print_test_header("Contact Edge Cases", "⚠️");
+
+        let public_key = create_test_public_key();
+
+        print_info("Testing edge cases and boundary conditions");
+
+        // Empty name
+        let contact_empty_name = Contact::new("", &public_key);
+        assert_eq!(contact_empty_name.name, "");
+        print_success("✓ Empty name handled correctly");
+
+        // Very long name
+        let long_name = "A".repeat(1000);
+        let contact_long_name = Contact::new(&long_name, &public_key);
+        assert_eq!(contact_long_name.name.len(), 1000);
+        print_success("✓ Long name handled correctly");
+
+        // Unicode name
+        let unicode_name = "Alice 👤 测试 🎉";
+        let contact_unicode = Contact::new(unicode_name, &public_key);
+        assert_eq!(contact_unicode.name, unicode_name);
+        print_success("✓ Unicode name handled correctly");
+
+        // Empty contacts list
+        let empty_contacts: Vec<Contact> = vec![];
+        let found = Contact::find_by_public_key(&empty_contacts, &public_key.to_bytes());
+        assert!(found.is_none());
+        print_success("✓ Search in empty list handled correctly");
+
+        let non_blocked = Contact::filter_non_blocked(&empty_contacts);
+        assert_eq!(non_blocked.len(), 0);
+        print_success("✓ Filter on empty list handled correctly");
+
+        println!("{BOLD}🎉 Edge cases test PASSED!{RESET}\n");
     }
 }

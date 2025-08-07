@@ -99,4 +99,25 @@ status:
   offline: "Offline"
   away: "Abwesend"
   busy: "Beschäftigt"
+
+# Room Dashboard
+room_dashboard:
+  title: "Raum-Dashboard"
+  subtitle: "Willkommen zurück, hier ist Ihre Kommunikationsübersicht."
+  sections:
+    top_rooms: "Top-Kommunikationsräume"
+    latest_messages: "Neueste ungelesene Nachrichten"
+  search_placeholder: "Räume oder Nachrichten suchen..."
+  create_room_subtitle: "Eine neue Unterhaltung beginnen."
+  enter: "Betreten"
+  separator: " in "
+  
+# Room Management
+rooms:
+  dashboard: "Raum-Dashboard"
+  create_new: "Neuen Raum erstellen"
+  select: "Raum auswählen"
+  management: "Raum-Verwaltung"
+  urgent: "Dringend"
+  new: "Neu"
   
