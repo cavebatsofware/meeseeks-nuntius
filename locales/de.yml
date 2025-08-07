@@ -120,4 +120,11 @@ rooms:
   management: "Raum-Verwaltung"
   urgent: "Dringend"
   new: "Neu"
+  loading: "Räume werden geladen..."
+  default_description: "Sicherer Kommunikationsraum"
+  enter_name: "Raumname eingeben"
+  enter_description: "Raumbeschreibung eingeben (optional)"
+  create: "Erstellen"
+  cancel: "Abbrechen"
+  creating: "Erstelle..."
   

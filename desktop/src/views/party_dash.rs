@@ -1,5 +1,15 @@
 use dioxus::prelude::*;
 use ui::I18nContext;
+use api::{create_room, get_all_rooms};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+struct RoomData {
+    id: Option<String>,
+    name: String,
+    description: Option<String>,
+    member_count: Option<u32>,
+}
 
 const DASHBOARD_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1H7V7H1V1ZM9 1H15V7H9V1ZM1 9H7V15H1V9ZM9 9H15V15H9V9Z' fill='%23ffffff'/%3E%3C/svg%3E";
 const SEARCH_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 12A5 5 0 1 0 7 2a5 5 0 0 0 0 10ZM13 13l-3-3' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
@@ -37,6 +47,47 @@ pub struct PartyDashboardProps {
 
 #[component]
 pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
+    let mut rooms = use_signal(|| Vec::<RoomData>::new());
+    let mut loading_rooms = use_signal(|| true);
+
+    // Load rooms on component initialization
+    use_effect(move || {
+        spawn(async move {
+            match get_all_rooms().await {
+                Ok(room_jsons) => {
+                    let mut parsed_rooms = Vec::new();
+                    for room_json in room_jsons {
+                        if let Ok(room_data) = serde_json::from_str::<RoomData>(&room_json) {
+                            parsed_rooms.push(room_data);
+                        }
+                    }
+                    rooms.set(parsed_rooms);
+                    loading_rooms.set(false);
+                }
+                Err(_) => {
+                    loading_rooms.set(false);
+                }
+            }
+        });
+    });
+
+    // Function to refresh rooms
+    let refresh_rooms = move || {
+        spawn(async move {
+            match get_all_rooms().await {
+                Ok(room_jsons) => {
+                    let mut parsed_rooms = Vec::new();
+                    for room_json in room_jsons {
+                        if let Ok(room_data) = serde_json::from_str::<RoomData>(&room_json) {
+                            parsed_rooms.push(room_data);
+                        }
+                    }
+                    rooms.set(parsed_rooms);
+                }
+                Err(_) => {}
+            }
+        });
+    };
     rsx! {
         div {
             class: "dashboard-container",
@@ -87,7 +138,6 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                     }
 
                     // Other menu items
-                    MenuItemComponent { icon: IMG_FRAME1, text: props.i18n.translate("rooms.create_new") }
                     MenuItemComponent { icon: IMG_FRAME2, text: props.i18n.translate("rooms.select") }
                     MenuItemComponent { icon: IMG_FRAME3, text: props.i18n.translate("rooms.management") }
                     MenuItemComponent { icon: IMG_FRAME4, text: props.i18n.translate("nav.settings") }
@@ -221,59 +271,36 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                         div {
                             class: "parties-grid",
 
-                            // Project Overlord
-                            PartyCardComponent {
-                                title: "Project Overlord",
-                                description: "High-priority discussion channel.",
-                                badge_text: format!("3 {}", props.i18n.translate("rooms.new")),
-                                badge_color: "cyan",
-                                member_count: "+5",
-                                i18n: props.i18n.clone()
-                            }
-
-                            // Stealth Ops
-                            PartyCardComponent {
-                                title: "Stealth Ops",
-                                description: "Encrypted tactical comms.",
-                                badge_text: props.i18n.translate("rooms.urgent"),
-                                badge_color: "purple",
-                                member_count: "",
-                                i18n: props.i18n.clone()
-                            }
-
-                            // R&D Division
-                            PartyCardComponent {
-                                title: "R&D Division",
-                                description: "Next-gen tech brainstorming.",
-                                badge_text: "",
-                                badge_color: "",
-                                member_count: "",
-                                i18n: props.i18n.clone()
-                            }
-
-                            // Create New Party
-                            div {
-                                class: "create-party-card",
-
+                            if loading_rooms() {
                                 div {
-                                    class: "create-icon-container",
-
-                                    img {
-                                        src: IMG_FRAME9,
-                                        alt: "Add",
-                                        class: "create-icon"
+                                    class: "loading-rooms",
+                                    "{props.i18n.translate(\"rooms.loading\")}"
+                                }
+                            } else {
+                                // Dynamic rooms from database
+                                for room in rooms() {
+                                    RoomCardComponent {
+                                        key: "{room.id.as_deref().unwrap_or(&room.name)}",
+                                        title: room.name.clone(),
+                                        description: room.description.as_ref()
+                                            .filter(|desc| !desc.is_empty())
+                                            .cloned()
+                                            .unwrap_or_else(|| props.i18n.translate("rooms.default_description")),
+                                        badge_text: "",
+                                        badge_color: "",
+                                        member_count: room.member_count
+                                            .filter(|&count| count > 0)
+                                            .map(|count| format!("+{}", count))
+                                            .unwrap_or_default(),
+                                        i18n: props.i18n.clone()
                                     }
                                 }
+                            }
 
-                                h3 {
-                                    class: "create-title",
-                                    "{props.i18n.translate(\"rooms.create_new\")}"
-                                }
-
-                                p {
-                                    class: "create-subtitle",
-                                    "{props.i18n.translate(\"room_dashboard.create_room_subtitle\")}"
-                                }
+                            // Create New Room - always show
+                            CreateRoomCard {
+                                i18n: props.i18n.clone(),
+                                on_room_created: refresh_rooms
                             }
                         }
                     }
@@ -374,7 +401,7 @@ struct PartyCardProps {
 }
 
 #[component]
-fn PartyCardComponent(props: PartyCardProps) -> Element {
+fn RoomCardComponent(props: PartyCardProps) -> Element {
     rsx! {
         div {
             class: "party-card",
@@ -507,6 +534,150 @@ fn MessageComponent(props: MessageProps) -> Element {
                     src: IMG_FRAME10,
                     alt: "Menu",
                     class: "menu-icon"
+                }
+            }
+        }
+    }
+}
+
+#[derive(Props, Clone, PartialEq)]
+struct CreateRoomCardProps {
+    i18n: I18nContext,
+    on_room_created: EventHandler<()>,
+}
+
+#[component]
+fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
+    let mut room_name = use_signal(|| String::new());
+    let mut room_description = use_signal(|| String::new());
+    let mut show_form = use_signal(|| false);
+    let mut creating = use_signal(|| false);
+
+    rsx! {
+        div {
+            class: "create-party-card",
+
+            if show_form() {
+                // Room creation form
+                div {
+                    class: "create-room-form",
+                    
+                    input {
+                        r#type: "text",
+                        placeholder: "{props.i18n.translate(\"rooms.enter_name\")}",
+                        class: "room-name-input",
+                        value: "{room_name()}",
+                        oninput: move |evt| room_name.set(evt.value()),
+                        onkeypress: move |evt| {
+                            if evt.key() == Key::Enter && !room_name().trim().is_empty() && !creating() {
+                                let name = room_name().clone();
+                                let description = if room_description().trim().is_empty() {
+                                    None
+                                } else {
+                                    Some(room_description().clone())
+                                };
+                                creating.set(true);
+                                let on_created = props.on_room_created.clone();
+                                spawn(async move {
+                                    match create_room(name, description).await {
+                                        Ok(_) => {
+                                            room_name.set(String::new());
+                                            room_description.set(String::new());
+                                            show_form.set(false);
+                                            creating.set(false);
+                                            on_created.call(());
+                                        }
+                                        Err(_) => {
+                                            creating.set(false);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    
+                    textarea {
+                        placeholder: "{props.i18n.translate(\"rooms.enter_description\")}",
+                        class: "room-description-input",
+                        value: "{room_description()}",
+                        oninput: move |evt| room_description.set(evt.value())
+                    }
+                    
+                    div {
+                        class: "form-actions",
+                        
+                        button {
+                            class: "create-button",
+                            disabled: creating() || room_name().trim().is_empty(),
+                            onclick: move |_| {
+                                if !room_name().trim().is_empty() && !creating() {
+                                    let name = room_name().clone();
+                                    let description = if room_description().trim().is_empty() {
+                                        None
+                                    } else {
+                                        Some(room_description().clone())
+                                    };
+                                    creating.set(true);
+                                    let on_created = props.on_room_created.clone();
+                                    spawn(async move {
+                                        match create_room(name, description).await {
+                                            Ok(_) => {
+                                                room_name.set(String::new());
+                                                room_description.set(String::new());
+                                                show_form.set(false);
+                                                creating.set(false);
+                                                on_created.call(());
+                                            }
+                                            Err(_) => {
+                                                creating.set(false);
+                                            }
+                                        }
+                                    });
+                                }
+                            },
+                            
+                            if creating() {
+                                "{props.i18n.translate(\"rooms.creating\")}"
+                            } else {
+                                "{props.i18n.translate(\"rooms.create\")}"
+                            }
+                        }
+                        
+                        button {
+                            class: "cancel-button",
+                            onclick: move |_| {
+                                show_form.set(false);
+                                room_name.set(String::new());
+                                room_description.set(String::new());
+                            },
+                            
+                            "{props.i18n.translate(\"rooms.cancel\")}"
+                        }
+                    }
+                }
+            } else {
+                // Default create room card
+                div {
+                    class: "create-icon-container",
+                    onclick: move |_| show_form.set(true),
+
+                    img {
+                        src: IMG_FRAME9,
+                        alt: "Add",
+                        class: "create-icon"
+                    }
+                }
+
+                h3 {
+                    class: "create-title",
+                    onclick: move |_| show_form.set(true),
+                    "{props.i18n.translate(\"rooms.create_new\")}"
+                }
+
+                p {
+                    class: "create-subtitle",
+                    onclick: move |_| show_form.set(true),
+                    "{props.i18n.translate(\"room_dashboard.create_room_subtitle\")}"
                 }
             }
         }

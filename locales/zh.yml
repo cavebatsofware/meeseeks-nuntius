@@ -120,4 +120,11 @@ rooms:
   management: "房间管理"
   urgent: "紧急"
   new: "新"
+  loading: "正在加载房间..."
+  default_description: "安全通信房间"
+  enter_name: "输入房间名称"
+  enter_description: "输入房间描述（可选）"
+  create: "创建"
+  cancel: "取消"
+  creating: "正在创建..."
   

@@ -120,4 +120,11 @@ rooms:
   management: "Gestion des Salons"
   urgent: "Urgent"
   new: "Nouveau"
+  loading: "Chargement des salons..."
+  default_description: "Salon de communication sécurisée"
+  enter_name: "Entrez le nom du salon"
+  enter_description: "Entrez la description du salon (optionnel)"
+  create: "Créer"
+  cancel: "Annuler"
+  creating: "Création..."
   
