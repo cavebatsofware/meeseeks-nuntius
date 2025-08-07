@@ -99,4 +99,25 @@ status:
   offline: "Hors ligne"
   away: "Absent"
   busy: "Occupé"
+
+# Room Dashboard
+room_dashboard:
+  title: "Tableau de Bord des Salons"
+  subtitle: "Bon retour, voici votre instantané de communication."
+  sections:
+    top_rooms: "Principaux Salons de Communication"
+    latest_messages: "Derniers Messages Non Lus"
+  search_placeholder: "Rechercher des salons ou des messages..."
+  create_room_subtitle: "Commencer une nouvelle conversation."
+  enter: "Entrer"
+  separator: " dans "
+  
+# Room Management
+rooms:
+  dashboard: "Tableau de Bord des Salons"
+  create_new: "Créer un Nouveau Salon"
+  select: "Sélectionner un Salon"
+  management: "Gestion des Salons"
+  urgent: "Urgent"
+  new: "Nouveau"
   

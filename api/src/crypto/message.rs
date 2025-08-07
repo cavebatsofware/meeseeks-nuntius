@@ -84,9 +84,229 @@ use crate::persistence::database::Entity;
 // Type alias for convenience
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-/// Represents a party in the messaging system
+/// Represents a contact with detailed information
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Party {
+pub struct Contact {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    id: Option<String>,
+    pub name: String,
+    pub public_key: [u8; 32],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nickname: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+    pub verified: bool,
+    pub blocked: bool,
+    pub created_at: u64,
+    pub last_seen: Option<u64>,
+}
+
+/// Builder for creating Contact instances with better ergonomics
+pub struct ContactBuilder {
+    id: Option<String>,
+    name: String,
+    public_key: [u8; 32],
+    nickname: Option<String>,
+    email: Option<String>,
+    verified: bool,
+    blocked: bool,
+    created_at: u64,
+    last_seen: Option<u64>,
+}
+
+impl ContactBuilder {
+    /// Create a new ContactBuilder with required fields
+    pub fn new(name: String, public_key: [u8; 32]) -> Self {
+        Self {
+            id: None,
+            name,
+            public_key,
+            nickname: None,
+            email: None,
+            verified: false,
+            blocked: false,
+            created_at: std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
+            last_seen: None,
+        }
+    }
+
+    pub fn with_id(mut self, id: Option<String>) -> Self {
+        self.id = id;
+        self
+    }
+
+    pub fn with_nickname(mut self, nickname: Option<String>) -> Self {
+        self.nickname = nickname;
+        self
+    }
+
+    pub fn with_email(mut self, email: Option<String>) -> Self {
+        self.email = email;
+        self
+    }
+
+    pub fn with_verified(mut self, verified: bool) -> Self {
+        self.verified = verified;
+        self
+    }
+
+    pub fn with_blocked(mut self, blocked: bool) -> Self {
+        self.blocked = blocked;
+        self
+    }
+
+    pub fn with_created_at(mut self, created_at: u64) -> Self {
+        self.created_at = created_at;
+        self
+    }
+
+    pub fn with_last_seen(mut self, last_seen: Option<u64>) -> Self {
+        self.last_seen = last_seen;
+        self
+    }
+
+    /// Build the Contact instance
+    pub fn build(self) -> Contact {
+        Contact {
+            id: self.id,
+            name: self.name,
+            public_key: self.public_key,
+            nickname: self.nickname,
+            email: self.email,
+            verified: self.verified,
+            blocked: self.blocked,
+            created_at: self.created_at,
+            last_seen: self.last_seen,
+        }
+    }
+}
+
+impl Contact {
+    /// Create a new contact
+    pub fn new(name: &str, public_key: &PublicKey) -> Self {
+        Self {
+            id: None,
+            name: name.to_string(),
+            public_key: public_key.to_bytes(),
+            nickname: None,
+            email: None,
+            verified: false,
+            blocked: false,
+            created_at: std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
+            last_seen: None,
+        }
+    }
+
+    /// Create a contact using a builder pattern for better readability
+    pub fn builder(name: String, public_key: [u8; 32]) -> ContactBuilder {
+        ContactBuilder::new(name, public_key)
+    }
+
+    /// Get the public key as a PublicKey object
+    pub fn public_key(&self) -> PublicKey {
+        PublicKey::from(self.public_key)
+    }
+
+    /// Get the public key as bytes
+    pub fn public_key_bytes(&self) -> [u8; 32] {
+        self.public_key
+    }
+
+    /// Set nickname
+    pub fn set_nickname(&mut self, nickname: Option<String>) {
+        self.nickname = nickname;
+    }
+
+    /// Set email
+    pub fn set_email(&mut self, email: Option<String>) {
+        self.email = email;
+    }
+
+    /// Mark as verified
+    pub fn set_verified(&mut self, verified: bool) {
+        self.verified = verified;
+    }
+
+    /// Block/unblock contact
+    pub fn set_blocked(&mut self, blocked: bool) {
+        self.blocked = blocked;
+    }
+
+    /// Update last seen timestamp
+    pub fn update_last_seen(&mut self) {
+        self.last_seen = Some(
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
+        );
+    }
+
+    /// Serialize to JSON
+    pub fn to_json(&self) -> Result<String> {
+        Ok(serde_json::to_string(&self)?)
+    }
+
+    /// Deserialize from JSON
+    pub fn from_json(json: &str) -> Result<Self> {
+        Ok(serde_json::from_str(json)?)
+    }
+
+    /// Find a contact by public key from a list of contacts
+    pub fn find_by_public_key<'a>(contacts: &'a [Contact], public_key: &[u8; 32]) -> Option<&'a Contact> {
+        contacts.iter().find(|contact| contact.public_key == *public_key)
+    }
+
+    /// Find contacts by public keys from a list of contacts  
+    pub fn find_by_public_keys<'a>(contacts: &'a [Contact], public_keys: &HashSet<[u8; 32]>) -> Vec<&'a Contact> {
+        contacts.iter()
+            .filter(|contact| public_keys.contains(&contact.public_key))
+            .collect()
+    }
+
+    /// Filter non-blocked contacts from a list
+    pub fn filter_non_blocked(contacts: &[Contact]) -> Vec<&Contact> {
+        contacts.iter().filter(|contact| !contact.blocked).collect()
+    }
+
+    /// Filter verified contacts from a list
+    pub fn filter_verified(contacts: &[Contact]) -> Vec<&Contact> {
+        contacts.iter().filter(|contact| contact.verified).collect()
+    }
+
+    /// Get contact name or fallback to public key hex
+    pub fn display_name(&self) -> String {
+        if let Some(nickname) = &self.nickname {
+            nickname.clone()
+        } else {
+            self.name.clone()
+        }
+    }
+}
+
+impl Entity for Contact {
+    fn id(&self) -> Option<&str> {
+        self.id.as_deref()
+    }
+
+    fn set_id(&mut self, id: String) {
+        self.id = Some(id);
+    }
+
+    fn key_prefix() -> &'static str {
+        "contact"
+    }
+}
+
+/// Represents a room in the messaging system
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct Room {
     #[serde(skip_serializing_if = "Option::is_none")]
     id: Option<String>,
     pub name: String,
@@ -95,8 +315,8 @@ pub struct Party {
     known_contacts: HashSet<[u8; 32]>,
 }
 
-impl Party {
-    /// Create a new party with a random keypair
+impl Room {
+    /// Create a new room with a random keypair
     pub fn new(name: &str) -> Self {
         let secret_key = SecretKey::generate(&mut OsRng);
         let public_key = secret_key.public_key();
@@ -110,7 +330,7 @@ impl Party {
         }
     }
 
-    /// Create a new party with given values
+    /// Create a new room with given values
     pub fn from_values(
         id: Option<String>,
         name: &str,
@@ -136,16 +356,16 @@ impl Party {
         Ok(serde_json::from_str(json)?)
     }
 
-    /// Create a new party and immediately register known contacts
-    pub fn new_with_contacts(name: &str, other_parties: &[&PublicKey]) -> Self {
-        let mut party = Self::new(name);
+    /// Create a new room and immediately register known contacts
+    pub fn new_with_contacts(name: &str, other_rooms: &[&PublicKey]) -> Self {
+        let mut room = Self::new(name);
 
         // Register all contacts
-        for other_public in other_parties {
-            party.add_contact(other_public);
+        for other_public in other_rooms {
+            room.add_contact(other_public);
         }
 
-        party
+        room
     }
 
     /// Get the public key
@@ -193,13 +413,36 @@ impl Party {
         self.known_contacts.clone()
     }
 
-    /// Create a crypto box for communication with another party
+    /// Get detailed contact information for known contacts
+    pub fn get_known_contact_details<'a>(&self, all_contacts: &'a [Contact]) -> Vec<&'a Contact> {
+        Contact::find_by_public_keys(all_contacts, &self.known_contacts)
+    }
+
+    /// Get a specific known contact's details
+    pub fn get_contact_details<'a>(&self, all_contacts: &'a [Contact], public_key: &[u8; 32]) -> Option<&'a Contact> {
+        if self.known_contacts.contains(public_key) {
+            Contact::find_by_public_key(all_contacts, public_key)
+        } else {
+            None
+        }
+    }
+
+    /// Check if a public key belongs to a known and non-blocked contact
+    pub fn is_trusted_contact(&self, all_contacts: &[Contact], public_key: &[u8; 32]) -> bool {
+        if let Some(contact) = self.get_contact_details(all_contacts, public_key) {
+            !contact.blocked
+        } else {
+            false
+        }
+    }
+
+    /// Create a crypto box for communication with another contact
     fn create_crypto_box(&self, other_public: &PublicKey) -> ChaChaBox {
         // Use chacha20poly1305
         ChaChaBox::new(other_public, &SecretKey::from_bytes(self.secret_key))
     }
 
-    /// Encrypt a message for another party
+    /// Encrypt a message for another contact
     pub fn encrypt_for(
         &mut self,
         recipient_public: &PublicKey,
@@ -226,7 +469,7 @@ impl Party {
         })
     }
 
-    /// Encrypt a string message for another party
+    /// Encrypt a string message for another contact
     pub fn encrypt_string_for(
         &mut self,
         recipient_public: &PublicKey,
@@ -235,7 +478,7 @@ impl Party {
         self.encrypt_for(recipient_public, plaintext.as_bytes())
     }
 
-    /// Decrypt a message from another party
+    /// Decrypt a message from another contact
     pub fn decrypt_from(&mut self, message: &EncryptedMessage) -> Result<Vec<u8>> {
         // Add contact if not already known\
         if !self.is_known_contact(&message.sender_public()) {
@@ -269,8 +512,8 @@ impl Party {
     }
 }
 
-/// Entity implementation for Party, common boilerplate
-impl Entity for Party {
+/// Entity implementation for Room, common boilerplate
+impl Entity for Room {
     fn id(&self) -> Option<&str> {
         self.id.as_deref()
     }
@@ -280,11 +523,11 @@ impl Entity for Party {
     }
 
     fn key_prefix() -> &'static str {
-        "party"
+        "room"
     }
 }
 
-/// An encrypted message that can be sent between parties
+/// An encrypted message that can be sent between contacts
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct EncryptedMessage {
     #[serde(skip_serializing_if = "Option::is_none")]

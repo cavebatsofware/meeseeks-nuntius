@@ -1,0 +1,122 @@
+# Application General
+app:
+  name: "Meeseeks Nuntius"
+  tagline: "Mensajeria Anonima Segura"
+
+# Navigation
+nav:
+  messages: "Mensajes"
+  contacts: "Contactos"
+  settings: "Configuracion"
+  about: "Acerca de"
+
+# Authentication
+auth:
+  generate_identity: "Generar Identidad"
+  identity_generated: "Identidad Generada con Exito"
+  public_key: "Clave Publica"
+  private_key: "Clave Privada"
+  backup_keys: "Respalda tus Claves"
+  import_identity: "Importar Identidad"
+  export_identity: "Exportar Identidad"
+
+# Messaging
+messages:
+  compose: "Redactar Mensaje"
+  send: "Enviar"
+  reply: "Responder"
+  delete: "Eliminar"
+  empty_state: "Aun no hay mensajes"
+  encrypted: "Cifrado"
+  anonymous: "Anonimo"
+  message_sent: "Mensaje enviado de forma segura"
+  message_received: "Nuevo mensaje recibido"
+  placeholder: "Escribe tu mensaje seguro..."
+
+# Contacts
+contacts:
+  add_contact: "Agregar Contacto"
+  contact_name: "Nombre del Contacto"
+  public_key: "Clave Publica"
+  add: "Agregar"
+  edit: "Editar"
+  remove: "Eliminar"
+  empty_state: "Aun no se han agregado contactos"
+  invalid_key: "Formato de clave publica invalido"
+
+# Settings
+settings:
+  title: "Configuracion"
+  language: "Idioma"
+  appearance: "Apariencia"
+  security: "Seguridad"
+  privacy: "Privacidad"
+  notifications: "Notificaciones"
+  relay_server: "Servidor de Retransmision"
+  server_url: "URL del Servidor"
+  connection_status: "Estado de Conexion"
+  connected: "Conectado"
+  disconnected: "Desconectado"
+  connecting: "Conectando..."
+
+# Security
+security:
+  end_to_end_encryption: "Cifrado de Extremo a Extremo"
+  forward_secrecy: "Secreto Perfecto hacia Adelante"
+  metadata_protection: "Proteccion de Metadatos"
+  anonymous_relay: "Retransmision Anonima"
+  verify_identity: "Verificar Identidad"
+  fingerprint: "Huella Digital"
+
+# Errors
+errors:
+  generic: "Ocurrio un error"
+  network: "Error de conexion de red"
+  encryption: "Error de cifrado"
+  invalid_identity: "Identidad invalida"
+  message_failed: "Error al enviar mensaje"
+  contact_exists: "El contacto ya existe"
+  invalid_server: "URL del servidor invalida"
+  connection_failed: "Error al conectar con el servidor"
+
+# Actions
+actions:
+  save: "Guardar"
+  cancel: "Cancelar"
+  delete: "Eliminar"
+  edit: "Editar"
+  copy: "Copiar"
+  paste: "Pegar"
+  import: "Importar"
+  export: "Exportar"
+  refresh: "Actualizar"
+  connect: "Conectar"
+  disconnect: "Desconectar"
+
+# Status
+status:
+  online: "En linea"
+  offline: "Fuera de linea"
+  away: "Ausente"
+  busy: "Ocupado"
+
+# Room Dashboard
+room_dashboard:
+  title: "Panel de Salas"
+  subtitle: "Bienvenido de vuelta, aqui esta tu resumen de comunicacion."
+  sections:
+    top_rooms: "Principales Salas de Comunicacion"
+    latest_messages: "Ultimos Mensajes No Leidos"
+  search_placeholder: "Buscar salas o mensajes..."
+  create_room_subtitle: "Iniciar una nueva conversacion."
+  enter: "Entrar"
+  separator: " en "
+  
+# Room Management
+rooms:
+  dashboard: "Panel de Salas"
+  create_new: "Crear Nueva Sala"
+  select: "Seleccionar Sala"
+  management: "Gestion de Salas"
+  urgent: "Urgente"
+  new: "Nuevo"

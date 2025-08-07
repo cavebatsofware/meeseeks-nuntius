@@ -99,4 +99,25 @@ status:
   offline: "离线"
   away: "离开"
   busy: "忙碌"
+
+# Room Dashboard
+room_dashboard:
+  title: "房间面板"
+  subtitle: "欢迎回来，这是您的通讯概览。"
+  sections:
+    top_rooms: "热门通讯房间"
+    latest_messages: "最新未读消息"
+  search_placeholder: "搜索房间或消息..."
+  create_room_subtitle: "开始新的对话。"
+  enter: "进入"
+  separator: " 在 "
+  
+# Room Management
+rooms:
+  dashboard: "房间面板"
+  create_new: "创建新房间"
+  select: "选择房间"
+  management: "房间管理"
+  urgent: "紧急"
+  new: "新"
   

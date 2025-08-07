@@ -147,4 +147,55 @@ impl Database {
             Err("No value found for provided key".into())
         }
     }
+
+    /// Find entity by a field value using a predicate function
+    pub fn find_entity<T: Entity, F>(
+        &self,
+        prefix: &str,
+        predicate: F,
+    ) -> Result<Option<T>, Box<dyn std::error::Error>>
+    where
+        F: Fn(&T) -> bool,
+    {
+        let prefix_bytes: &[u8] = prefix.as_bytes();
+        let mut result = None;
+        
+        self.db.scan_prefix(prefix_bytes).try_for_each(|row| -> Result<(), Box<dyn std::error::Error>> {
+            let (_, value) = row?;
+            let entity: T = serde_json::from_slice(&value)?;
+            
+            if predicate(&entity) {
+                result = Some(entity);
+                return Err("found".into()); // Early termination
+            }
+            Ok(())
+        }).ok(); // Ignore the "found" error
+        
+        Ok(result)
+    }
+
+    /// Find all entities matching a predicate
+    pub fn find_entities<T: Entity, F>(
+        &self,
+        prefix: &str,
+        predicate: F,
+    ) -> Result<Vec<T>, Box<dyn std::error::Error>>
+    where
+        F: Fn(&T) -> bool,
+    {
+        let mut results = Vec::new();
+        let prefix_bytes: &[u8] = prefix.as_bytes();
+        
+        self.db.scan_prefix(prefix_bytes).try_for_each(|row| -> Result<(), Box<dyn std::error::Error>> {
+            let (_, value) = row?;
+            let entity: T = serde_json::from_slice(&value)?;
+            
+            if predicate(&entity) {
+                results.push(entity);
+            }
+            Ok(())
+        })?;
+        
+        Ok(results)
+    }
 }
