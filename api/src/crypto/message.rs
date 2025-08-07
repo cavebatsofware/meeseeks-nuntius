@@ -259,13 +259,22 @@ impl Contact {
     }
 
     /// Find a contact by public key from a list of contacts
-    pub fn find_by_public_key<'a>(contacts: &'a [Contact], public_key: &[u8; 32]) -> Option<&'a Contact> {
-        contacts.iter().find(|contact| contact.public_key == *public_key)
+    pub fn find_by_public_key<'a>(
+        contacts: &'a [Contact],
+        public_key: &[u8; 32],
+    ) -> Option<&'a Contact> {
+        contacts
+            .iter()
+            .find(|contact| contact.public_key == *public_key)
     }
 
     /// Find contacts by public keys from a list of contacts  
-    pub fn find_by_public_keys<'a>(contacts: &'a [Contact], public_keys: &HashSet<[u8; 32]>) -> Vec<&'a Contact> {
-        contacts.iter()
+    pub fn find_by_public_keys<'a>(
+        contacts: &'a [Contact],
+        public_keys: &HashSet<[u8; 32]>,
+    ) -> Vec<&'a Contact> {
+        contacts
+            .iter()
             .filter(|contact| public_keys.contains(&contact.public_key))
             .collect()
     }
@@ -419,7 +428,11 @@ impl Room {
     }
 
     /// Get a specific known contact's details
-    pub fn get_contact_details<'a>(&self, all_contacts: &'a [Contact], public_key: &[u8; 32]) -> Option<&'a Contact> {
+    pub fn get_contact_details<'a>(
+        &self,
+        all_contacts: &'a [Contact],
+        public_key: &[u8; 32],
+    ) -> Option<&'a Contact> {
         if self.known_contacts.contains(public_key) {
             Contact::find_by_public_key(all_contacts, public_key)
         } else {

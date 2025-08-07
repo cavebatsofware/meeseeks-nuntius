@@ -506,7 +506,7 @@ mod tests {
         use crypto_box::SecretKey;
         let contacts_data = vec![
             ("contact:alice", "Alice", "alice@example.com"),
-            ("contact:bob", "Bob", "bob@example.com"), 
+            ("contact:bob", "Bob", "bob@example.com"),
             ("contact:charlie", "Charlie", "charlie@example.com"),
         ];
 
@@ -537,7 +537,10 @@ mod tests {
             let contact = loaded.unwrap();
             assert_eq!(contact.name, name);
             assert_eq!(contact.email, Some(email.to_string()));
-            assert_eq!(contact.nickname, Some(format!("nickname_{}", name.to_lowercase())));
+            assert_eq!(
+                contact.nickname,
+                Some(format!("nickname_{}", name.to_lowercase()))
+            );
             assert_eq!(contact.verified, name == "Alice");
             assert!(!contact.blocked);
         }
@@ -565,7 +568,10 @@ mod tests {
 
         let loaded_contact = loaded.unwrap();
         assert_eq!(loaded_contact.nickname, Some("Ally".to_string()));
-        assert_eq!(loaded_contact.email, Some("alice@newdomain.com".to_string()));
+        assert_eq!(
+            loaded_contact.email,
+            Some("alice@newdomain.com".to_string())
+        );
         assert!(loaded_contact.verified);
         assert!(loaded_contact.last_seen.is_some());
 

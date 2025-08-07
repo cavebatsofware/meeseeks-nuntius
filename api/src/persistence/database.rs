@@ -159,18 +159,21 @@ impl Database {
     {
         let prefix_bytes: &[u8] = prefix.as_bytes();
         let mut result = None;
-        
-        self.db.scan_prefix(prefix_bytes).try_for_each(|row| -> Result<(), Box<dyn std::error::Error>> {
-            let (_, value) = row?;
-            let entity: T = serde_json::from_slice(&value)?;
-            
-            if predicate(&entity) {
-                result = Some(entity);
-                return Err("found".into()); // Early termination
-            }
-            Ok(())
-        }).ok(); // Ignore the "found" error
-        
+
+        self.db
+            .scan_prefix(prefix_bytes)
+            .try_for_each(|row| -> Result<(), Box<dyn std::error::Error>> {
+                let (_, value) = row?;
+                let entity: T = serde_json::from_slice(&value)?;
+
+                if predicate(&entity) {
+                    result = Some(entity);
+                    return Err("found".into()); // Early termination
+                }
+                Ok(())
+            })
+            .ok(); // Ignore the "found" error
+
         Ok(result)
     }
 
@@ -185,17 +188,19 @@ impl Database {
     {
         let mut results = Vec::new();
         let prefix_bytes: &[u8] = prefix.as_bytes();
-        
-        self.db.scan_prefix(prefix_bytes).try_for_each(|row| -> Result<(), Box<dyn std::error::Error>> {
-            let (_, value) = row?;
-            let entity: T = serde_json::from_slice(&value)?;
-            
-            if predicate(&entity) {
-                results.push(entity);
-            }
-            Ok(())
-        })?;
-        
+
+        self.db.scan_prefix(prefix_bytes).try_for_each(
+            |row| -> Result<(), Box<dyn std::error::Error>> {
+                let (_, value) = row?;
+                let entity: T = serde_json::from_slice(&value)?;
+
+                if predicate(&entity) {
+                    results.push(entity);
+                }
+                Ok(())
+            },
+        )?;
+
         Ok(results)
     }
 }
