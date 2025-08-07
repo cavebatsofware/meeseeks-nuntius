@@ -23,6 +23,7 @@ const DOTS_VERTICAL_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='1
 // these need to get turned into icon components before I do other pages
 const IMG_GROUP: &str = DASHBOARD_ICON; // needs the real app logo
 const IMG_FRAME: &str = DASHBOARD_ICON;
+#[allow(dead_code)] // Used by navigation menu - may be used in future
 const IMG_FRAME1: &str = PLUS_ICON;
 const IMG_FRAME2: &str = USERS_ICON;
 const IMG_FRAME3: &str = SETTINGS_ICON;
@@ -47,6 +48,7 @@ pub struct PartyDashboardProps {
 
 #[component]
 pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
+    #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut rooms = use_signal(|| Vec::<RoomData>::new());
     let mut loading_rooms = use_signal(|| true);
 
@@ -74,17 +76,14 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
     // Function to refresh rooms
     let refresh_rooms = move || {
         spawn(async move {
-            match get_all_rooms().await {
-                Ok(room_jsons) => {
-                    let mut parsed_rooms = Vec::new();
-                    for room_json in room_jsons {
-                        if let Ok(room_data) = serde_json::from_str::<RoomData>(&room_json) {
-                            parsed_rooms.push(room_data);
-                        }
+            if let Ok(room_jsons) = get_all_rooms().await {
+                let mut parsed_rooms = Vec::new();
+                for room_json in room_jsons {
+                    if let Ok(room_data) = serde_json::from_str::<RoomData>(&room_json) {
+                        parsed_rooms.push(room_data);
                     }
-                    rooms.set(parsed_rooms);
                 }
-                Err(_) => {}
+                rooms.set(parsed_rooms);
             }
         });
     };
@@ -290,7 +289,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                                         badge_color: "",
                                         member_count: room.member_count
                                             .filter(|&count| count > 0)
-                                            .map(|count| format!("+{}", count))
+                                            .map(|count| format!("+{count}"))
                                             .unwrap_or_default(),
                                         i18n: props.i18n.clone()
                                     }
@@ -548,7 +547,9 @@ struct CreateRoomCardProps {
 
 #[component]
 fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
+    #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut room_name = use_signal(|| String::new());
+    #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut room_description = use_signal(|| String::new());
     let mut show_form = use_signal(|| false);
     let mut creating = use_signal(|| false);
@@ -577,7 +578,7 @@ fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
                                     Some(room_description().clone())
                                 };
                                 creating.set(true);
-                                let on_created = props.on_room_created.clone();
+                                let on_created = props.on_room_created;
                                 spawn(async move {
                                     match create_room(name, description).await {
                                         Ok(_) => {
@@ -618,7 +619,7 @@ fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
                                         Some(room_description().clone())
                                     };
                                     creating.set(true);
-                                    let on_created = props.on_room_created.clone();
+                                    let on_created = props.on_room_created;
                                     spawn(async move {
                                         match create_room(name, description).await {
                                             Ok(_) => {
