@@ -1,0 +1,5 @@
+[application]
+[bundle]
+identifier = "com.cavebatsofware"
+publisher = "CavebatsOfWare"
+resources = ["**/*.css", "**/favicon.ico"]

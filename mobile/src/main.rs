@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
 use ui::Navbar;
-use views::{Blog, Home};
+use views::{Blog};
 
 mod views;
 
@@ -10,8 +10,6 @@ mod views;
 enum Route {
     #[layout(MobileNavbar)]
     #[route("/")]
-    Home {},
-    #[route("/blog/:id")]
     Blog { id: i32 },
 }
 
@@ -39,10 +37,6 @@ fn App() -> Element {
 fn MobileNavbar() -> Element {
     rsx! {
         Navbar {
-            Link {
-                to: Route::Home {},
-                "Home"
-            }
             Link {
                 to: Route::Blog { id: 1 },
                 "Blog"

@@ -1,22 +1,21 @@
+#![cfg_attr(feature = "bundle", windows_subsystem = "windows")]
 use dioxus::prelude::*;
-// use tracing::Level;
-
-use ui::Navbar;
-use views::PartyDashboard;
-use views::{Blog, Home};
+use views::RoomDashboard;
+use views::Messages;
 mod views;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
 enum Route {
-    #[layout(PartyDashboard)]
-    #[route("/")]
-    Home {},
-    #[route("/blog/:id")]
-    Blog { id: i32 },
+    #[layout(AppLayout)]
+        #[route("/")]
+        RoomDashboard {},
+        #[route("/room/:room_id/messages")]
+        Messages { room_id: String },
 }
 
-const MAIN_CSS: Asset = asset!("/assets/party_dash.css");
+const VARIABLES_CSS: Asset = asset!("/assets/variables.css");
+const SHARED_CSS: Asset = asset!("/assets/shared.css");
 
 fn main() {
     //dioxus_logger::init(Level::INFO).expect("failed to init logger");
@@ -28,29 +27,18 @@ fn App() -> Element {
     // Build cool things ✌️
 
     rsx! {
-        // Global app resources
-        document::Link { rel: "stylesheet", href: MAIN_CSS }
+        // Global app resources - only variables and shared components
+        document::Link { rel: "stylesheet", href: VARIABLES_CSS }
+        document::Link { rel: "stylesheet", href: SHARED_CSS }
 
         Router::<Route> {}
     }
 }
 
-/// A desktop-specific Router around the shared `Navbar` component
-/// which allows us to use the desktop-specific `Route` enum.
+/// Main app layout that handles routing between RoomDashboard and Messages
 #[component]
-fn DesktopNavbar() -> Element {
+fn AppLayout() -> Element {
     rsx! {
-        Navbar {
-            Link {
-                to: Route::Home {},
-                "Home"
-            }
-            Link {
-                to: Route::Blog { id: 1 },
-                "Blog"
-            }
-        }
-
         Outlet::<Route> {}
     }
 }

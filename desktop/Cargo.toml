@@ -13,3 +13,4 @@ serde_json = { workspace = true }
 [features]
 default = []
 desktop = ["dioxus/desktop"]
+bundle = []
