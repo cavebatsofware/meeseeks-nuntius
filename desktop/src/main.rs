@@ -1,7 +1,7 @@
 #![cfg_attr(feature = "bundle", windows_subsystem = "windows")]
 use dioxus::prelude::*;
-use views::RoomDashboard;
 use views::Messages;
+use views::RoomDashboard;
 mod views;
 
 #[derive(Debug, Clone, Routable, PartialEq)]

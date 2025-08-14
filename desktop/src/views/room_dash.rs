@@ -2,7 +2,7 @@ use crate::Route;
 use api::local::{create_room, get_all_rooms};
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
-use ui::{I18nContext};
+use ui::I18nContext;
 
 const PARTY_DASH_CSS: Asset = asset!("/assets/room_dash.css");
 
@@ -92,7 +92,7 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
     };
     rsx! {
         document::Link { rel: "stylesheet", href: PARTY_DASH_CSS }
-        
+
         div {
             class: "dashboard-container",
 

@@ -1,8 +1,8 @@
-use dioxus::prelude::*;
-use ui::{I18nContext, UserProfileMini};
-use serde::{Deserialize, Serialize};
-use api::local::get_room;
 use crate::Route;
+use api::local::get_room;
+use dioxus::prelude::*;
+use serde::{Deserialize, Serialize};
+use ui::{I18nContext, UserProfileMini};
 
 const MESSAGES_CSS: Asset = asset!("/assets/messages.css");
 
@@ -68,37 +68,37 @@ pub fn Messages(props: MessagesProps) -> Element {
 
     rsx! {
         document::Link { rel: "stylesheet", href: MESSAGES_CSS }
-        
+
         div {
             class: "messages-view-container",
 
             // Left sidebar (aside) - Room list and navigation
             aside {
                 class: "messages-sidebar",
-                
+
                 // Sidebar header with back button
                 header {
                     class: "messages-sidebar-header",
-                    
+
                     Link {
                         class: "back-to-dashboard",
                         to: Route::RoomDashboard {},
                         "← Back to Dashboard"
                     }
                 }
-                
+
                 // Room list in sidebar
                 div {
                     class: "sidebar-rooms",
                     h3 { class: "sidebar-section-title", "Recent Rooms" }
-                    
+
                     // Sample rooms in sidebar - these would be dynamic
                     div { class: "sidebar-room-item active", "🏠 General" }
                     div { class: "sidebar-room-item", "💼 Project Team" }
                     div { class: "sidebar-room-item", "🔐 Security Discuss" }
                     div { class: "sidebar-room-item", "🚀 Development" }
                 }
-                
+
                 // Quick actions
                 div {
                     class: "sidebar-actions",
@@ -106,7 +106,7 @@ pub fn Messages(props: MessagesProps) -> Element {
                     button { class: "sidebar-button", "👥 Contacts" }
                     button { class: "sidebar-button", "⚙️ Settings" }
                 }
-                
+
                 // User profile section at bottom
                 UserProfileMini {
                     username: "User".to_string(),
@@ -126,7 +126,7 @@ pub fn Messages(props: MessagesProps) -> Element {
 
                 div {
                     class: "room-info",
-                    
+
                     div {
                         class: "room-avatar",
                         // Room avatar placeholder
@@ -155,21 +155,21 @@ pub fn Messages(props: MessagesProps) -> Element {
 
                 div {
                     class: "header-actions",
-                    
+
                     button {
                         class: "header-button",
                         "title": "{props.i18n.translate(\"messages.search\")}",
                         // Search icon
                         "🔍"
                     }
-                    
+
                     button {
                         class: "header-button",
                         "title": "{props.i18n.translate(\"messages.call\")}",
                         // Call icon
                         "📞"
                     }
-                    
+
                     button {
                         class: "header-button",
                         "title": "{props.i18n.translate(\"messages.more\")}",
@@ -185,7 +185,7 @@ pub fn Messages(props: MessagesProps) -> Element {
 
                 div {
                     class: "messages-list",
-                    
+
                     // Sample messages - these will be dynamic later
                     MessageComponent {
                         sender_name: "Alice".to_string(),
@@ -224,10 +224,10 @@ pub fn Messages(props: MessagesProps) -> Element {
                 // Input area
                 footer {
                     class: "messages-input-area",
-                    
+
                     div {
                         class: "input-container",
-                        
+
                         button {
                             class: "attachment-button",
                             "title": "{props.i18n.translate(\"messages.attach\")}",
@@ -272,7 +272,7 @@ pub fn Messages(props: MessagesProps) -> Element {
             // Right section (details panel) - Room info and members
             section {
                 class: "messages-details-panel",
-                
+
                 // Panel header
                 header {
                     class: "details-header",
@@ -282,11 +282,11 @@ pub fn Messages(props: MessagesProps) -> Element {
                         "✕"
                     }
                 }
-                
+
                 // Room information
                 div {
                     class: "room-details-section",
-                    
+
                     div {
                         class: "room-info-detailed",
                         div {
@@ -294,7 +294,7 @@ pub fn Messages(props: MessagesProps) -> Element {
                             "{room.name.chars().next().unwrap_or('R')}"
                         }
                         h3 { class: "room-name-large", "{room.name}" }
-                        p { 
+                        p {
                             class: "room-description-detailed",
                             if let Some(desc) = &room.description {
                                 "{desc}"
@@ -302,7 +302,7 @@ pub fn Messages(props: MessagesProps) -> Element {
                                 "No description available"
                             }
                         }
-                        p { 
+                        p {
                             class: "room-member-count",
                             if let Some(count) = room.member_count {
                                 "{count} members"
@@ -312,28 +312,28 @@ pub fn Messages(props: MessagesProps) -> Element {
                         }
                     }
                 }
-                
+
                 // Members list
                 div {
                     class: "members-section",
                     h4 { "Members" }
-                    
+
                     div { class: "member-item online", "👤 Alice Johnson • Online" }
                     div { class: "member-item online", "👤 Bob Smith • Online" }
                     div { class: "member-item away", "👤 Charlie Davis • Away" }
                     div { class: "member-item offline", "👤 Diana Prince • 2h ago" }
                 }
-                
+
                 // Shared files/media
                 div {
                     class: "shared-content-section",
                     h4 { "Shared Files" }
-                    
+
                     div { class: "shared-item", "📄 Project_Plan.pdf" }
                     div { class: "shared-item", "🖼️ screenshot_001.png" }
                     div { class: "shared-item", "📊 analytics_report.xlsx" }
                 }
-                
+
                 // Room actions
                 div {
                     class: "room-actions-section",
