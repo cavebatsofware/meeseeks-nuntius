@@ -18,9 +18,9 @@
 //! Local api functions - these run on the same device as the client
 //! These handle sensitive operations like database access and cryptography
 
-use dioxus::prelude::*;
-use crate::persistence::database::{Database, Entity};
 use crate::crypto::message::{Contact, Room};
+use crate::persistence::database::{Database, Entity};
+use dioxus::prelude::*;
 
 // Room management functions (local database operations)
 pub async fn create_room(
