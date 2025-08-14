@@ -1,8 +1,5 @@
-mod home;
-pub use home::Home;
+mod room_dash;
+pub use room_dash::*;
 
-mod blog;
-pub use blog::Blog;
-
-mod party_dash;
-pub use party_dash::*;
+mod messages;
+pub use messages::Messages;

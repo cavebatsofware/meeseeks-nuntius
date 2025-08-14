@@ -1,0 +1,79 @@
+/* CSS Custom Properties - Shared Design System */
+:root {
+  /* Colors */
+  --color-bg-primary: #060818;
+  --color-bg-secondary: #0a0f2a;
+  --color-bg-tertiary: #1a234a;
+  --color-bg-quaternary: #374151;
+  
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #8a99c0;
+  --color-text-muted: #adaebc;
+  
+  --color-accent-primary: #00ffff;
+  --color-accent-primary-hover: #00e6e6;
+  --color-accent-primary-light: #67e8f9;
+  
+  --color-accent-secondary: #a020f0;
+  --color-accent-tertiary: #87ceeb;
+  
+  --color-border-primary: #1a234a;
+  --color-border-secondary: #374151;
+  
+  --color-success: #10b981;
+  --color-warning: #ffa500;
+  --color-error: #dc2626;
+  --color-error-hover: #b91c1c;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
+  --radius-full: 50%;
+  
+  /* Typography */
+  --font-family-primary: 'Roboto', sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.4;
+  --line-height-relaxed: 1.6;
+  
+  /* Layout */
+  --sidebar-width: 256px;
+  --sidebar-width-messages: 280px;
+  --details-panel-width: 320px;
+  --header-height: 80px;
+  --header-height-messages: 72px;
+  
+  /* Shadows */
+  --shadow-sm: 0px 4px 6px rgba(0,0,0,0.1);
+  --shadow-md: 0px 4px 6px rgba(0,0,0,0.1), 0px 10px 15px rgba(0,0,0,0.1);
+  
+  /* Transitions */
+  --transition-fast: 0.1s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}

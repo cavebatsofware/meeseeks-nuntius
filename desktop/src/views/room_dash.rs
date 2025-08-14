@@ -1,7 +1,10 @@
-use api::{create_room, get_all_rooms};
+use crate::Route;
+use api::local::{create_room, get_all_rooms};
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
-use ui::I18nContext;
+use ui::{I18nContext};
+
+const PARTY_DASH_CSS: Asset = asset!("/assets/room_dash.css");
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct RoomData {
@@ -37,7 +40,7 @@ const IMG_FRAME10: &str = DOTS_VERTICAL_ICON;
 const IMG_IMG: &str = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face&auto=format"; // Placeholder avatar
 
 #[derive(Props, Clone, PartialEq)]
-pub struct PartyDashboardProps {
+pub struct RoomDashboardProps {
     #[props(default = "Thom T.".to_string())]
     username: String,
     #[props(default = "View Profile".to_string())]
@@ -47,7 +50,7 @@ pub struct PartyDashboardProps {
 }
 
 #[component]
-pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
+pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
     #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut rooms = use_signal(|| Vec::<RoomData>::new());
     let mut loading_rooms = use_signal(|| true);
@@ -88,6 +91,8 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
         });
     };
     rsx! {
+        document::Link { rel: "stylesheet", href: PARTY_DASH_CSS }
+        
         div {
             class: "dashboard-container",
 
@@ -280,6 +285,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                                 for room in rooms() {
                                     RoomCardComponent {
                                         key: "{room.id.as_deref().unwrap_or(&room.name)}",
+                                        room_id: room.id.as_deref().unwrap_or(&room.name).to_string(),
                                         title: room.name.clone(),
                                         description: room.description.as_ref()
                                             .filter(|desc| !desc.is_empty())
@@ -319,7 +325,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                             MessageComponent {
                                 avatar_color: "purple",
                                 username: "Diana P.",
-                                party: "Project Overlord",
+                                room: "Project Overlord",
                                 message: "The latest schematics are ready for review. Please check the encrypted folder.",
                                 time: "2 min ago",
                                 is_first: true,
@@ -329,7 +335,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                             MessageComponent {
                                 avatar_color: "blue",
                                 username: "C. Kent",
-                                party: "Stealth Ops",
+                                room: "Stealth Ops",
                                 message: "Confirmed. Target acquired. Awaiting final command for phase two.",
                                 time: "15 min ago",
                                 is_first: false,
@@ -339,7 +345,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                             MessageComponent {
                                 avatar_color: "blue",
                                 username: "Barbara G.",
-                                party: "Project Overlord",
+                                room: "Project Overlord",
                                 message: "I've bypassed their firewall. The data stream is now open. Be quick.",
                                 time: "48 min ago",
                                 is_first: false,
@@ -349,7 +355,7 @@ pub fn PartyDashboard(props: PartyDashboardProps) -> Element {
                             MessageComponent {
                                 avatar_color: "blue",
                                 username: "Victor S.",
-                                party: "R&D Division",
+                                room: "R&D Division",
                                 message: "The prototype's energy signature is unstable. I recommend we run more diagnostics.",
                                 time: "1 hour ago",
                                 is_first: false,
@@ -391,6 +397,7 @@ fn MenuItemComponent(props: MenuItemProps) -> Element {
 
 #[derive(Props, Clone, PartialEq)]
 struct PartyCardProps {
+    room_id: String,
     title: String,
     description: String,
     badge_text: String,
@@ -403,20 +410,20 @@ struct PartyCardProps {
 fn RoomCardComponent(props: PartyCardProps) -> Element {
     rsx! {
         div {
-            class: "party-card",
+            class: "room-card",
 
             // Header with title and badge
             div {
-                class: "party-header",
+                class: "room-header",
 
                 h3 {
-                    class: "party-title",
+                    class: "room-title",
                     "{props.title}"
                 }
 
                 if !props.badge_text.is_empty() {
                     span {
-                        class: "party-badge badge-{props.badge_color}",
+                        class: "room-badge badge-{props.badge_color}",
                         "{props.badge_text}"
                     }
                 }
@@ -424,13 +431,13 @@ fn RoomCardComponent(props: PartyCardProps) -> Element {
 
             // Description
             p {
-                class: "party-description",
+                class: "room-description",
                 "{props.description}"
             }
 
             // Footer with avatars and enter button
             div {
-                class: "party-footer",
+                class: "room-footer",
 
                 // Member avatars
                 div {
@@ -450,11 +457,13 @@ fn RoomCardComponent(props: PartyCardProps) -> Element {
                 }
 
                 // Enter button
-                button {
+                Link {
                     class: "enter-button",
-
+                    to: Route::Messages { room_id: props.room_id },
+                    onclick: move |_| {
+                        // web_sys::console::log_1(&"Enter button clicked!".into());
+                    },
                     "{props.i18n.translate(\"room_dashboard.enter\")}"
-
                     img {
                         src: IMG_FRAME8,
                         alt: "Enter",
@@ -470,7 +479,7 @@ fn RoomCardComponent(props: PartyCardProps) -> Element {
 struct MessageProps {
     avatar_color: &'static str,
     username: String,
-    party: String,
+    room: String,
     message: String,
     time: String,
     is_first: bool,
@@ -492,7 +501,7 @@ fn MessageComponent(props: MessageProps) -> Element {
             div {
                 class: "message-content",
 
-                // Header with username, party, and time
+                // Header with username, room, and time
                 div {
                     class: "message-header",
 
@@ -507,8 +516,8 @@ fn MessageComponent(props: MessageProps) -> Element {
                             "{props.i18n.translate(\"room_dashboard.separator\")}"
                         }
                         span {
-                            class: "party-name",
-                            "{props.party}"
+                            class: "room-name",
+                            "{props.room}"
                         }
                     }
 
@@ -556,7 +565,7 @@ fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
 
     rsx! {
         div {
-            class: "create-party-card",
+            class: "create-room-card",
 
             if show_form() {
                 // Room creation form

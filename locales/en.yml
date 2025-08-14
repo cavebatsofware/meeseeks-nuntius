@@ -32,6 +32,11 @@ messages:
   message_sent: "Message sent securely"
   message_received: "New message received"
   placeholder: "Type your secure message..."
+  search: "Search messages"
+  call: "Start call"
+  more: "More options"
+  attach: "Attach file"
+  emoji: "Add emoji"
 
 # Contacts
 contacts:
