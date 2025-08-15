@@ -127,3 +127,56 @@ rooms:
   create: "Crear"
   cancel: "Cancelar"
   creating: "Creando..."
+
+# User Profile
+user_profile:
+  title: "Perfil de Usuario"
+  subtitle: "Administra tu perfil y preferencias"
+  
+  # Avatar section
+  avatar:
+    title: "Avatar"
+    url_placeholder: "Ingresa la URL del avatar"
+    remove: "Eliminar Avatar"
+  
+  # Basic info section
+  basic_info:
+    title: "Información Básica"
+  
+  username: "Nombre de Usuario"
+  username_placeholder: "Ingresa tu nombre de usuario"
+  display_name: "Nombre a Mostrar" 
+  display_name_placeholder: "Ingresa tu nombre a mostrar"
+  status_message: "Mensaje de Estado"
+  status_message_placeholder: "¿Qué está en tu mente?"
+  
+  # Preferences section
+  preferences:
+    title: "Preferencias"
+  
+  theme: "Tema"
+  themes:
+    dark: "Oscuro"
+    light: "Claro"
+    auto: "Automático"
+  
+  language: "Idioma"
+  
+  auto_away: "Ausente Automático"
+  auto_away_options:
+    never: "Nunca"
+  
+  # Notifications section
+  notifications:
+    title: "Notificaciones"
+  
+  enable_notifications: "Habilitar Notificaciones"
+  enable_sound: "Habilitar Sonido"
+  
+  # Status when saving
+  saving: "Guardando..."
+  
+  # Errors
+  errors:
+    username_required: "El nombre de usuario es requerido"
+    display_name_required: "El nombre a mostrar es requerido"

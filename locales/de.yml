@@ -127,4 +127,57 @@ rooms:
   create: "Erstellen"
   cancel: "Abbrechen"
   creating: "Erstelle..."
+
+# User Profile
+user_profile:
+  title: "Benutzerprofil"
+  subtitle: "Verwalten Sie Ihr Profil und Ihre Einstellungen"
+  
+  # Avatar section
+  avatar:
+    title: "Avatar"
+    url_placeholder: "Avatar-URL eingeben"
+    remove: "Avatar entfernen"
+  
+  # Basic info section
+  basic_info:
+    title: "Grundlegende Informationen"
+  
+  username: "Benutzername"
+  username_placeholder: "Benutzername eingeben"
+  display_name: "Anzeigename" 
+  display_name_placeholder: "Anzeigename eingeben"
+  status_message: "Statusnachricht"
+  status_message_placeholder: "Was beschäftigt Sie?"
+  
+  # Preferences section
+  preferences:
+    title: "Einstellungen"
+  
+  theme: "Theme"
+  themes:
+    dark: "Dunkel"
+    light: "Hell"
+    auto: "Automatisch"
+  
+  language: "Sprache"
+  
+  auto_away: "Automatisch Abwesend"
+  auto_away_options:
+    never: "Niemals"
+  
+  # Notifications section
+  notifications:
+    title: "Benachrichtigungen"
+  
+  enable_notifications: "Benachrichtigungen aktivieren"
+  enable_sound: "Ton aktivieren"
+  
+  # Status when saving
+  saving: "Speichere..."
+  
+  # Errors
+  errors:
+    username_required: "Benutzername ist erforderlich"
+    display_name_required: "Anzeigename ist erforderlich"
   

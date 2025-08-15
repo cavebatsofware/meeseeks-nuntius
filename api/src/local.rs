@@ -20,6 +20,7 @@
 
 use crate::crypto::message::{Contact, Room};
 use crate::persistence::database::{Database, Entity};
+use crate::user_data::UserData;
 use dioxus::prelude::*;
 
 // Room management functions (local database operations)
@@ -169,5 +170,93 @@ pub async fn find_contact_by_name(name: String) -> Result<Option<String>, Server
                 .map_err(|e| ServerFnError::new(e.to_string()))?,
         )),
         None => Ok(None),
+    }
+}
+
+// User data management functions (local database operations)
+pub async fn create_user_data(
+    username: String,
+    display_name: String,
+) -> Result<String, ServerFnError> {
+    let db = Database::new();
+    let mut user_data = UserData::new(&username, &display_name);
+    db.save_entity(&mut user_data)
+        .map_err(|e| ServerFnError::new(e.to_string()))
+}
+
+pub async fn get_user_data(id: String) -> Result<Option<String>, ServerFnError> {
+    let db = Database::new();
+    match db
+        .load_entity::<UserData>(&id)
+        .map_err(|e| ServerFnError::new(e.to_string()))?
+    {
+        Some(user_data) => Ok(Some(
+            user_data.to_json()
+                .map_err(|e| ServerFnError::new(e.to_string()))?,
+        )),
+        None => Ok(None),
+    }
+}
+
+pub async fn update_user_data(user_data_json: String) -> Result<(), ServerFnError> {
+    let db = Database::new();
+    let user_data = UserData::from_json(&user_data_json)
+        .map_err(|e| ServerFnError::new(e.to_string()))?;
+    db.update_entity(&user_data)
+        .map_err(|e| ServerFnError::new(e.to_string()))?;
+    Ok(())
+}
+
+pub async fn delete_user_data(id: String) -> Result<(), ServerFnError> {
+    let db = Database::new();
+    db.delete::<UserData>(&id)
+        .map_err(|e| ServerFnError::new(e.to_string()))?;
+    Ok(())
+}
+
+pub async fn get_all_user_data() -> Result<Vec<String>, ServerFnError> {
+    let db = Database::new();
+    let user_data_list = db
+        .load_all_entities::<UserData>(UserData::key_prefix())
+        .map_err(|e| ServerFnError::new(e.to_string()))?;
+    let mut result = Vec::new();
+    for user_data in user_data_list {
+        result.push(
+            user_data.to_json()
+                .map_err(|e| ServerFnError::new(e.to_string()))?,
+        );
+    }
+    Ok(result)
+}
+
+pub async fn find_user_data_by_username(username: String) -> Result<Option<String>, ServerFnError> {
+    let db = Database::new();
+    match db
+        .find_entity::<UserData, _>(UserData::key_prefix(), |user_data| user_data.username == username)
+        .map_err(|e| ServerFnError::new(e.to_string()))?
+    {
+        Some(user_data) => Ok(Some(
+            user_data.to_json()
+                .map_err(|e| ServerFnError::new(e.to_string()))?,
+        )),
+        None => Ok(None),
+    }
+}
+
+pub async fn get_current_user_data() -> Result<Option<String>, ServerFnError> {
+    // For now, we'll just get the first user data entry
+    // Eventually I would allow multiple profiles and track the current user session
+    let db = Database::new();
+    let user_data_list = db
+        .load_all_entities::<UserData>(UserData::key_prefix())
+        .map_err(|e| ServerFnError::new(e.to_string()))?;
+    
+    if let Some(user_data) = user_data_list.into_iter().next() {
+        Ok(Some(
+            user_data.to_json()
+                .map_err(|e| ServerFnError::new(e.to_string()))?,
+        ))
+    } else {
+        Ok(None)
     }
 }

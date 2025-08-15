@@ -26,3 +26,5 @@ pub mod persistence;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod local;
+
+pub mod user_data;
