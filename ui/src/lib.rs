@@ -7,7 +7,7 @@ mod navbar;
 pub use navbar::Navbar;
 
 mod i18n_context;
-pub use i18n_context::I18nContext;
+pub use i18n_context::*;
 
 mod test_i18n_context;
 

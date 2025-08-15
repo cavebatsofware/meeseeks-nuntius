@@ -526,7 +526,6 @@ mod tests {
                 blocked: false,
                 created_at: 1640995200,
                 last_seen: Some(1640995300),
-                ..Default::default()
             };
             let key = db.save_entity(&mut contact)?;
             contact_keys.push(key);

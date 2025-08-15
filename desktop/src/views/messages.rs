@@ -25,6 +25,7 @@ pub struct MessagesProps {
 pub fn Messages(props: MessagesProps) -> Element {
     let mut room_data = use_signal(|| Option::<RoomData>::None);
     let mut loading = use_signal(|| true);
+    #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut message_input = use_signal(|| String::new());
 
     // Load room data on component initialization

@@ -2,7 +2,7 @@ use crate::Route;
 use api::local::{create_room, get_all_rooms};
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
-use ui::I18nContext;
+use ui::{I18nContext, get_language_name, get_text_direction};
 
 const PARTY_DASH_CSS: Asset = asset!("/assets/room_dash.css");
 
@@ -54,6 +54,10 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
     #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut rooms = use_signal(|| Vec::<RoomData>::new());
     let mut loading_rooms = use_signal(|| true);
+    let locale = props.i18n.get_current_locale();
+    // Keep for debugging until language switcher is implemented
+    println!("Language: {}", get_language_name(locale));
+    println!("Text direction: {}", get_text_direction(locale));
 
     // Load rooms on component initialization
     use_effect(move || {
