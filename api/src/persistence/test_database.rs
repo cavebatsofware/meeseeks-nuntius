@@ -516,15 +516,18 @@ mod tests {
         for (id, name, email) in &contacts_data {
             let secret_key = SecretKey::generate(&mut crypto_box::aead::OsRng);
             let public_key = secret_key.public_key();
-            let mut contact = Contact::builder(name.to_string(), public_key.to_bytes())
-                .with_id(Some(id.to_string()))
-                .with_nickname(Some(format!("nickname_{}", name.to_lowercase())))
-                .with_email(Some(email.to_string()))
-                .with_verified(name == &"Alice")
-                .with_blocked(false)
-                .with_created_at(1640995200)
-                .with_last_seen(Some(1640995300))
-                .build();
+            let mut contact = Contact {
+                id: Some(id.to_string()),
+                name: name.to_string(),
+                public_key: public_key.to_bytes(),
+                nickname: Some(format!("nickname_{}", name.to_lowercase())),
+                email: Some(email.to_string()),
+                verified: name == &"Alice",
+                blocked: false,
+                created_at: 1640995200,
+                last_seen: Some(1640995300),
+                ..Default::default()
+            };
             let key = db.save_entity(&mut contact)?;
             contact_keys.push(key);
         }
