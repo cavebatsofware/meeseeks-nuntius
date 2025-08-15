@@ -1,7 +1,7 @@
+use super::{DesktopNavigation, SharedHeader};
+use crate::Route;
 use dioxus::prelude::*;
 use ui::{I18nContext, UserProfileMini};
-use super::{SharedHeader, DesktopNavigation};
-use crate::Route;
 
 #[derive(Props, Clone, PartialEq)]
 pub struct DesktopLayoutProps {
@@ -21,7 +21,7 @@ pub struct DesktopLayoutProps {
 #[component]
 pub fn DesktopLayout(props: DesktopLayoutProps) -> Element {
     let nav = navigator();
-    
+
     rsx! {
         div {
             class: "dashboard-container",

@@ -14,7 +14,7 @@ pub struct SharedHeaderProps {
 pub fn SharedHeader(props: SharedHeaderProps) -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: SHARED_HEADER_CSS }
-        
+
         div {
             class: "sh-header",
 

@@ -14,6 +14,5 @@ mod test_i18n_context;
 mod user_profile_mini;
 pub use user_profile_mini::UserProfileMini;
 
-
 mod user_profile_edit;
 pub use user_profile_edit::*;

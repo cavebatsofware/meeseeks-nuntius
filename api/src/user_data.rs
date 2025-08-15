@@ -148,7 +148,7 @@ impl UserData {
     /// Set the maximum number of recent rooms to keep
     pub fn set_max_recent_rooms(&mut self, max_recent_rooms: usize) {
         self.max_recent_rooms = max_recent_rooms;
-        
+
         // Trim existing recent rooms if necessary
         while self.recent_rooms.len() > max_recent_rooms {
             self.recent_rooms.pop_back();
@@ -271,7 +271,7 @@ mod tests {
     #[test]
     fn test_user_data_creation() {
         let user = UserData::new("alice", "Alice Smith");
-        
+
         assert_eq!(user.username, "alice");
         assert_eq!(user.display_name, "Alice Smith");
         assert_eq!(user.theme, "dark");
@@ -288,7 +288,7 @@ mod tests {
     #[test]
     fn test_default_for_user() {
         let user = UserData::default_for_user("bob");
-        
+
         assert_eq!(user.username, "bob");
         assert_eq!(user.display_name, "bob");
         assert_eq!(user.effective_display_name(), "bob");
@@ -298,7 +298,7 @@ mod tests {
     fn test_effective_display_name() {
         let mut user = UserData::new("alice", "");
         assert_eq!(user.effective_display_name(), "alice");
-        
+
         user.set_display_name("Alice Smith".to_string());
         assert_eq!(user.effective_display_name(), "Alice Smith");
     }
@@ -306,43 +306,43 @@ mod tests {
     #[test]
     fn test_recent_rooms_management() {
         let mut user = UserData::new("test", "Test");
-        
+
         // Test adding rooms
         user.add_recent_room("room1".to_string());
         user.add_recent_room("room2".to_string());
         user.add_recent_room("room3".to_string());
-        
+
         let recent = user.get_recent_rooms();
         assert_eq!(recent.len(), 3);
         assert_eq!(recent[0], "room3"); // Most recent first
         assert_eq!(recent[1], "room2");
         assert_eq!(recent[2], "room1");
-        
+
         // Test duplicate handling
         user.add_recent_room("room1".to_string());
         let recent = user.get_recent_rooms();
         assert_eq!(recent.len(), 3);
         assert_eq!(recent[0], "room1"); // Moved to front
-        
+
         // Test max limit
         user.set_max_recent_rooms(2);
         let recent = user.get_recent_rooms();
         assert_eq!(recent.len(), 2);
         assert_eq!(recent[0], "room1");
         assert_eq!(recent[1], "room3");
-        
+
         // Test is_recent_room
         assert!(user.is_recent_room("room1"));
         assert!(!user.is_recent_room("room2"));
-        
+
         // Test get_most_recent_room
         assert_eq!(user.get_most_recent_room(), Some(&"room1".to_string()));
-        
+
         // Test remove_recent_room
         user.remove_recent_room("room1");
         assert!(!user.is_recent_room("room1"));
         assert_eq!(user.get_most_recent_room(), Some(&"room3".to_string()));
-        
+
         // Test clear_recent_rooms
         user.clear_recent_rooms();
         assert!(user.get_recent_rooms().is_empty());
@@ -352,16 +352,16 @@ mod tests {
     #[test]
     fn test_setters_update_timestamp() {
         let mut user = UserData::new("test", "Test");
-        
+
         // Set a known timestamp in the past
         user.last_updated = 1000000000; // Way in the past
         let original_timestamp = user.last_updated;
-        
+
         user.set_display_name("New Name".to_string());
         assert!(user.last_updated > original_timestamp);
-        
+
         let _prev_timestamp = user.last_updated;
-        
+
         // Set timestamp back again and test another setter
         user.last_updated = 1000000000;
         user.set_avatar_url(Some("new-url".to_string()));
@@ -371,13 +371,13 @@ mod tests {
     #[test]
     fn test_json_serialization() {
         let user = create_test_user_data();
-        
+
         // Test to_json
         let json = user.to_json().expect("Should serialize to JSON");
         assert!(json.contains("test_user"));
         assert!(json.contains("Test User"));
         assert!(json.contains("Working from home"));
-        
+
         // Test from_json
         let deserialized = UserData::from_json(&json).expect("Should deserialize from JSON");
         assert_eq!(deserialized.username, user.username);
@@ -385,26 +385,29 @@ mod tests {
         assert_eq!(deserialized.status_message, user.status_message);
         assert_eq!(deserialized.theme, user.theme);
         assert_eq!(deserialized.language, user.language);
-        assert_eq!(deserialized.notifications_enabled, user.notifications_enabled);
+        assert_eq!(
+            deserialized.notifications_enabled,
+            user.notifications_enabled
+        );
         assert_eq!(deserialized.recent_rooms, user.recent_rooms);
     }
 
     #[test]
     fn test_preferences_setters() {
         let mut user = UserData::default();
-        
+
         user.set_theme("light".to_string());
         assert_eq!(user.theme, "light");
-        
+
         user.set_language("fr".to_string());
         assert_eq!(user.language, "fr");
-        
+
         user.set_notifications_enabled(false);
         assert!(!user.notifications_enabled);
-        
+
         user.set_sound_enabled(false);
         assert!(!user.sound_enabled);
-        
+
         user.set_auto_away_minutes(60);
         assert_eq!(user.auto_away_minutes, 60);
     }
@@ -412,7 +415,7 @@ mod tests {
     #[test]
     fn test_age_and_recent_modification() {
         let user = UserData::new("test", "Test");
-        
+
         // Should be recently created
         assert!(user.age_seconds() < 5);
         assert!(user.is_recently_modified());
@@ -445,7 +448,10 @@ mod tests {
         assert_eq!(loaded.recent_rooms, user_data.recent_rooms);
         assert_eq!(loaded.theme, user_data.theme);
         assert_eq!(loaded.language, user_data.language);
-        assert_eq!(loaded.notifications_enabled, user_data.notifications_enabled);
+        assert_eq!(
+            loaded.notifications_enabled,
+            user_data.notifications_enabled
+        );
         assert_eq!(loaded.sound_enabled, user_data.sound_enabled);
         assert_eq!(loaded.auto_away_minutes, user_data.auto_away_minutes);
         assert_eq!(loaded.id, user_data.id);
@@ -556,11 +562,11 @@ mod tests {
     #[test]
     fn test_entity_trait_implementation() {
         let mut user = UserData::new("test", "Test");
-        
+
         // Test initial state
         assert!(user.id().is_none());
         assert_eq!(UserData::key_prefix(), "user_data");
-        
+
         // Test setting ID
         user.set_id("test_id_123".to_string());
         assert_eq!(user.id(), Some("test_id_123"));

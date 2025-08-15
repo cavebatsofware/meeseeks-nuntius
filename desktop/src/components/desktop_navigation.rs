@@ -1,6 +1,6 @@
+use crate::Route;
 use dioxus::prelude::*;
 use ui::I18nContext;
-use crate::Route;
 
 const DESKTOP_NAV_CSS: Asset = asset!("/assets/desktop_navigation.css");
 
@@ -26,7 +26,7 @@ pub struct DesktopNavigationProps {
 pub fn DesktopNavigation(props: DesktopNavigationProps) -> Element {
     let nav = navigator();
     let current_route = use_route::<Route>();
-    
+
     let navigation_items = vec![
         DesktopNavigationItem {
             icon: DASHBOARD_ICON,
@@ -71,7 +71,6 @@ pub fn DesktopNavigation(props: DesktopNavigationProps) -> Element {
                         text: props.i18n.translate(item.text_key),
                         is_active: is_nav_item_active(&current_route, item.nav_id),
                         onclick: {
-                            let nav = nav.clone();
                             let route = item.route.clone();
                             move |_| {
                                 nav.push(route.clone());

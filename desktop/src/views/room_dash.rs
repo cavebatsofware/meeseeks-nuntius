@@ -1,4 +1,4 @@
-use crate::{Route, DesktopLayout};
+use crate::{DesktopLayout, Route};
 use api::local::{create_room, get_all_rooms};
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -21,7 +21,7 @@ const ARROW_RIGHT_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16'
 const DOTS_VERTICAL_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='3' r='1.5' fill='%23ffffff'/%3E%3Ccircle cx='8' cy='8' r='1.5' fill='%23ffffff'/%3E%3Ccircle cx='8' cy='13' r='1.5' fill='%23ffffff'/%3E%3C/svg%3E";
 // temporary icon constants / aliases
 #[allow(dead_code)] // Used by navigation menu - may be used in future
-// TODO: these icons need to be finalized and probably copied to assets eventually
+                    // TODO: these icons need to be finalized and probably copied to assets eventually
 const IMG_FRAME1: &str = PLUS_ICON;
 const IMG_FRAME6: &str = SEARCH_ICON;
 const IMG_FRAME7: &str = BELL_ICON;
@@ -86,190 +86,190 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
         });
     };
     rsx! {
-        document::Link { rel: "stylesheet", href: PARTY_DASH_CSS }
+    document::Link { rel: "stylesheet", href: PARTY_DASH_CSS }
 
-        DesktopLayout {
-            i18n: props.i18n.clone(),
-            username: props.username.clone(),
-            user_status: props.user_subtitle.clone(),
-            user_avatar_initial: props.username.chars().next().unwrap_or('U').to_string(),
-            brand_name: "Cavebat".to_string(),
+    DesktopLayout {
+        i18n: props.i18n.clone(),
+        username: props.username.clone(),
+        user_status: props.user_subtitle.clone(),
+        user_avatar_initial: props.username.chars().next().unwrap_or('U').to_string(),
+        brand_name: "Cavebat".to_string(),
 
-                div {
-                    class: "content-wrapper",
+            div {
+                class: "content-wrapper",
 
-                    // Header
-                    header {
-                        class: "main-header",
+                // Header
+                header {
+                    class: "main-header",
 
-                        // Title section
-                        div {
-                            class: "header-title",
+                    // Title section
+                    div {
+                        class: "header-title",
 
-                            h1 {
-                                class: "page-title",
-                                "{props.i18n.translate(\"room_dashboard.title\")}"
-                            }
-
-                            p {
-                                class: "page-subtitle",
-                                "{props.i18n.translate(\"room_dashboard.subtitle\")}"
-                            }
+                        h1 {
+                            class: "page-title",
+                            "{props.i18n.translate(\"room_dashboard.title\")}"
                         }
 
-                        // Search and profile section
-                        div {
-                            class: "header-actions",
-
-                            // Search bar
-                            div {
-                                class: "search-container",
-
-                                img {
-                                    src: IMG_FRAME6,
-                                    alt: "Search",
-                                    class: "search-icon"
-                                }
-
-                                input {
-                                    r#type: "text",
-                                    placeholder: "{props.i18n.translate(\"room_dashboard.search_placeholder\")}",
-                                    class: "search-input"
-                                }
-                            }
-
-                            // Notification button
-                            button {
-                                class: "notification-button",
-
-                                img {
-                                    src: IMG_FRAME7,
-                                    alt: "Notifications",
-                                    class: "notification-icon"
-                                }
-
-                                // Notification badge
-                                span {
-                                    class: "notification-badge"
-                                }
-                            }
-
-                            // User avatar
-                            div {
-                                class: "header-avatar",
-
-                                img {
-                                    src: IMG_IMG,
-                                    alt: "User Avatar",
-                                    class: "avatar-image"
-                                }
-                            }
+                        p {
+                            class: "page-subtitle",
+                            "{props.i18n.translate(\"room_dashboard.subtitle\")}"
                         }
                     }
 
-                    // Top Communication Parties section
-                    section {
-                        class: "parties-section",
+                    // Search and profile section
+                    div {
+                        class: "header-actions",
 
-                        h2 {
-                            class: "section-title",
-                            "{props.i18n.translate(\"room_dashboard.sections.top_rooms\")}"
-                        }
-
+                        // Search bar
                         div {
-                            class: "parties-grid",
+                            class: "search-container",
 
-                            if loading_rooms() {
-                                div {
-                                    class: "loading-rooms",
-                                    "{props.i18n.translate(\"rooms.loading\")}"
-                                }
-                            } else {
-                                // Dynamic rooms from database
-                                for room in rooms() {
-                                    RoomCardComponent {
-                                        key: "{room.id.as_deref().unwrap_or(&room.name)}",
-                                        room_id: room.id.as_deref().unwrap_or(&room.name).to_string(),
-                                        title: room.name.clone(),
-                                        description: room.description.as_ref()
-                                            .filter(|desc| !desc.is_empty())
-                                            .cloned()
-                                            .unwrap_or_else(|| props.i18n.translate("rooms.default_description")),
-                                        badge_text: "",
-                                        badge_color: "",
-                                        member_count: room.member_count
-                                            .filter(|&count| count > 0)
-                                            .map(|count| format!("+{count}"))
-                                            .unwrap_or_default(),
-                                        i18n: props.i18n.clone()
-                                    }
-                                }
+                            img {
+                                src: IMG_FRAME6,
+                                alt: "Search",
+                                class: "search-icon"
                             }
 
-                            // Create New Room - always show
-                            CreateRoomCard {
-                                i18n: props.i18n.clone(),
-                                on_room_created: refresh_rooms
+                            input {
+                                r#type: "text",
+                                placeholder: "{props.i18n.translate(\"room_dashboard.search_placeholder\")}",
+                                class: "search-input"
+                            }
+                        }
+
+                        // Notification button
+                        button {
+                            class: "notification-button",
+
+                            img {
+                                src: IMG_FRAME7,
+                                alt: "Notifications",
+                                class: "notification-icon"
+                            }
+
+                            // Notification badge
+                            span {
+                                class: "notification-badge"
+                            }
+                        }
+
+                        // User avatar
+                        div {
+                            class: "header-avatar",
+
+                            img {
+                                src: IMG_IMG,
+                                alt: "User Avatar",
+                                class: "avatar-image"
                             }
                         }
                     }
+                }
 
-                    // Latest Unread Messages section
-                    section {
-                        class: "messages-section",
+                // Top Communication Parties section
+                section {
+                    class: "parties-section",
 
-                        h2 {
-                            class: "section-title",
-                            "{props.i18n.translate(\"room_dashboard.sections.latest_messages\")}"
+                    h2 {
+                        class: "section-title",
+                        "{props.i18n.translate(\"room_dashboard.sections.top_rooms\")}"
+                    }
+
+                    div {
+                        class: "parties-grid",
+
+                        if loading_rooms() {
+                            div {
+                                class: "loading-rooms",
+                                "{props.i18n.translate(\"rooms.loading\")}"
+                            }
+                        } else {
+                            // Dynamic rooms from database
+                            for room in rooms() {
+                                RoomCardComponent {
+                                    key: "{room.id.as_deref().unwrap_or(&room.name)}",
+                                    room_id: room.id.as_deref().unwrap_or(&room.name).to_string(),
+                                    title: room.name.clone(),
+                                    description: room.description.as_ref()
+                                        .filter(|desc| !desc.is_empty())
+                                        .cloned()
+                                        .unwrap_or_else(|| props.i18n.translate("rooms.default_description")),
+                                    badge_text: "",
+                                    badge_color: "",
+                                    member_count: room.member_count
+                                        .filter(|&count| count > 0)
+                                        .map(|count| format!("+{count}"))
+                                        .unwrap_or_default(),
+                                    i18n: props.i18n.clone()
+                                }
+                            }
                         }
 
-                        div {
-                            class: "messages-container",
+                        // Create New Room - always show
+                        CreateRoomCard {
+                            i18n: props.i18n.clone(),
+                            on_room_created: refresh_rooms
+                        }
+                    }
+                }
 
-                            MessageComponent {
-                                avatar_color: "purple",
-                                username: "Diana P.",
-                                room: "Project Overlord",
-                                message: "The latest schematics are ready for review. Please check the encrypted folder.",
-                                time: "2 min ago",
-                                is_first: true,
-                                i18n: props.i18n.clone()
-                            }
+                // Latest Unread Messages section
+                section {
+                    class: "messages-section",
 
-                            MessageComponent {
-                                avatar_color: "blue",
-                                username: "C. Kent",
-                                room: "Stealth Ops",
-                                message: "Confirmed. Target acquired. Awaiting final command for phase two.",
-                                time: "15 min ago",
-                                is_first: false,
-                                i18n: props.i18n.clone()
-                            }
+                    h2 {
+                        class: "section-title",
+                        "{props.i18n.translate(\"room_dashboard.sections.latest_messages\")}"
+                    }
 
-                            MessageComponent {
-                                avatar_color: "blue",
-                                username: "Barbara G.",
-                                room: "Project Overlord",
-                                message: "I've bypassed their firewall. The data stream is now open. Be quick.",
-                                time: "48 min ago",
-                                is_first: false,
-                                i18n: props.i18n.clone()
-                            }
+                    div {
+                        class: "messages-container",
 
-                            MessageComponent {
-                                avatar_color: "blue",
-                                username: "Victor S.",
-                                room: "R&D Division",
-                                message: "The prototype's energy signature is unstable. I recommend we run more diagnostics.",
-                                time: "1 hour ago",
-                                is_first: false,
-                                i18n: props.i18n.clone()
-                            }
+                        MessageComponent {
+                            avatar_color: "purple",
+                            username: "Diana P.",
+                            room: "Project Overlord",
+                            message: "The latest schematics are ready for review. Please check the encrypted folder.",
+                            time: "2 min ago",
+                            is_first: true,
+                            i18n: props.i18n.clone()
+                        }
+
+                        MessageComponent {
+                            avatar_color: "blue",
+                            username: "C. Kent",
+                            room: "Stealth Ops",
+                            message: "Confirmed. Target acquired. Awaiting final command for phase two.",
+                            time: "15 min ago",
+                            is_first: false,
+                            i18n: props.i18n.clone()
+                        }
+
+                        MessageComponent {
+                            avatar_color: "blue",
+                            username: "Barbara G.",
+                            room: "Project Overlord",
+                            message: "I've bypassed their firewall. The data stream is now open. Be quick.",
+                            time: "48 min ago",
+                            is_first: false,
+                            i18n: props.i18n.clone()
+                        }
+
+                        MessageComponent {
+                            avatar_color: "blue",
+                            username: "Victor S.",
+                            room: "R&D Division",
+                            message: "The prototype's energy signature is unstable. I recommend we run more diagnostics.",
+                            time: "1 hour ago",
+                            is_first: false,
+                            i18n: props.i18n.clone()
                         }
                     }
                 }
             }
         }
+    }
 }
 
 #[derive(Props, Clone, PartialEq)]

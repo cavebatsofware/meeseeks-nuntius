@@ -1,8 +1,8 @@
 #![cfg_attr(feature = "bundle", windows_subsystem = "windows")]
 use dioxus::prelude::*;
-use views::{Messages, RoomDashboard, DesktopUserProfileEdit};
-mod views;
+use views::{DesktopUserProfileEdit, Messages, RoomDashboard};
 mod components;
+mod views;
 pub use components::*;
 
 #[derive(Debug, Clone, Routable, PartialEq)]

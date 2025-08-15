@@ -1,7 +1,7 @@
 use crate::DesktopLayout;
+use api::user_data::UserData;
 use dioxus::prelude::*;
 use ui::{I18nContext, UserProfileEdit};
-use api::user_data::UserData;
 
 #[derive(Props, Clone, PartialEq)]
 pub struct DesktopUserProfileEditProps {
@@ -17,17 +17,17 @@ pub struct DesktopUserProfileEditProps {
 pub fn DesktopUserProfileEdit(props: DesktopUserProfileEditProps) -> Element {
     // Create initial user data
     let initial_data = UserData::default_for_user(&props.username);
-    
+
     let handle_save = move |user_data: UserData| {
         // TODO: Implement save logic
-        println!("Saving user data: {:?}", user_data);
+        println!("Saving user data: {user_data:?}");
     };
-    
+
     let handle_cancel = move |_| {
         // TODO: Navigate back or show confirmation
         println!("User cancelled profile edit");
     };
-    
+
     rsx! {
         DesktopLayout {
             i18n: props.i18n.clone(),
