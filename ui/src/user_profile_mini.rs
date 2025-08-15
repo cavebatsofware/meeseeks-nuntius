@@ -21,7 +21,7 @@ pub struct UserProfileMiniProps {
 pub fn UserProfileMini(props: UserProfileMiniProps) -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: USER_PROFILE_MINI_CSS }
-        
+
         div {
             class: if props.onclick.is_some() { "upm-container upm-container-clickable" } else { "upm-container" },
             onclick: move |evt| {

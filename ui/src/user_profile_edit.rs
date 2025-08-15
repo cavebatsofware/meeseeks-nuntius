@@ -1,6 +1,6 @@
-use dioxus::prelude::*;
 use crate::I18nContext;
 use api::user_data::UserData;
+use dioxus::prelude::*;
 
 const USER_PROFILE_EDIT_CSS: Asset = asset!("/assets/styling/user_profile_edit.css");
 
@@ -18,17 +18,18 @@ pub struct UserProfileEditProps {
 pub fn UserProfileEdit(props: UserProfileEditProps) -> Element {
     let mut profile_data = use_signal(|| props.initial_data.clone());
     let mut show_avatar_upload = use_signal(|| false);
+    #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut validation_errors = use_signal(|| Vec::<String>::new());
 
     // Available theme options
-    let theme_options = vec![
+    let theme_options = [
         ("dark", "user_profile.themes.dark"),
         ("light", "user_profile.themes.light"),
         ("auto", "user_profile.themes.auto"),
     ];
 
     // Available language options - always display in native text
-    let language_options = vec![
+    let language_options = [
         ("en", "English"),
         ("es", "Español"),
         ("fr", "Français"),
@@ -38,7 +39,7 @@ pub fn UserProfileEdit(props: UserProfileEditProps) -> Element {
     ];
 
     // Auto-away minute options
-    let auto_away_options = vec![
+    let auto_away_options = [
         (5, "5 minutes"),
         (10, "10 minutes"),
         (15, "15 minutes"),
@@ -51,7 +52,7 @@ pub fn UserProfileEdit(props: UserProfileEditProps) -> Element {
     // Clone i18n for use in closures
     let i18n = props.i18n.clone();
     let i18n_validate = i18n.clone();
-    
+
     // Validation function
     let mut validate_form = move || {
         let mut errors = Vec::new();
@@ -60,7 +61,7 @@ pub fn UserProfileEdit(props: UserProfileEditProps) -> Element {
         if data.username.trim().is_empty() {
             errors.push(i18n_validate.translate("user_profile.errors.username_required"));
         }
-        
+
         if data.display_name.trim().is_empty() {
             errors.push(i18n_validate.translate("user_profile.errors.display_name_required"));
         }
@@ -85,7 +86,7 @@ pub fn UserProfileEdit(props: UserProfileEditProps) -> Element {
             // Header
             header {
                 class: "profile-header",
-                
+
                 h1 {
                     class: "profile-title",
                     "{i18n.translate(\"user_profile.title\")}"
@@ -156,7 +157,7 @@ pub fn UserProfileEdit(props: UserProfileEditProps) -> Element {
                         if show_avatar_upload() {
                             div {
                                 class: "avatar-upload",
-                                
+
                                 input {
                                     r#type: "url",
                                     placeholder: i18n.translate("user_profile.avatar.url_placeholder"),
@@ -200,7 +201,7 @@ pub fn UserProfileEdit(props: UserProfileEditProps) -> Element {
 
                     div {
                         class: "form-row",
-                        
+
                         div {
                             class: "form-group",
                             label {
