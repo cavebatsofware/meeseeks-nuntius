@@ -1,4 +1,4 @@
-use crate::Route;
+use crate::{Route, DesktopLayout};
 use api::local::{create_room, get_all_rooms};
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -14,24 +14,15 @@ struct RoomData {
     member_count: Option<u32>,
 }
 
-const DASHBOARD_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1H7V7H1V1ZM9 1H15V7H9V1ZM1 9H7V15H1V9ZM9 9H15V15H9V9Z' fill='%23ffffff'/%3E%3C/svg%3E";
 const SEARCH_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 12A5 5 0 1 0 7 2a5 5 0 0 0 0 10ZM13 13l-3-3' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
 const PLUS_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 3.5V12.5M3.5 8H12.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
-const USERS_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7A3 3 0 1 0 5.5 1a3 3 0 0 0 0 6ZM1 12v2h9v-2a3 3 0 0 0-3-3H4a3 3 0 0 0-3 3Zm10-4.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM15 14v-1a2 2 0 0 0-1.18-1.83A3.01 3.01 0 0 1 15 14Z' fill='%23ffffff'/%3E%3C/svg%3E";
-const SETTINGS_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z' fill='%23ffffff'/%3E%3Cpath d='M14 8a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E";
 const BELL_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 2a6 6 0 0 0-6 6c0 7.3-3 9-3 9h18s-3-1.7-3-9a6 6 0 0 0-6-6Z' fill='%23ffffff'/%3E%3Cpath d='M9 17a1 1 0 0 1-2 0' fill='%23ffffff'/%3E%3C/svg%3E";
 const ARROW_RIGHT_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 4L10 8L6 12' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
 const DOTS_VERTICAL_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='3' r='1.5' fill='%23ffffff'/%3E%3Ccircle cx='8' cy='8' r='1.5' fill='%23ffffff'/%3E%3Ccircle cx='8' cy='13' r='1.5' fill='%23ffffff'/%3E%3C/svg%3E";
-
-// these need to get turned into icon components before I do other pages
-const IMG_GROUP: &str = DASHBOARD_ICON; // needs the real app logo
-const IMG_FRAME: &str = DASHBOARD_ICON;
+// temporary icon constants / aliases
 #[allow(dead_code)] // Used by navigation menu - may be used in future
+// TODO: these icons need to be finalized and probably copied to assets eventually
 const IMG_FRAME1: &str = PLUS_ICON;
-const IMG_FRAME2: &str = USERS_ICON;
-const IMG_FRAME3: &str = SETTINGS_ICON;
-const IMG_FRAME4: &str = SETTINGS_ICON;
-const IMG_FRAME5: &str = SETTINGS_ICON;
 const IMG_FRAME6: &str = SEARCH_ICON;
 const IMG_FRAME7: &str = BELL_ICON;
 const IMG_FRAME8: &str = ARROW_RIGHT_ICON;
@@ -97,103 +88,12 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: PARTY_DASH_CSS }
 
-        div {
-            class: "dashboard-container",
-
-            // Sidebar
-            aside {
-                class: "sidebar",
-
-                // Header section
-                div {
-                    class: "sidebar-header",
-
-                    // Logo
-                    div {
-                        class: "logo-container",
-                        img {
-                            src: IMG_GROUP,
-                            alt: "Cavebat Logo",
-                            class: "logo-image"
-                        }
-                    }
-
-                    // Brand name
-                    h1 {
-                        class: "brand-name",
-                        "Cavebat"
-                    }
-                }
-
-                // Navigation
-                nav {
-                    class: "sidebar-nav",
-
-                    // Active menu item - Party Dashboard
-                    div {
-                        class: "nav-item active",
-
-                        img {
-                            src: IMG_FRAME,
-                            alt: "Dashboard Icon",
-                            class: "nav-icon"
-                        }
-
-                        span {
-                            class: "nav-text",
-                            "{props.i18n.translate(\"rooms.dashboard\")}"
-                        }
-                    }
-
-                    // Other menu items
-                    MenuItemComponent { icon: IMG_FRAME2, text: props.i18n.translate("rooms.select") }
-                    MenuItemComponent { icon: IMG_FRAME3, text: props.i18n.translate("rooms.management") }
-                    MenuItemComponent { icon: IMG_FRAME4, text: props.i18n.translate("nav.settings") }
-                }
-
-                // User profile section
-                div {
-                    class: "user-profile",
-
-                    div {
-                        class: "user-info",
-
-                        // User avatar
-                        div {
-                            class: "user-avatar"
-                        }
-
-                        // User info
-                        div {
-                            class: "user-details",
-
-                            div {
-                                class: "user-name",
-                                "{props.username}"
-                            }
-
-                            div {
-                                class: "user-subtitle",
-                                "{props.user_subtitle}"
-                            }
-                        }
-
-                        // Settings button
-                        button {
-                            class: "settings-button",
-                            img {
-                                src: IMG_FRAME5,
-                                alt: "Settings",
-                                class: "settings-icon"
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Main content
-            main {
-                class: "main-content",
+        DesktopLayout {
+            i18n: props.i18n.clone(),
+            username: props.username.clone(),
+            user_status: props.user_subtitle.clone(),
+            user_avatar_initial: props.username.chars().next().unwrap_or('U').to_string(),
+            brand_name: "Cavebat".to_string(),
 
                 div {
                     class: "content-wrapper",
@@ -370,33 +270,6 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
                 }
             }
         }
-    }
-}
-
-#[derive(Props, Clone, PartialEq)]
-struct MenuItemProps {
-    icon: &'static str,
-    text: String,
-}
-
-#[component]
-fn MenuItemComponent(props: MenuItemProps) -> Element {
-    rsx! {
-        div {
-            class: "nav-item",
-
-            img {
-                src: props.icon,
-                alt: props.text,
-                class: "nav-icon"
-            }
-
-            span {
-                class: "nav-text",
-                "{props.text}"
-            }
-        }
-    }
 }
 
 #[derive(Props, Clone, PartialEq)]

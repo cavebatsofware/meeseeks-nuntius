@@ -1,0 +1,46 @@
+@import url('/assets/variables.css');
+
+/* UserProfileMini Component - prefix: upm- */
+.upm-container {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-primary);
+    margin-top: auto;
+}
+
+.upm-container-clickable:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.upm-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--color-accent-primary), #0099cc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-bg-primary);
+    flex-shrink: 0;
+}
+
+.upm-info {
+    flex: 1;
+}
+
+.upm-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.upm-status {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: 0;
+}

@@ -1,8 +1,9 @@
 #![cfg_attr(feature = "bundle", windows_subsystem = "windows")]
 use dioxus::prelude::*;
-use views::Messages;
-use views::RoomDashboard;
+use views::{Messages, RoomDashboard, DesktopUserProfileEdit};
 mod views;
+mod components;
+pub use components::*;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
@@ -12,6 +13,8 @@ enum Route {
         RoomDashboard {},
         #[route("/room/:room_id/messages")]
         Messages { room_id: String },
+        #[route("/profile/edit")]
+        DesktopUserProfileEdit {},
 }
 
 const VARIABLES_CSS: Asset = asset!("/assets/variables.css");

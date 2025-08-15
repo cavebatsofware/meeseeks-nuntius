@@ -127,3 +127,56 @@ rooms:
   create: "建立"
   cancel: "取消"
   creating: "正在建立..."
+
+# User Profile
+user_profile:
+  title: "使用者資料"
+  subtitle: "管理您的個人資料和偏好設定"
+  
+  # Avatar section
+  avatar:
+    title: "頭像"
+    url_placeholder: "輸入頭像URL"
+    remove: "刪除頭像"
+  
+  # Basic info section
+  basic_info:
+    title: "基本資訊"
+  
+  username: "使用者名稱"
+  username_placeholder: "輸入使用者名稱"
+  display_name: "顯示名稱" 
+  display_name_placeholder: "輸入顯示名稱"
+  status_message: "狀態訊息"
+  status_message_placeholder: "您在想什麼？"
+  
+  # Preferences section
+  preferences:
+    title: "偏好設定"
+  
+  theme: "主題"
+  themes:
+    dark: "深色"
+    light: "淺色"
+    auto: "自動"
+  
+  language: "語言"
+  
+  auto_away: "自動離開"
+  auto_away_options:
+    never: "從不"
+  
+  # Notifications section
+  notifications:
+    title: "通知"
+  
+  enable_notifications: "啟用通知"
+  enable_sound: "啟用聲音"
+  
+  # Status when saving
+  saving: "儲存中..."
+  
+  # Errors
+  errors:
+    username_required: "使用者名稱為必填項"
+    display_name_required: "顯示名稱為必填項"

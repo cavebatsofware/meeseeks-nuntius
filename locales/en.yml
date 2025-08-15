@@ -132,4 +132,57 @@ rooms:
   create: "Create"
   cancel: "Cancel"
   creating: "Creating..."
+
+# User Profile
+user_profile:
+  title: "User Profile"
+  subtitle: "Manage your profile settings and preferences"
+  
+  # Avatar section
+  avatar:
+    title: "Avatar"
+    url_placeholder: "Enter avatar URL"
+    remove: "Remove Avatar"
+  
+  # Basic info section
+  basic_info:
+    title: "Basic Information"
+  
+  username: "Username"
+  username_placeholder: "Enter your username"
+  display_name: "Display Name" 
+  display_name_placeholder: "Enter your display name"
+  status_message: "Status Message"
+  status_message_placeholder: "What's on your mind?"
+  
+  # Preferences section
+  preferences:
+    title: "Preferences"
+  
+  theme: "Theme"
+  themes:
+    dark: "Dark"
+    light: "Light"
+    auto: "Auto"
+  
+  language: "Language"
+  
+  auto_away: "Auto Away"
+  auto_away_options:
+    never: "Never"
+  
+  # Notifications section
+  notifications:
+    title: "Notifications"
+  
+  enable_notifications: "Enable Notifications"
+  enable_sound: "Enable Sound"
+  
+  # Status when saving
+  saving: "Saving..."
+  
+  # Errors
+  errors:
+    username_required: "Username is required"
+    display_name_required: "Display name is required"
   

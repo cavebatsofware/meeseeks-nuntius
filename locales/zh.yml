@@ -127,4 +127,57 @@ rooms:
   create: "创建"
   cancel: "取消"
   creating: "正在创建..."
+
+# User Profile
+user_profile:
+  title: "用户资料"
+  subtitle: "管理您的个人资料和偏好设置"
+  
+  # Avatar section
+  avatar:
+    title: "头像"
+    url_placeholder: "输入头像URL"
+    remove: "删除头像"
+  
+  # Basic info section
+  basic_info:
+    title: "基本信息"
+  
+  username: "用户名"
+  username_placeholder: "输入用户名"
+  display_name: "显示名称" 
+  display_name_placeholder: "输入显示名称"
+  status_message: "状态消息"
+  status_message_placeholder: "您在想什么？"
+  
+  # Preferences section
+  preferences:
+    title: "偏好设置"
+  
+  theme: "主题"
+  themes:
+    dark: "深色"
+    light: "浅色"
+    auto: "自动"
+  
+  language: "语言"
+  
+  auto_away: "自动离开"
+  auto_away_options:
+    never: "从不"
+  
+  # Notifications section
+  notifications:
+    title: "通知"
+  
+  enable_notifications: "启用通知"
+  enable_sound: "启用声音"
+  
+  # Status when saving
+  saving: "保存中..."
+  
+  # Errors
+  errors:
+    username_required: "用户名为必填项"
+    display_name_required: "显示名称为必填项"
   

@@ -127,4 +127,57 @@ rooms:
   create: "إنشاء"
   cancel: "إلغاء"
   creating: "جاري الإنشاء..."
+
+# User Profile
+user_profile:
+  title: "ملف المستخدم"
+  subtitle: "إدارة ملفك الشخصي والتفضيلات"
+  
+  # Avatar section
+  avatar:
+    title: "الصورة الرمزية"
+    url_placeholder: "أدخل رابط الصورة الرمزية"
+    remove: "إزالة الصورة الرمزية"
+  
+  # Basic info section
+  basic_info:
+    title: "المعلومات الأساسية"
+  
+  username: "اسم المستخدم"
+  username_placeholder: "أدخل اسم المستخدم"
+  display_name: "الاسم المعروض" 
+  display_name_placeholder: "أدخل الاسم المعروض"
+  status_message: "رسالة الحالة"
+  status_message_placeholder: "ماذا تفكر؟"
+  
+  # Preferences section
+  preferences:
+    title: "التفضيلات"
+  
+  theme: "السمة"
+  themes:
+    dark: "داكن"
+    light: "فاتح"
+    auto: "تلقائي"
+  
+  language: "اللغة"
+  
+  auto_away: "غياب تلقائي"
+  auto_away_options:
+    never: "أبداً"
+  
+  # Notifications section
+  notifications:
+    title: "الإشعارات"
+  
+  enable_notifications: "تفعيل الإشعارات"
+  enable_sound: "تفعيل الصوت"
+  
+  # Status when saving
+  saving: "جارٍ الحفظ..."
+  
+  # Errors
+  errors:
+    username_required: "اسم المستخدم مطلوب"
+    display_name_required: "الاسم المعروض مطلوب"
   

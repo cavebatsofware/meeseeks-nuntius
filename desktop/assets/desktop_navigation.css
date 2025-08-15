@@ -1,0 +1,54 @@
+@import url('/assets/variables.css');
+
+/* DesktopNavigation Component - prefix: dn- */
+.dn-nav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.dn-nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.dn-nav-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  background: transparent;
+  border-left: 3px solid transparent;
+}
+
+.dn-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dn-nav-item-active {
+  background: var(--color-bg-tertiary);
+  border-left-color: var(--color-accent-tertiary);
+}
+
+.dn-nav-icon {
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+  margin-right: var(--spacing-md);
+  object-fit: contain;
+}
+
+.dn-nav-text {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  user-select: none;
+  line-height: var(--line-height-normal);
+}
+
+.dn-nav-item-active .dn-nav-text {
+  color: var(--color-accent-tertiary);
+}

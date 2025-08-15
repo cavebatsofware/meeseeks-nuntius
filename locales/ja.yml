@@ -127,4 +127,57 @@ rooms:
   create: "作成"
   cancel: "キャンセル"
   creating: "作成中..."
+
+# User Profile
+user_profile:
+  title: "ユーザープロフィール"
+  subtitle: "プロフィールと設定を管理"
+  
+  # Avatar section
+  avatar:
+    title: "アバター"
+    url_placeholder: "アバターのURLを入力"
+    remove: "アバターを削除"
+  
+  # Basic info section
+  basic_info:
+    title: "基本情報"
+  
+  username: "ユーザー名"
+  username_placeholder: "ユーザー名を入力"
+  display_name: "表示名" 
+  display_name_placeholder: "表示名を入力"
+  status_message: "ステータスメッセージ"
+  status_message_placeholder: "今何を考えていますか？"
+  
+  # Preferences section
+  preferences:
+    title: "設定"
+  
+  theme: "テーマ"
+  themes:
+    dark: "ダーク"
+    light: "ライト"
+    auto: "自動"
+  
+  language: "言語"
+  
+  auto_away: "自動離席"
+  auto_away_options:
+    never: "なし"
+  
+  # Notifications section
+  notifications:
+    title: "通知"
+  
+  enable_notifications: "通知を有効にする"
+  enable_sound: "音を有効にする"
+  
+  # Status when saving
+  saving: "保存中..."
+  
+  # Errors
+  errors:
+    username_required: "ユーザー名は必須です"
+    display_name_required: "表示名は必須です"
   
