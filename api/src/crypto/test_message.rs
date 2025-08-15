@@ -845,7 +845,6 @@ mod test_contact {
             blocked,
             created_at,
             last_seen,
-            ..Default::default()
         };
 
         assert_eq!(contact.id(), id.as_deref());

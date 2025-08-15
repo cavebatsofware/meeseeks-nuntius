@@ -494,7 +494,7 @@ impl Entity for Room {
 }
 
 /// An encrypted message that can be sent between contacts
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Default, Deserialize, Serialize, Debug, Clone)]
 pub struct EncryptedMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -503,25 +503,14 @@ pub struct EncryptedMessage {
     pub nonce: Vec<u8>,
 }
 
-impl Default for EncryptedMessage {
-    fn default() -> Self {
-        Self {
-            id: None,
-            sender_public: [0; 32],
-            ciphertext: Vec::new(),
-            nonce: Vec::new(),
-        }
-    }
-}
-
 impl EncryptedMessage {
     /// Create a new encrypted message
     pub fn new(sender_public: PublicKey, ciphertext: Vec<u8>, nonce: Vec<u8>) -> Self {
         Self {
+            id: None,
             sender_public: sender_public.to_bytes(),
             ciphertext,
             nonce,
-            ..Default::default()
         }
     }
 
