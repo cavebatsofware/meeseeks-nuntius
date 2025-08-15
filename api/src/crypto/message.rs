@@ -266,7 +266,7 @@ impl Default for Room {
     fn default() -> Self {
         let secret_key = SecretKey::generate(&mut OsRng);
         let public_key = secret_key.public_key();
-        
+
         Self {
             id: None,
             name: String::new(),
