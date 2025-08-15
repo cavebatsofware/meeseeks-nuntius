@@ -84,11 +84,19 @@ use crate::persistence::database::Entity;
 // Type alias for convenience
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+/// Helper function to get current timestamp
+fn current_timestamp() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
+}
+
 /// Represents a contact with detailed information
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Contact {
     #[serde(skip_serializing_if = "Option::is_none")]
-    id: Option<String>,
+    pub id: Option<String>,
     pub name: String,
     pub public_key: [u8; 32],
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -101,85 +109,18 @@ pub struct Contact {
     pub last_seen: Option<u64>,
 }
 
-/// Builder for creating Contact instances with better ergonomics
-pub struct ContactBuilder {
-    id: Option<String>,
-    name: String,
-    public_key: [u8; 32],
-    nickname: Option<String>,
-    email: Option<String>,
-    verified: bool,
-    blocked: bool,
-    created_at: u64,
-    last_seen: Option<u64>,
-}
-
-impl ContactBuilder {
-    /// Create a new ContactBuilder with required fields
-    pub fn new(name: String, public_key: [u8; 32]) -> Self {
+impl Default for Contact {
+    fn default() -> Self {
         Self {
             id: None,
-            name,
-            public_key,
+            name: String::new(),
+            public_key: [0; 32],
             nickname: None,
             email: None,
             verified: false,
             blocked: false,
-            created_at: std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap()
-                .as_secs(),
+            created_at: current_timestamp(),
             last_seen: None,
-        }
-    }
-
-    pub fn with_id(mut self, id: Option<String>) -> Self {
-        self.id = id;
-        self
-    }
-
-    pub fn with_nickname(mut self, nickname: Option<String>) -> Self {
-        self.nickname = nickname;
-        self
-    }
-
-    pub fn with_email(mut self, email: Option<String>) -> Self {
-        self.email = email;
-        self
-    }
-
-    pub fn with_verified(mut self, verified: bool) -> Self {
-        self.verified = verified;
-        self
-    }
-
-    pub fn with_blocked(mut self, blocked: bool) -> Self {
-        self.blocked = blocked;
-        self
-    }
-
-    pub fn with_created_at(mut self, created_at: u64) -> Self {
-        self.created_at = created_at;
-        self
-    }
-
-    pub fn with_last_seen(mut self, last_seen: Option<u64>) -> Self {
-        self.last_seen = last_seen;
-        self
-    }
-
-    /// Build the Contact instance
-    pub fn build(self) -> Contact {
-        Contact {
-            id: self.id,
-            name: self.name,
-            public_key: self.public_key,
-            nickname: self.nickname,
-            email: self.email,
-            verified: self.verified,
-            blocked: self.blocked,
-            created_at: self.created_at,
-            last_seen: self.last_seen,
         }
     }
 }
@@ -188,24 +129,19 @@ impl Contact {
     /// Create a new contact
     pub fn new(name: &str, public_key: &PublicKey) -> Self {
         Self {
-            id: None,
             name: name.to_string(),
             public_key: public_key.to_bytes(),
-            nickname: None,
-            email: None,
-            verified: false,
-            blocked: false,
-            created_at: std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap()
-                .as_secs(),
-            last_seen: None,
+            ..Default::default()
         }
     }
 
-    /// Create a contact using a builder pattern for better readability
-    pub fn builder(name: String, public_key: [u8; 32]) -> ContactBuilder {
-        ContactBuilder::new(name, public_key)
+    /// Create a contact with required fields using Default
+    pub fn with_key(name: &str, public_key: &PublicKey) -> Self {
+        Self {
+            name: name.to_string(),
+            public_key: public_key.to_bytes(),
+            ..Default::default()
+        }
     }
 
     /// Get the public key as a PublicKey object
@@ -317,24 +253,23 @@ impl Entity for Contact {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Room {
     #[serde(skip_serializing_if = "Option::is_none")]
-    id: Option<String>,
+    pub id: Option<String>,
     pub name: String,
     pub description: String,
     pub member_count: u32,
-    secret_key: [u8; 32],
-    public_key: [u8; 32],
-    known_contacts: HashSet<[u8; 32]>,
+    pub secret_key: [u8; 32],
+    pub public_key: [u8; 32],
+    pub known_contacts: HashSet<[u8; 32]>,
 }
 
-impl Room {
-    /// Create a new room with a random keypair
-    pub fn new(name: &str) -> Self {
+impl Default for Room {
+    fn default() -> Self {
         let secret_key = SecretKey::generate(&mut OsRng);
         let public_key = secret_key.public_key();
-
+        
         Self {
             id: None,
-            name: name.to_string(),
+            name: String::new(),
             description: String::new(),
             member_count: 0,
             secret_key: secret_key.to_bytes(),
@@ -342,8 +277,18 @@ impl Room {
             known_contacts: HashSet::new(),
         }
     }
+}
 
-    /// Create a new room with given values
+impl Room {
+    /// Create a new room with a random keypair
+    pub fn new(name: &str) -> Self {
+        Self {
+            name: name.to_string(),
+            ..Default::default()
+        }
+    }
+
+    /// Create a new room with given values (for loading from storage)
     pub fn from_values(
         id: Option<String>,
         name: &str,
@@ -552,20 +497,31 @@ impl Entity for Room {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct EncryptedMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
-    id: Option<String>,
-    sender_public: [u8; 32],
+    pub id: Option<String>,
+    pub sender_public: [u8; 32],
     pub ciphertext: Vec<u8>,
     pub nonce: Vec<u8>,
+}
+
+impl Default for EncryptedMessage {
+    fn default() -> Self {
+        Self {
+            id: None,
+            sender_public: [0; 32],
+            ciphertext: Vec::new(),
+            nonce: Vec::new(),
+        }
+    }
 }
 
 impl EncryptedMessage {
     /// Create a new encrypted message
     pub fn new(sender_public: PublicKey, ciphertext: Vec<u8>, nonce: Vec<u8>) -> Self {
         Self {
-            id: None,
             sender_public: sender_public.to_bytes(),
             ciphertext,
             nonce,
+            ..Default::default()
         }
     }
 

@@ -26,9 +26,3 @@ pub mod persistence;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod local;
-
-#[cfg(not(target_arch = "wasm32"))]
-use crate::persistence::database::{Database, Entity};
-
-#[cfg(not(target_arch = "wasm32"))]
-use crate::crypto::message::{Contact, Room};

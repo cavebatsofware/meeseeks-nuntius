@@ -821,7 +821,7 @@ mod test_contact {
     #[test]
     #[serial(contact)]
     fn test_contact_creation_builder_pattern() {
-        print_test_header("Contact Creation (Builder Pattern)", "🏗️");
+        print_test_header("Contact Creation (Struct Literal)", "🏗️");
 
         let public_key = create_test_public_key();
         let id = Some("contact_123".to_string());
@@ -833,17 +833,20 @@ mod test_contact {
         let created_at = 1234567890u64;
         let last_seen = Some(1234567900u64);
 
-        print_info("Testing contact creation using builder pattern");
+        print_info("Testing contact creation using struct literals with Default");
 
-        let contact = Contact::builder(name.clone(), public_key.to_bytes())
-            .with_id(id.clone())
-            .with_nickname(nickname.clone())
-            .with_email(email.clone())
-            .with_verified(verified)
-            .with_blocked(blocked)
-            .with_created_at(created_at)
-            .with_last_seen(last_seen)
-            .build();
+        let contact = Contact {
+            id: id.clone(),
+            name: name.clone(),
+            public_key: public_key.to_bytes(),
+            nickname: nickname.clone(),
+            email: email.clone(),
+            verified,
+            blocked,
+            created_at,
+            last_seen,
+            ..Default::default()
+        };
 
         assert_eq!(contact.id(), id.as_deref());
         assert_eq!(contact.name, name);
@@ -855,9 +858,9 @@ mod test_contact {
         assert_eq!(contact.created_at, created_at);
         assert_eq!(contact.last_seen, last_seen);
 
-        print_success("✓ Contact created with all specified values using builder pattern");
+        print_success("✓ Contact created with all specified values using struct literal");
 
-        println!("{BOLD}🎉 Builder pattern creation test PASSED!{RESET}\n");
+        println!("{BOLD}🎉 Struct literal creation test PASSED!{RESET}\n");
     }
 
     #[test]
