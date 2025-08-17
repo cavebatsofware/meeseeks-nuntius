@@ -22,3 +22,6 @@ pub use types::*;
 
 mod icon;
 pub use icon::{Icon, IconName};
+
+mod test_icon;
+mod test_utils;
