@@ -133,6 +133,18 @@ rooms:
   cancel: "Cancel"
   creating: "Creating..."
 
+# Icons
+icons:
+  dashboard: "Dashboard"
+  users: "Users"
+  settings: "Settings"
+  search: "Search"
+  plus: "Add"
+  bell: "Notifications"
+  arrow_right: "Enter"
+  dots_vertical: "Menu"
+  logo: "Logo"
+
 # User Profile
 user_profile:
   title: "User Profile"

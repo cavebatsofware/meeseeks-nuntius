@@ -1,33 +1,11 @@
 use crate::{DesktopLayout, Route};
 use api::local::{create_room, get_all_rooms};
 use dioxus::prelude::*;
-use serde::{Deserialize, Serialize};
-use ui::{get_language_name, get_text_direction, I18nContext};
+use ui::{get_language_name, get_text_direction, I18nContext, RoomData, Icon, IconName};
 
 const PARTY_DASH_CSS: Asset = asset!("/assets/room_dash.css");
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct RoomData {
-    id: Option<String>,
-    name: String,
-    description: Option<String>,
-    member_count: Option<u32>,
-}
 
-const SEARCH_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 12A5 5 0 1 0 7 2a5 5 0 0 0 0 10ZM13 13l-3-3' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
-const PLUS_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 3.5V12.5M3.5 8H12.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
-const BELL_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 2a6 6 0 0 0-6 6c0 7.3-3 9-3 9h18s-3-1.7-3-9a6 6 0 0 0-6-6Z' fill='%23ffffff'/%3E%3Cpath d='M9 17a1 1 0 0 1-2 0' fill='%23ffffff'/%3E%3C/svg%3E";
-const ARROW_RIGHT_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 4L10 8L6 12' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
-const DOTS_VERTICAL_ICON: &str = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='3' r='1.5' fill='%23ffffff'/%3E%3Ccircle cx='8' cy='8' r='1.5' fill='%23ffffff'/%3E%3Ccircle cx='8' cy='13' r='1.5' fill='%23ffffff'/%3E%3C/svg%3E";
-// temporary icon constants / aliases
-#[allow(dead_code)] // Used by navigation menu - may be used in future
-                    // TODO: these icons need to be finalized and probably copied to assets eventually
-const IMG_FRAME1: &str = PLUS_ICON;
-const IMG_FRAME6: &str = SEARCH_ICON;
-const IMG_FRAME7: &str = BELL_ICON;
-const IMG_FRAME8: &str = ARROW_RIGHT_ICON;
-const IMG_FRAME9: &str = PLUS_ICON;
-const IMG_FRAME10: &str = DOTS_VERTICAL_ICON;
 const IMG_IMG: &str = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face&auto=format"; // Placeholder avatar
 
 #[derive(Props, Clone, PartialEq)]
@@ -125,10 +103,10 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
                         div {
                             class: "search-container",
 
-                            img {
-                                src: IMG_FRAME6,
-                                alt: "Search",
-                                class: "search-icon"
+                            Icon {
+                                name: IconName::Search,
+                                i18n: props.i18n.clone(),
+                                class: "search-icon".to_string()
                             }
 
                             input {
@@ -142,10 +120,10 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
                         button {
                             class: "notification-button",
 
-                            img {
-                                src: IMG_FRAME7,
-                                alt: "Notifications",
-                                class: "notification-icon"
+                            Icon {
+                                name: IconName::Bell,
+                                i18n: props.i18n.clone(),
+                                class: "notification-icon".to_string()
                             }
 
                             // Notification badge
@@ -341,10 +319,10 @@ fn RoomCardComponent(props: PartyCardProps) -> Element {
                         // web_sys::console::log_1(&"Enter button clicked!".into());
                     },
                     "{props.i18n.translate(\"room_dashboard.enter\")}"
-                    img {
-                        src: IMG_FRAME8,
-                        alt: "Enter",
-                        class: "enter-icon"
+                    Icon {
+                        name: IconName::ArrowRight,
+                        i18n: props.i18n.clone(),
+                        class: "enter-icon".to_string()
                     }
                 }
             }
@@ -415,10 +393,10 @@ fn MessageComponent(props: MessageProps) -> Element {
             button {
                 class: "message-menu",
 
-                img {
-                    src: IMG_FRAME10,
-                    alt: "Menu",
-                    class: "menu-icon"
+                Icon {
+                    name: IconName::DotsVertical,
+                    i18n: props.i18n.clone(),
+                    class: "menu-icon".to_string()
                 }
             }
         }
@@ -548,10 +526,10 @@ fn CreateRoomCard(props: CreateRoomCardProps) -> Element {
                     class: "create-icon-container",
                     onclick: move |_| show_form.set(true),
 
-                    img {
-                        src: IMG_FRAME9,
-                        alt: "Add",
-                        class: "create-icon"
+                    Icon {
+                        name: IconName::Plus,
+                        i18n: props.i18n.clone(),
+                        class: "create-icon".to_string()
                     }
                 }
 

@@ -8,3 +8,4 @@ dioxus = { workspace = true }
 api = { workspace = true }
 rust-i18n = { workspace = true }
 serde_yml = { workspace = true }
+serde = { workspace = true }

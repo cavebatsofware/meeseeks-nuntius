@@ -128,6 +128,18 @@ rooms:
   cancel: "Annuler"
   creating: "Création..."
 
+# Icons
+icons:
+  dashboard: "Tableau de bord"
+  users: "Utilisateurs"
+  settings: "Paramètres"
+  search: "Rechercher"
+  plus: "Ajouter"
+  bell: "Notifications"
+  arrow_right: "Entrer"
+  dots_vertical: "Menu"
+  logo: "Logo"
+
 # User Profile
 user_profile:
   title: "Profil Utilisateur"

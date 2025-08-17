@@ -128,6 +128,18 @@ rooms:
   cancel: "取消"
   creating: "正在创建..."
 
+# Icons
+icons:
+  dashboard: "仪表板"
+  users: "用户"
+  settings: "设置"
+  search: "搜索"
+  plus: "添加"
+  bell: "通知"
+  arrow_right: "进入"
+  dots_vertical: "菜单"
+  logo: "图标"
+
 # User Profile
 user_profile:
   title: "用户资料"

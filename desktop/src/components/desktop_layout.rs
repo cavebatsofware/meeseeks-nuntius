@@ -31,7 +31,8 @@ pub fn DesktopLayout(props: DesktopLayoutProps) -> Element {
                 class: "sidebar",
 
                 SharedHeader {
-                    brand_name: props.brand_name
+                    brand_name: props.brand_name,
+                    i18n: props.i18n.clone()
                 }
 
                 DesktopNavigation {
