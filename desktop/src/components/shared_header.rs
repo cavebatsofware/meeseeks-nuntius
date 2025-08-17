@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use ui::{Icon, IconName, I18nContext};
+use ui::{I18nContext, Icon, IconName};
 
 const SHARED_HEADER_CSS: Asset = asset!("/assets/shared_header.css");
 // TODO: needs the real app logo

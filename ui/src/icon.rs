@@ -1,5 +1,5 @@
-use dioxus::prelude::*;
 use crate::I18nContext;
+use dioxus::prelude::*;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum IconName {

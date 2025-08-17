@@ -5,7 +5,6 @@ use ui::{I18nContext, RoomData, UserProfileMini};
 
 const MESSAGES_CSS: Asset = asset!("/assets/messages.css");
 
-
 #[derive(Props, Clone, PartialEq)]
 pub struct MessagesProps {
     room_id: String,

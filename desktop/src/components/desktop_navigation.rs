@@ -4,7 +4,6 @@ use ui::{I18nContext, Icon, IconName};
 
 const DESKTOP_NAV_CSS: Asset = asset!("/assets/desktop_navigation.css");
 
-
 #[derive(Clone, PartialEq)]
 pub struct DesktopNavigationItem {
     pub icon: IconName,
