@@ -19,14 +19,6 @@
 pub mod test_helpers {
     use dioxus::prelude::*;
 
-    /// Helper function to compare RSX rendering output
-    /// Based on official Dioxus testing documentation: https://dioxuslabs.com/learn/0.6/cookbook/testing
-    pub fn assert_rsx_eq(first: Element, second: Element) {
-        let first = dioxus_ssr::render_element(first);
-        let second = dioxus_ssr::render_element(second);
-        pretty_assertions::assert_str_eq!(first, second);
-    }
-
     /// Helper function to render an RSX element to HTML string for inspection
     pub fn render_to_string(element: Element) -> String {
         dioxus_ssr::render_element(element)
