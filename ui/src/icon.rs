@@ -27,7 +27,7 @@ impl IconName {
         }
     }
 
-    fn default_translation_key(&self) -> &'static str {
+    pub fn default_translation_key(&self) -> &'static str {
         match self {
             IconName::Dashboard => "icons.dashboard",
             IconName::Users => "icons.users",
