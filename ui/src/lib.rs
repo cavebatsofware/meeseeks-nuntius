@@ -16,3 +16,9 @@ pub use user_profile_mini::UserProfileMini;
 
 mod user_profile_edit;
 pub use user_profile_edit::*;
+
+pub mod types;
+pub use types::*;
+
+mod icon;
+pub use icon::{Icon, IconName};

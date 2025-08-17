@@ -1,18 +1,10 @@
 use crate::Route;
 use api::local::get_room;
 use dioxus::prelude::*;
-use serde::{Deserialize, Serialize};
-use ui::{I18nContext, UserProfileMini};
+use ui::{I18nContext, RoomData, UserProfileMini};
 
 const MESSAGES_CSS: Asset = asset!("/assets/messages.css");
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct RoomData {
-    pub id: Option<String>,
-    pub name: String,
-    pub description: Option<String>,
-    pub member_count: Option<u32>,
-}
 
 #[derive(Props, Clone, PartialEq)]
 pub struct MessagesProps {

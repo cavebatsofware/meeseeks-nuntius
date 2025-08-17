@@ -5551,6 +5551,7 @@ dependencies = [
  "api",
  "dioxus",
  "rust-i18n",
+ "serde",
  "serde_yml",
 ]
 
