@@ -59,7 +59,7 @@ pub fn Messages(props: MessagesProps) -> Element {
     };
 
     rsx! {
-        document::Link { rel: "stylesheet", href: MESSAGES_CSS }
+        document::Stylesheet { href: MESSAGES_CSS }
 
         div {
             class: "messages-view-container",

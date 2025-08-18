@@ -9,6 +9,7 @@ ui = { workspace = true }
 api = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
+dioxus-primitives = { git = "https://github.com/DioxusLabs/components", version = "0.0.1" }
 
 [features]
 default = []

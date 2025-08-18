@@ -8,7 +8,7 @@ members = [
 ]
 
 [workspace.dependencies]
-dioxus = { version = "0.6.3" }
+dioxus = { version = "0.7.0-rc.0" }
 serde = { version = "1.0.219" }
 serde_json = { version = "1.0.140" }
 serde_yml = { version = "0.0.12" }
