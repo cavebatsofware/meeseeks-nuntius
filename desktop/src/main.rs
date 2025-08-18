@@ -31,8 +31,8 @@ fn App() -> Element {
 
     rsx! {
         // Global app resources - only variables and shared components
-        document::Link { rel: "stylesheet", href: VARIABLES_CSS }
-        document::Link { rel: "stylesheet", href: SHARED_CSS }
+        document::Stylesheet { href: VARIABLES_CSS }
+        document::Stylesheet { href: SHARED_CSS }
 
         Router::<Route> {}
     }

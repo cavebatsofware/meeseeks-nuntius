@@ -63,7 +63,7 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
         });
     };
     rsx! {
-    document::Link { rel: "stylesheet", href: PARTY_DASH_CSS }
+    document::Stylesheet { href: PARTY_DASH_CSS }
 
     DesktopLayout {
         i18n: props.i18n.clone(),
