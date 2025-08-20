@@ -1371,11 +1371,12 @@ dependencies = [
 [[package]]
 name = "dioxus-primitives"
 version = "0.0.1"
-source = "git+https://github.com/DioxusLabs/components#e4aa62249937fa77eb810000b767c7a69d80bd75"
+source = "git+https://github.com/DioxusLabs/components#562ade5eee405911e1da28a6ca70dc72b0e82550"
 dependencies = [
  "dioxus",
  "dioxus-time",
  "lazy-js-bundle 0.6.2",
+ "time",
  "tracing",
 ]
 
