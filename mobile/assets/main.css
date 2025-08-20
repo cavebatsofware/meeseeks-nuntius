@@ -1,6 +1,3 @@
-/* Import design system variables */
-@import url('/assets/styling/variables.css');
-
 * {
     box-sizing: border-box;
 }

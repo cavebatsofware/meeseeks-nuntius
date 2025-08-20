@@ -18,6 +18,8 @@
 use serde::{Deserialize, Serialize};
 use sled::Db;
 use std::sync::LazyLock;
+use std::path::PathBuf;
+
 
 // Entity trait
 // provides key prefix for database operations
@@ -31,8 +33,41 @@ pub struct Database {
     db: &'static Db,
 }
 
-static DATABASE: LazyLock<Db> =
-    LazyLock::new(|| sled::open("app.sled").expect("Failed to open database"));
+fn get_database_path() -> PathBuf {
+    #[cfg(target_os = "ios")]
+    {
+        // Use iOS Application Support directory for persistent storage
+        if let Some(home) = std::env::var_os("HOME") {
+            let app_support = PathBuf::from(home).join("Library").join("Application Support");
+            // Create directory if it doesn't exist
+            let _ = std::fs::create_dir_all(&app_support);
+            app_support.join("app.sled")
+        } else {
+            PathBuf::from("app.sled")
+        }
+    }
+    
+    #[cfg(target_os = "android")]
+    {
+        // Use Android's internal app files directory
+        let app_files_dir = PathBuf::from("/data/data/com.cavebatsofware/files");
+        
+        // Create directory if it doesn't exist
+        let _ = std::fs::create_dir_all(&app_files_dir);
+        
+        app_files_dir.join("app.sled")
+    }
+    
+    #[cfg(not(any(target_os = "ios", target_os = "android")))]
+    {
+        PathBuf::from("app.sled")
+    }
+}
+
+static DATABASE: LazyLock<Db> = LazyLock::new(|| {
+    let path = get_database_path();
+    sled::open(path).expect("Failed to open database")
+});
 
 impl Default for Database {
     fn default() -> Self {
@@ -80,6 +115,10 @@ impl Database {
 
         let json = serde_json::to_vec(&entity)?;
         self.db.insert(&key, json)?;
+        
+        // Force flush to disk for mobile persistence
+        self.db.flush()?;
+        
         Ok(key)
     }
 
@@ -109,6 +148,10 @@ impl Database {
         if let Some(id) = entity.id() {
             let json = serde_json::to_vec(entity)?;
             self.db.insert(id, json)?;
+            
+            // Force flush to disk for mobile persistence
+            self.db.flush()?;
+            
             Ok(())
         } else {
             Err("Cannot update entity without ID".into())
@@ -142,6 +185,10 @@ impl Database {
         let raw = self.db.remove(key)?;
         if raw.is_some() {
             let result: T = serde_json::from_slice(&raw.unwrap())?;
+            
+            // Force flush to disk for mobile persistence
+            self.db.flush()?;
+            
             Ok(result)
         } else {
             Err("No value found for provided key".into())
