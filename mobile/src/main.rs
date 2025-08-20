@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use ui::{Navbar, I18nContext};
+use ui::{I18nContext, Navbar};
 use views::MobileRoomDashboard;
 
 mod views;

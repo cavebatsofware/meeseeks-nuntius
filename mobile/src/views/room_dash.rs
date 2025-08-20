@@ -1,5 +1,5 @@
-use dioxus::prelude::*;
 use api::local::{create_room, get_all_rooms};
+use dioxus::prelude::*;
 use ui::{get_language_name, get_text_direction, I18nContext, Icon, IconName, RoomData};
 
 const MOBILE_ROOM_DASH_CSS: Asset = asset!("/assets/mobile_room_dash.css");
@@ -20,7 +20,7 @@ pub fn MobileRoomDashboard(props: MobileRoomDashboardProps) -> Element {
     let mut rooms = use_signal(|| Vec::<RoomData>::new());
     let mut loading_rooms = use_signal(|| true);
     let locale = props.i18n.get_current_locale();
-    
+
     // Keep for debugging until language switcher is implemented
     println!("Language: {}", get_language_name(locale));
     println!("Text direction: {}", get_text_direction(locale));
@@ -74,7 +74,7 @@ pub fn MobileRoomDashboard(props: MobileRoomDashboardProps) -> Element {
                 // Header top row with greeting and profile
                 div {
                     class: "mrd-header-top",
-                    
+
                     div {
                         class: "mrd-greeting-section",
                         h1 {
@@ -100,7 +100,7 @@ pub fn MobileRoomDashboard(props: MobileRoomDashboardProps) -> Element {
                                 class: "mrd-notification-badge"
                             }
                         }
-                        
+
                         div {
                             class: "mrd-user-avatar",
                             "{props.username.chars().next().unwrap_or('U')}"
@@ -166,7 +166,7 @@ pub fn MobileRoomDashboard(props: MobileRoomDashboardProps) -> Element {
                                     i18n: props.i18n.clone()
                                 }
                             }
-                            
+
                             // Create New Room Card
                             MobileCreateRoomCard {
                                 i18n: props.i18n.clone(),
@@ -237,7 +237,7 @@ fn MobileRoomCard(props: MobileRoomCardProps) -> Element {
     rsx! {
         div {
             class: "mrd-room-card",
-            
+
             div {
                 class: "mrd-room-header",
                 h3 {
