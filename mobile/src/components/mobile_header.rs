@@ -29,7 +29,7 @@ pub fn MobileHeader(props: MobileHeaderProps) -> Element {
                 // Left side - Back button and brand
                 div {
                     class: "mh-left-section",
-                    
+
                     button {
                         class: "mh-back-btn",
                         Icon {
@@ -56,7 +56,7 @@ pub fn MobileHeader(props: MobileHeaderProps) -> Element {
                 // Right side - Notifications and menu
                 div {
                     class: "mh-right-section",
-                    
+
                     button {
                         class: "mh-notification-btn",
                         Icon {

@@ -1,7 +1,7 @@
+use crate::components::MobileLayout;
 use api::local::{create_room, get_all_rooms};
 use dioxus::prelude::*;
 use ui::{get_language_name, get_text_direction, I18nContext, Icon, IconName, RoomData};
-use crate::components::MobileLayout;
 
 const MOBILE_ROOM_DASH_CSS: Asset = asset!("/assets/mobile_room_dash.css");
 
@@ -79,7 +79,7 @@ pub fn MobileRoomDashboard(props: MobileRoomDashboardProps) -> Element {
             // Header section content
             div {
                 class: "mrd-header-content",
-                
+
                 div {
                     class: "mrd-greeting-section",
                     h1 {

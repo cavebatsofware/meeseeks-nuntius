@@ -3,8 +3,8 @@ use dioxus::prelude::*;
 use ui::{I18nContext, Navbar};
 use views::MobileRoomDashboard;
 
-mod views;
 mod components;
+mod views;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
