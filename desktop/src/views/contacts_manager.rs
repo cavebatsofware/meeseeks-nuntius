@@ -36,7 +36,7 @@ impl ContactStatus {
     pub fn as_str(&self) -> &'static str {
         match self {
             ContactStatus::Online => "online",
-            ContactStatus::Away => "away", 
+            ContactStatus::Away => "away",
             ContactStatus::Offline => "offline",
             ContactStatus::DoNotDisturb => "dnd",
         }
@@ -60,8 +60,8 @@ pub fn ContactsManager(props: ContactsManagerProps) -> Element {
             contacts()
                 .into_iter()
                 .filter(|contact| {
-                    contact.name.to_lowercase().contains(&query) ||
-                    contact.username.to_lowercase().contains(&query)
+                    contact.name.to_lowercase().contains(&query)
+                        || contact.username.to_lowercase().contains(&query)
                 })
                 .collect()
         }
@@ -144,11 +144,11 @@ pub fn ContactsManager(props: ContactsManagerProps) -> Element {
                     // Contacts list
                     div {
                         class: "cm-contacts-list",
-                        
+
                         // Contacts list header
                         div {
                             class: "cm-contacts-list-header",
-                            
+
                             h2 {
                                 class: "cm-contacts-list-title",
                                 "{props.i18n.translate(\"contacts.contacts_list\")}"
@@ -158,19 +158,19 @@ pub fn ContactsManager(props: ContactsManagerProps) -> Element {
                         // Status filter tabs
                         div {
                             class: "cm-status-filters",
-                            StatusFilterTab { 
+                            StatusFilterTab {
                                 status: "all".to_string(),
                                 label: props.i18n.translate("contacts.all"),
                                 is_active: true,
                                 i18n: props.i18n.clone()
                             }
-                            StatusFilterTab { 
+                            StatusFilterTab {
                                 status: "online".to_string(),
                                 label: props.i18n.translate("status.online"),
                                 is_active: false,
                                 i18n: props.i18n.clone()
                             }
-                            StatusFilterTab { 
+                            StatusFilterTab {
                                 status: "offline".to_string(),
                                 label: props.i18n.translate("status.offline"),
                                 is_active: false,
@@ -299,7 +299,7 @@ fn ContactListItem(props: ContactListItemProps) -> Element {
                         "@{props.contact.username}"
                     }
                 }
-                
+
                 div {
                     class: "cm-contact-status-section",
                     p {
@@ -427,7 +427,7 @@ fn ContactDetailsPanel(props: ContactDetailsPanelProps) -> Element {
             // Contact details sections
             div {
                 class: "cm-contact-details-sections",
-                
+
                 ContactInfoSection {
                     title: props.i18n.translate("contacts.details.info"),
                     i18n: props.i18n.clone(),
@@ -439,7 +439,7 @@ fn ContactDetailsPanel(props: ContactDetailsPanelProps) -> Element {
                         label: "Status".to_string(),
                         value: match props.contact.status {
                             ContactStatus::Online => props.i18n.translate("status.online"),
-                            ContactStatus::Away => props.i18n.translate("status.away"), 
+                            ContactStatus::Away => props.i18n.translate("status.away"),
                             ContactStatus::Offline => props.i18n.translate("status.offline"),
                             ContactStatus::DoNotDisturb => props.i18n.translate("status.busy"),
                         }
@@ -598,7 +598,7 @@ fn ContactsPagination(props: ContactsPaginationProps) -> Element {
     rsx! {
         div {
             class: "cm-pagination-container",
-            
+
             div {
                 class: "cm-pagination-info",
                 span {
@@ -618,7 +618,7 @@ fn ContactsPagination(props: ContactsPaginationProps) -> Element {
                         class: "cm-pagination-icon prev".to_string()
                     }
                 }
-                
+
                 for page in 1..=props.total_pages {
                     button {
                         key: "{page}",
