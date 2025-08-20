@@ -3260,7 +3260,9 @@ dependencies = [
 name = "mobile"
 version = "0.1.0"
 dependencies = [
+ "api",
  "dioxus",
+ "serde_json",
  "ui",
 ]
 

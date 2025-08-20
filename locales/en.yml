@@ -40,7 +40,12 @@ messages:
 
 # Contacts
 contacts:
+  title: "Contacts Manager"
+  subtitle: "Manage your secure contacts and communication settings"
   add_contact: "Add Contact"
+  add_contact_subtitle: "Connect with friends and colleagues securely"
+  contacts_list: "Contacts List"
+  search_placeholder: "Search contacts..."
   contact_name: "Contact Name"
   public_key: "Public Key"
   add: "Add"
@@ -48,6 +53,32 @@ contacts:
   remove: "Remove"
   empty_state: "No contacts added yet"
   invalid_key: "Invalid public key format"
+  
+  # Filter tabs - reusing existing status keys
+  all: "All"
+  
+  # Contact actions
+  send_message: "Send Message"
+  add_to_room: "Add to Room"
+  verify_keys: "Verify Keys"
+  last_seen: "Last seen"
+  
+  # Contact details
+  details:
+    info: "Contact Information"
+    username: "Username"
+    security: "Security"
+    encryption: "Encryption"
+    verified: "Verified"
+  
+  # Placeholder
+  placeholder:
+    title: "Select a Contact"
+    subtitle: "Choose a contact from the list to view their details and options"
+  
+  # Pagination
+  showing: "Showing"
+  of: "of"
 
 # Settings
 settings:

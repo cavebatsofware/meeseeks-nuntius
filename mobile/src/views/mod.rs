@@ -1,2 +1,3 @@
-mod blog;
-pub use blog::Blog;
+mod room_dash;
+
+pub use room_dash::MobileRoomDashboard;

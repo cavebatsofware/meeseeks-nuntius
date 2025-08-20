@@ -35,7 +35,12 @@ messages:
 
 # Contacts
 contacts:
+  title: "Gestionnaire de Contacts"
+  subtitle: "Gérez vos contacts sécurisés et paramètres de communication"
   add_contact: "Ajouter un contact"
+  add_contact_subtitle: "Connectez-vous avec des amis et collègues en toute sécurité"
+  contacts_list: "Liste des Contacts"
+  search_placeholder: "Rechercher des contacts..."
   contact_name: "Nom du contact"
   public_key: "Clé publique"
   add: "Ajouter"
@@ -43,6 +48,32 @@ contacts:
   remove: "Supprimer"
   empty_state: "Aucun contact ajouté pour le moment"
   invalid_key: "Format de clé publique invalide"
+  
+  # Filter tabs
+  all: "Tous"
+  
+  # Contact actions
+  send_message: "Envoyer un Message"
+  add_to_room: "Ajouter à la Salle"
+  verify_keys: "Vérifier les Clés"
+  last_seen: "Vu pour la dernière fois"
+  
+  # Contact details
+  details:
+    info: "Informations du Contact"
+    username: "Nom d'utilisateur"
+    security: "Sécurité"
+    encryption: "Chiffrement"
+    verified: "Vérifié"
+  
+  # Placeholder
+  placeholder:
+    title: "Sélectionner un Contact"
+    subtitle: "Choisissez un contact dans la liste pour voir ses détails et options"
+  
+  # Pagination
+  showing: "Affichage de"
+  of: "sur"
 
 # Settings
 settings:

@@ -1,6 +1,5 @@
-#![cfg_attr(feature = "bundle", windows_subsystem = "windows")]
 use dioxus::prelude::*;
-use views::{DesktopUserProfileEdit, Messages, RoomDashboard};
+use views::{ContactsManager, DesktopUserProfileEdit, Messages, RoomDashboard};
 mod components;
 mod views;
 pub use components::*;
@@ -15,6 +14,8 @@ enum Route {
         Messages { room_id: String },
         #[route("/profile/edit")]
         DesktopUserProfileEdit {},
+        #[route("/contacts")]
+        ContactsManager {},
 }
 
 const VARIABLES_CSS: Asset = asset!("/assets/variables.css");
