@@ -1,0 +1,101 @@
+/* Mobile Header - prefix: mh- */
+.mh-header {
+    background-color: #0a0f2a;
+    border-bottom: 1px solid #1a234a;
+    padding: 0;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.mh-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 16px;
+    height: 100%;
+}
+
+.mh-left-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.mh-back-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mh-back-icon {
+    width: 18px;
+    height: 18px;
+    color: #ffffff;
+}
+
+.mh-brand-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mh-brand-icon {
+    width: 18px;
+    height: 18px;
+    color: #ffffff;
+}
+
+.mh-brand-name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #ffffff;
+    line-height: 1;
+}
+
+.mh-right-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.mh-notification-btn,
+.mh-menu-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.mh-notification-icon,
+.mh-menu-icon {
+    width: 16px;
+    height: 16px;
+    color: #ffffff;
+}
+
+.mh-notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 12px;
+    height: 12px;
+    background-color: #00ffff;
+    border-radius: 50%;
+    border: 2px solid #0a0f2a;
+}

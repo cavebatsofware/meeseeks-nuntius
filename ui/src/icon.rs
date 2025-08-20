@@ -10,7 +10,12 @@ pub enum IconName {
     Plus,
     Bell,
     ArrowRight,
+    ArrowLeft,
     DotsVertical,
+    MoreVertical,
+    MessageSquare,
+    Home,
+    User,
 }
 
 impl IconName {
@@ -23,7 +28,12 @@ impl IconName {
             IconName::Plus => asset!("/assets/icons/plus.svg"),
             IconName::Bell => asset!("/assets/icons/bell.svg"),
             IconName::ArrowRight => asset!("/assets/icons/arrow-right.svg"),
+            IconName::ArrowLeft => asset!("/assets/icons/arrow-left.svg"),
             IconName::DotsVertical => asset!("/assets/icons/dots-vertical.svg"),
+            IconName::MoreVertical => asset!("/assets/icons/more-vertical.svg"),
+            IconName::MessageSquare => asset!("/assets/icons/message-square.svg"),
+            IconName::Home => asset!("/assets/icons/home.svg"),
+            IconName::User => asset!("/assets/icons/user.svg"),
         }
     }
 
@@ -36,7 +46,12 @@ impl IconName {
             IconName::Plus => "icons.plus",
             IconName::Bell => "icons.bell",
             IconName::ArrowRight => "icons.arrow_right",
+            IconName::ArrowLeft => "icons.arrow_left",
             IconName::DotsVertical => "icons.dots_vertical",
+            IconName::MoreVertical => "icons.more_vertical",
+            IconName::MessageSquare => "icons.message_square",
+            IconName::Home => "icons.home",
+            IconName::User => "icons.user",
         }
     }
 }

@@ -1,4 +1,28 @@
 /* Mobile Room Dashboard - prefix: mrd- */
+
+/* Header Content */
+.mrd-header-content {
+    margin-bottom: var(--spacing-lg);
+}
+
+.mrd-greeting-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.mrd-greeting-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin: 0 0 var(--spacing-xs) 0;
+    line-height: var(--line-height-tight);
+}
+
+.mrd-greeting-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: var(--line-height-normal);
+}
 .mrd-dashboard-container {
     display: flex;
     flex-direction: column;
@@ -163,18 +187,11 @@
     padding: var(--spacing-xs) 0;
 }
 
-/* Rooms Scroll Container */
+/* Rooms Container - Vertical Layout */
 .mrd-rooms-scroll {
     display: flex;
+    flex-direction: column;
     gap: var(--spacing-md);
-    overflow-x: auto;
-    padding-bottom: var(--spacing-sm);
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
-}
-
-.mrd-rooms-scroll::-webkit-scrollbar {
-    display: none; /* WebKit */
 }
 
 .mrd-loading-rooms {
@@ -186,7 +203,7 @@
 
 /* Room Cards */
 .mrd-room-card {
-    flex: 0 0 280px;
+    width: 100%;
     background-color: var(--color-bg-secondary);
     border: 1px solid var(--color-border-primary);
     border-radius: var(--radius-lg);
@@ -316,7 +333,7 @@
 
 /* Create Room Card */
 .mrd-create-room-card {
-    flex: 0 0 280px;
+    width: 100%;
     background-color: var(--color-bg-secondary);
     border: 2px dashed var(--color-border-primary);
     border-radius: var(--radius-lg);
@@ -560,7 +577,7 @@
     
     .mrd-room-card,
     .mrd-create-room-card {
-        flex: 0 0 240px;
+        width: 100%;
     }
     
     .mrd-user-avatar {
@@ -573,7 +590,7 @@
 @media (max-width: 360px) {
     .mrd-room-card,
     .mrd-create-room-card {
-        flex: 0 0 200px;
+        width: 100%;
         padding: var(--spacing-md);
     }
     

@@ -4,6 +4,7 @@ use ui::{I18nContext, Navbar};
 use views::MobileRoomDashboard;
 
 mod views;
+mod components;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
