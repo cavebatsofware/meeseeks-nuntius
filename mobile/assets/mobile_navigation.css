@@ -1,0 +1,72 @@
+/* Mobile Navigation - prefix: mn- */
+.mn-nav {
+    background-color: #0a0f2a;
+    border-top: 1px solid #1a234a;
+    padding: 9px 16px;
+    height: 81px;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+}
+
+.mn-nav-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    max-width: 390px;
+    margin: 0 auto;
+}
+
+.mn-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    min-width: 67px;
+}
+
+.mn-nav-item-active {
+    background-color: #1a234a;
+    border-left: 2px solid #00ffff;
+}
+
+.mn-nav-icon {
+    width: 18px;
+    height: 18px;
+    color: #8a99c0;
+    transition: color 0.2s ease;
+}
+
+.mn-nav-item-active .mn-nav-icon {
+    color: #00ffff;
+}
+
+.mn-nav-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #8a99c0;
+    font-weight: 400;
+    line-height: 16px;
+    transition: color 0.2s ease;
+}
+
+.mn-nav-item-active .mn-nav-text {
+    color: #00ffff;
+    font-weight: 500;
+}
+
+.mn-nav-item:hover:not(.mn-nav-item-active) {
+    background-color: rgba(26, 35, 74, 0.5);
+}
+
+.mn-nav-item:hover:not(.mn-nav-item-active) .mn-nav-icon,
+.mn-nav-item:hover:not(.mn-nav-item-active) .mn-nav-text {
+    color: #ffffff;
+}

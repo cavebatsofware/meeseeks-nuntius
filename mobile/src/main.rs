@@ -3,6 +3,7 @@ use dioxus::prelude::*;
 use ui::{I18nContext, Navbar};
 use views::MobileRoomDashboard;
 
+mod components;
 mod views;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
@@ -13,6 +14,7 @@ enum Route {
     Home {},
 }
 
+const VARIABLES_CSS: Asset = asset!("/assets/variables.css");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
 
 fn main() {
@@ -25,7 +27,8 @@ fn App() -> Element {
 
     rsx! {
         // Global app resources
-        document::Link { rel: "stylesheet", href: MAIN_CSS }
+        document::Stylesheet { href: VARIABLES_CSS }
+        document::Stylesheet { href: MAIN_CSS }
 
         Router::<Route> {}
     }

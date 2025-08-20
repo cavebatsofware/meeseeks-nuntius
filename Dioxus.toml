@@ -1,4 +1,5 @@
 [application]
+name = "meeseeks-nuntius"
 [bundle]
 identifier = "com.cavebatsofware"
 publisher = "CavebatsOfWare"
