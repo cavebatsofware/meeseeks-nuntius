@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
-use ui::Navbar;
-use views::Blog;
+use ui::{Navbar, I18nContext};
+use views::MobileRoomDashboard;
 
 mod views;
 
@@ -10,7 +10,7 @@ mod views;
 enum Route {
     #[layout(MobileNavbar)]
     #[route("/")]
-    Blog { id: i32 },
+    Home {},
 }
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -38,11 +38,22 @@ fn MobileNavbar() -> Element {
     rsx! {
         Navbar {
             Link {
-                to: Route::Blog { id: 1 },
-                "Blog"
+                to: Route::Home {},
+                "Home"
             }
         }
 
         Outlet::<Route> {}
+    }
+}
+
+#[component]
+fn Home() -> Element {
+    rsx! {
+        MobileRoomDashboard {
+            username: "Mobile User".to_string(),
+            user_subtitle: "Welcome to Mobile App".to_string(),
+            i18n: I18nContext::new("en")
+        }
     }
 }

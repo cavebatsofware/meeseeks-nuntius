@@ -6,3 +6,6 @@ pub use messages::Messages;
 
 mod desktop_user_profile_edit;
 pub use desktop_user_profile_edit::DesktopUserProfileEdit;
+
+mod contacts_manager;
+pub use contacts_manager::ContactsManager;

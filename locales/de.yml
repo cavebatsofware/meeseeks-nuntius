@@ -35,7 +35,12 @@ messages:
 
 # Contacts
 contacts:
+  title: "Kontakte-Manager"
+  subtitle: "Verwalten Sie Ihre sicheren Kontakte und Kommunikationseinstellungen"
   add_contact: "Kontakt hinzufügen"
+  add_contact_subtitle: "Verbinden Sie sich sicher mit Freunden und Kollegen"
+  contacts_list: "Kontaktliste"
+  search_placeholder: "Kontakte suchen..."
   contact_name: "Kontaktname"
   public_key: "Öffentlicher Schlüssel"
   add: "Hinzufügen"
@@ -43,6 +48,32 @@ contacts:
   remove: "Entfernen"
   empty_state: "Noch keine Kontakte hinzugefügt"
   invalid_key: "Ungültiges Format für öffentlichen Schlüssel"
+  
+  # Filter tabs
+  all: "Alle"
+  
+  # Contact actions
+  send_message: "Nachricht Senden"
+  add_to_room: "Zu Raum Hinzufügen"
+  verify_keys: "Schlüssel Verifizieren"
+  last_seen: "Zuletzt gesehen"
+  
+  # Contact details
+  details:
+    info: "Kontaktinformationen"
+    username: "Benutzername"
+    security: "Sicherheit"
+    encryption: "Verschlüsselung"
+    verified: "Verifiziert"
+  
+  # Placeholder
+  placeholder:
+    title: "Kontakt Auswählen"
+    subtitle: "Wählen Sie einen Kontakt aus der Liste, um Details und Optionen zu sehen"
+  
+  # Pagination
+  showing: "Zeige"
+  of: "von"
 
 # Settings
 settings:

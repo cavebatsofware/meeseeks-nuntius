@@ -42,6 +42,12 @@ pub fn DesktopNavigation(props: DesktopNavigationProps) -> Element {
             nav_id: "room_management",
         },
         DesktopNavigationItem {
+            icon: IconName::Users,
+            text_key: "contacts.title",
+            route: Route::ContactsManager {},
+            nav_id: "contacts",
+        },
+        DesktopNavigationItem {
             icon: IconName::Settings,
             text_key: "nav.settings",
             route: Route::DesktopUserProfileEdit {},
@@ -120,6 +126,7 @@ fn is_nav_item_active(current_route: &Route, nav_id: &str) -> bool {
     match (current_route, nav_id) {
         (Route::RoomDashboard {}, "dashboard") => true,
         (Route::DesktopUserProfileEdit {}, "settings") => true,
+        (Route::ContactsManager {}, "contacts") => true,
         // For future routes, add more specific matching here
         // (Route::RoomSelect {}, "room_select") => true,
         // (Route::RoomManagement {}, "room_management") => true,
