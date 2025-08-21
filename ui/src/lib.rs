@@ -23,5 +23,8 @@ pub use types::*;
 mod icon;
 pub use icon::{Icon, IconName};
 
+mod css_utils;
+pub use css_utils::{css_var_to_color, resolve_color};
+
 mod test_icon;
 mod test_utils;

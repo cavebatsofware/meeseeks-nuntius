@@ -9,10 +9,9 @@
 }
 
 .ml-main-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px 16px;
-    min-height: 0; /* Allows flex child to shrink */
+    padding: 0;
+    height: calc(100vh - 154px); /* Subtract header and nav heights */
+    overflow: hidden;
 }
 
 /* Ensure proper spacing between header and footer */
