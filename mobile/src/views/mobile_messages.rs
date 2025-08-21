@@ -34,7 +34,8 @@ pub fn MobileMessages(props: MobileMessagesProps) -> Element {
     let mut show_side_panel = use_signal(|| props.show_side_panel);
 
     // Sample messages data
-    let mut messages = use_signal(|| vec![
+    let mut messages = use_signal(|| {
+        vec![
         Message {
             id: "1".to_string(),
             sender_id: "user1".to_string(),
@@ -67,7 +68,8 @@ pub fn MobileMessages(props: MobileMessagesProps) -> Element {
             timestamp: "10:37 AM".to_string(),
             is_sent: true,
         },
-    ]);
+    ]
+    });
 
     // Sample members data
     let members = use_memo(move || {
