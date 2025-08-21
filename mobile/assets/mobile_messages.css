@@ -250,7 +250,6 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-
 }
 
 .mm-attach-btn {

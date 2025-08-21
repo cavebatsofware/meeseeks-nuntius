@@ -29,6 +29,7 @@ pub struct Message {
 
 #[component]
 pub fn MobileMessages(props: MobileMessagesProps) -> Element {
+    #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut message_input = use_signal(|| String::new());
     let mut active_tab = use_signal(|| "chat".to_string());
     let mut show_side_panel = use_signal(|| props.show_side_panel);
