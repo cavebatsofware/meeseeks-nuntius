@@ -76,106 +76,111 @@ pub fn MobileRoomDashboard(props: MobileRoomDashboardProps) -> Element {
                 active_tab.set(tab);
             },
 
-            // Header section content
+            // Scroll container
             div {
-                class: "mrd-header-content",
+                class: "mrd-scroll-container",
 
+                // Header section content
                 div {
-                    class: "mrd-greeting-section",
-                    h1 {
-                        class: "mrd-greeting-title",
-                        "{props.i18n.translate(\"room_dashboard.title\")}"
-                    }
-                    p {
-                        class: "mrd-greeting-subtitle",
-                        "{props.i18n.translate(\"room_dashboard.subtitle\")}"
-                    }
-                }
-            }
+                    class: "mrd-header-content",
 
-            // Top Rooms Section
-            section {
-                class: "mrd-rooms-section",
-
-                div {
-                    class: "mrd-section-header",
-                    h2 {
-                        class: "mrd-section-title",
-                        "{props.i18n.translate(\"room_dashboard.sections.top_rooms\")}"
-                    }
-                }
-
-                div {
-                    class: "mrd-rooms-scroll",
-                    if loading_rooms() {
-                        div {
-                            class: "mrd-loading-rooms",
-                            "{props.i18n.translate(\"rooms.loading\")}"
+                    div {
+                        class: "mrd-greeting-section",
+                        h1 {
+                            class: "mrd-greeting-title",
+                            "{props.i18n.translate(\"room_dashboard.title\")}"
                         }
-                    } else {
-                        // Dynamic rooms from database
-                        for room in rooms() {
-                            MobileRoomCard {
-                                key: "{room.id.as_deref().unwrap_or(&room.name)}",
-                                room_id: room.id.as_deref().unwrap_or(&room.name).to_string(),
-                                title: room.name.clone(),
-                                description: room.description.as_ref()
-                                    .filter(|desc| !desc.is_empty())
-                                    .cloned()
-                                    .unwrap_or_else(|| props.i18n.translate("rooms.default_description")),
-                                member_count: room.member_count.unwrap_or(0) as i32,
-                                i18n: props.i18n.clone()
+                        p {
+                            class: "mrd-greeting-subtitle",
+                            "{props.i18n.translate(\"room_dashboard.subtitle\")}"
+                        }
+                    }
+                }
+
+                // Top Rooms Section
+                section {
+                    class: "mrd-rooms-section",
+
+                    div {
+                        class: "mrd-section-header",
+                        h2 {
+                            class: "mrd-section-title",
+                            "{props.i18n.translate(\"room_dashboard.sections.top_rooms\")}"
+                        }
+                    }
+
+                    div {
+                        class: "mrd-rooms-scroll",
+                        if loading_rooms() {
+                            div {
+                                class: "mrd-loading-rooms",
+                                "{props.i18n.translate(\"rooms.loading\")}"
+                            }
+                        } else {
+                            // Dynamic rooms from database
+                            for room in rooms() {
+                                MobileRoomCard {
+                                    key: "{room.id.as_deref().unwrap_or(&room.name)}",
+                                    room_id: room.id.as_deref().unwrap_or(&room.name).to_string(),
+                                    title: room.name.clone(),
+                                    description: room.description.as_ref()
+                                        .filter(|desc| !desc.is_empty())
+                                        .cloned()
+                                        .unwrap_or_else(|| props.i18n.translate("rooms.default_description")),
+                                    member_count: room.member_count.unwrap_or(0) as i32,
+                                    i18n: props.i18n.clone()
+                                }
+                            }
+
+                            // Create New Room Card
+                            MobileCreateRoomCard {
+                                i18n: props.i18n.clone(),
+                                on_room_created: refresh_rooms
                             }
                         }
+                    }
+                }
 
-                        // Create New Room Card
-                        MobileCreateRoomCard {
-                            i18n: props.i18n.clone(),
-                            on_room_created: refresh_rooms
+                // Recent Messages Section
+                section {
+                    class: "mrd-messages-section",
+
+                    h2 {
+                        class: "mrd-section-title",
+                        "{props.i18n.translate(\"room_dashboard.sections.latest_messages\")}"
+                    }
+
+                    div {
+                        class: "mrd-messages-list",
+                        MobileMessageCard {
+                            avatar_color: "purple",
+                            username: "Diana P.",
+                            room: "Project Overlord",
+                            message: "The latest schematics are ready for review. Please check the encrypted folder.",
+                            time: "2 min ago",
+                            unread_count: 3,
+                            i18n: props.i18n.clone()
                         }
-                    }
-                }
-            }
 
-            // Recent Messages Section
-            section {
-                class: "mrd-messages-section",
+                        MobileMessageCard {
+                            avatar_color: "blue",
+                            username: "C. Kent",
+                            room: "Stealth Ops",
+                            message: "Confirmed. Target acquired. Awaiting final command for phase two.",
+                            time: "15 min ago",
+                            unread_count: 1,
+                            i18n: props.i18n.clone()
+                        }
 
-                h2 {
-                    class: "mrd-section-title",
-                    "{props.i18n.translate(\"room_dashboard.sections.latest_messages\")}"
-                }
-
-                div {
-                    class: "mrd-messages-list",
-                    MobileMessageCard {
-                        avatar_color: "purple",
-                        username: "Diana P.",
-                        room: "Project Overlord",
-                        message: "The latest schematics are ready for review. Please check the encrypted folder.",
-                        time: "2 min ago",
-                        unread_count: 3,
-                        i18n: props.i18n.clone()
-                    }
-
-                    MobileMessageCard {
-                        avatar_color: "blue",
-                        username: "C. Kent",
-                        room: "Stealth Ops",
-                        message: "Confirmed. Target acquired. Awaiting final command for phase two.",
-                        time: "15 min ago",
-                        unread_count: 1,
-                        i18n: props.i18n.clone()
-                    }
-
-                    MobileMessageCard {
-                        avatar_color: "green",
-                        username: "Barbara G.",
-                        room: "Project Overlord",
-                        message: "I've bypassed their firewall. The data stream is now open. Be quick.",
-                        time: "48 min ago",
-                        unread_count: 0,
-                        i18n: props.i18n.clone()
+                        MobileMessageCard {
+                            avatar_color: "green",
+                            username: "Barbara G.",
+                            room: "Project Overlord",
+                            message: "I've bypassed their firewall. The data stream is now open. Be quick.",
+                            time: "48 min ago",
+                            unread_count: 0,
+                            i18n: props.i18n.clone()
+                        }
                     }
                 }
             }
@@ -240,11 +245,16 @@ fn MobileRoomCard(props: MobileRoomCardProps) -> Element {
 
                 button {
                     class: "mrd-enter-btn",
+                    onclick: move |_| {
+                        let nav = navigator();
+                        nav.push(crate::Route::Messages { room_id: props.room_id.clone() });
+                    },
                     "{props.i18n.translate(\"room_dashboard.enter\")}"
                     Icon {
                         name: IconName::ArrowRight,
                         i18n: props.i18n.clone(),
-                        class: "mrd-enter-icon".to_string()
+                        class: "mrd-enter-icon".to_string(),
+                        color: Some("var(--color-text-dark)".to_string())
                     }
                 }
             }

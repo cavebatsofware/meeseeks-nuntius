@@ -1,7 +1,7 @@
 /* Mobile Navigation - prefix: mn- */
 .mn-nav {
-    background-color: #0a0f2a;
-    border-top: 1px solid #1a234a;
+    background-color: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border-primary);
     padding: 9px 16px;
     height: 81px;
     position: sticky;
@@ -33,32 +33,32 @@
 }
 
 .mn-nav-item-active {
-    background-color: #1a234a;
-    border-left: 2px solid #00ffff;
+    background-color: var(--color-bg-tertiary);
+    border-left: 2px solid var(--color-accent-primary);
 }
 
 .mn-nav-icon {
-    width: 18px;
-    height: 18px;
-    color: #8a99c0;
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+    color: var(--color-text-secondary);
     transition: color 0.2s ease;
 }
 
 .mn-nav-item-active .mn-nav-icon {
-    color: #00ffff;
+    color: var(--color-accent-primary);
 }
 
 .mn-nav-text {
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
-    color: #8a99c0;
+    color: var(--color-text-secondary);
     font-weight: 400;
     line-height: 16px;
     transition: color 0.2s ease;
 }
 
 .mn-nav-item-active .mn-nav-text {
-    color: #00ffff;
+    color: var(--color-accent-primary);
     font-weight: 500;
 }
 
@@ -68,5 +68,5 @@
 
 .mn-nav-item:hover:not(.mn-nav-item-active) .mn-nav-icon,
 .mn-nav-item:hover:not(.mn-nav-item-active) .mn-nav-text {
-    color: #ffffff;
+    color: var(--color-text-primary);
 }

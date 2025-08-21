@@ -24,7 +24,7 @@ pub fn MobileNavigation(props: MobileNavigationProps) -> Element {
     let navigation_items = vec![
         MobileNavigationItem {
             icon: IconName::Home,
-            text_key: "nav.rooms",
+            text_key: "rooms.dashboard",
             nav_id: "rooms",
             is_active: props.active_tab == "rooms",
         },
@@ -42,14 +42,14 @@ pub fn MobileNavigation(props: MobileNavigationProps) -> Element {
         },
         MobileNavigationItem {
             icon: IconName::User,
-            text_key: "nav.profile",
+            text_key: "user_profile.title",
             nav_id: "profile",
             is_active: props.active_tab == "profile",
         },
     ];
 
     rsx! {
-        document::Link { rel: "stylesheet", href: MOBILE_NAV_CSS }
+        document::Stylesheet { href: MOBILE_NAV_CSS }
 
         nav {
             class: "mn-nav",
@@ -105,7 +105,12 @@ fn MobileNavigationItemComponent(props: MobileNavigationItemComponentProps) -> E
             Icon {
                 name: props.icon,
                 i18n: props.i18n.clone(),
-                class: "mn-nav-icon".to_string()
+                class: "mn-nav-icon".to_string(),
+                color: if props.is_active {
+                    Some("var(--color-accent-primary)".to_string())
+                } else {
+                    Some("var(--color-text-secondary)".to_string())
+                }
             }
 
             span {

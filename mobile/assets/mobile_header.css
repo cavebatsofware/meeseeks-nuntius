@@ -1,11 +1,11 @@
 /* Mobile Header - prefix: mh- */
 .mh-header {
-    background-color: #0a0f2a;
-    border-bottom: 1px solid #1a234a;
+    background-color: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border-primary);
     padding: 0;
-    height: 64px;
+    height: calc(40px + env(safe-area-inset-top, 0px));
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -16,8 +16,8 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 0 16px;
-    height: 100%;
+    padding: 0 var(--spacing-lg);
+    height: 40px;
 }
 
 .mh-left-section {
@@ -38,9 +38,8 @@
 }
 
 .mh-back-icon {
-    width: 18px;
-    height: 18px;
-    color: #ffffff;
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
 }
 
 .mh-brand-container {
@@ -50,16 +49,15 @@
 }
 
 .mh-brand-icon {
-    width: 18px;
-    height: 18px;
-    color: #ffffff;
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
 }
 
 .mh-brand-name {
     font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 18px;
-    color: #ffffff;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-xl);
+    color: var(--color-text-primary);
     line-height: 1;
 }
 
@@ -84,9 +82,9 @@
 
 .mh-notification-icon,
 .mh-menu-icon {
-    width: 16px;
-    height: 16px;
-    color: #ffffff;
+    width: var(--icon-size-sm);
+    height: var(--icon-size-sm);
+    color: var(--color-text-primary);
 }
 
 .mh-notification-badge {
@@ -95,7 +93,7 @@
     right: 4px;
     width: 12px;
     height: 12px;
-    background-color: #00ffff;
+    background-color: var(--color-accent-primary);
     border-radius: 50%;
-    border: 2px solid #0a0f2a;
+    border: 2px solid var(--color-bg-secondary);
 }

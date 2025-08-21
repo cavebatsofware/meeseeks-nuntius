@@ -18,7 +18,7 @@ pub struct MobileHeaderProps {
 #[component]
 pub fn MobileHeader(props: MobileHeaderProps) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: MOBILE_HEADER_CSS }
+        document::Stylesheet { href: MOBILE_HEADER_CSS }
 
         div {
             class: "mh-header",
@@ -35,7 +35,7 @@ pub fn MobileHeader(props: MobileHeaderProps) -> Element {
                         Icon {
                             name: IconName::ArrowLeft,
                             i18n: props.i18n.clone(),
-                            class: "mh-back-icon".to_string()
+                            class: "mh-back-icon".to_string(),
                         }
                     }
 

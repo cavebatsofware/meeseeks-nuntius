@@ -17,23 +17,29 @@ pub struct MobileLayoutProps {
     #[props(default = 0)]
     pub notification_count: i32,
     pub on_tab_change: EventHandler<String>,
+    #[props(default = None)]
+    pub custom_header: Option<Element>,
     pub children: Element,
 }
 
 #[component]
 pub fn MobileLayout(props: MobileLayoutProps) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: MOBILE_LAYOUT_CSS }
+        document::Stylesheet { href: MOBILE_LAYOUT_CSS }
 
         div {
             class: "ml-container",
 
-            // Header
-            MobileHeader {
-                brand_name: props.brand_name,
-                i18n: props.i18n.clone(),
-                has_notifications: props.has_notifications,
-                notification_count: props.notification_count,
+            // Header - use custom header if provided, otherwise default header
+            if let Some(custom_header) = props.custom_header {
+                {custom_header}
+            } else {
+                MobileHeader {
+                    brand_name: props.brand_name,
+                    i18n: props.i18n.clone(),
+                    has_notifications: props.has_notifications,
+                    notification_count: props.notification_count,
+                }
             }
 
             // Main content
