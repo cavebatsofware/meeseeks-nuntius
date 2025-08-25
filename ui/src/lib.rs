@@ -31,14 +31,26 @@ mod css_utils;
 pub use css_utils::{css_var_to_color, resolve_color};
 
 // non-web modules
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 mod user_profile_mini;
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 pub use user_profile_mini::UserProfileMini;
 
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 mod user_profile_edit;
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 pub use user_profile_edit::*;
 
 mod test_icon;

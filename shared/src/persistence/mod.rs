@@ -15,7 +15,10 @@
  *  along with meeseeks-nuntius.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 pub mod database;
 
 #[cfg(test)]

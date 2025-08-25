@@ -18,14 +18,26 @@
 //! This crate contains all shared api functions.
 // use dioxus::prelude::*;
 
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 pub mod crypto;
 
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 pub mod persistence;
 
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 pub mod local;
 
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "desktop", feature = "mobile")))]
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    any(feature = "desktop", feature = "mobile")
+))]
 pub mod user_data;

@@ -30,7 +30,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(not(target_arch = "wasm32"))]
     {
         dotenvy::dotenv().ok();
-        
+
         let args: Vec<String> = env::args().collect();
         if args.len() > 1 && args[1] == "migrate" {
             return run_migrations_sync();
