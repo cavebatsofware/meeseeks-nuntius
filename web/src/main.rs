@@ -33,7 +33,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let args: Vec<String> = env::args().collect();
         if args.len() > 1 && args[1] == "migrate" {
-            return run_migrations_sync();
+            match run_migrations_sync() {
+                Ok(_) => return Ok(()),
+                Err(e) => return Err(Box::new(std::io::Error::new(
+                    std::io::ErrorKind::Other,
+                    format!("Migration failed: {}", e)
+                ))),
+            }
         }
     }
 

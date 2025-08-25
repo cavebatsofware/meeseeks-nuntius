@@ -27,9 +27,10 @@ const MOBILE_MESSAGES_ANDROID_CSS: Asset = asset!("/assets/mobile_messages_andro
 
 fn main() {
     // Set the server endpoint for mobile app to connect to
-    std::env::set_var("DIOXUS_SERVER_URL", "http://localhost:8080");
+    // Read server URL from environment variable, fallback to default if not set
+    let server_url = std::env::var("DIOXUS_SERVER_URL").unwrap_or_else(|_| "http://127.0.0.1:8080".to_string());
     #[cfg(not(feature = "server"))]
-    dioxus::fullstack::set_server_url("http://127.0.0.1:8080");
+    dioxus::fullstack::set_server_url(&server_url);
     dioxus::launch(App);
 }
 

@@ -28,14 +28,14 @@ pub async fn establish_connection() -> Result<DatabaseConnection, DbErr> {
         .connect_timeout(Duration::from_secs(8))
         .acquire_timeout(Duration::from_secs(8))
         .idle_timeout(Duration::from_secs(8))
-        .max_lifetime(Duration::from_secs(8));
+        .max_lifetime(Duration::from_secs(1800));
 
     Database::connect(opt).await
 }
 
 fn get_database_url() -> String {
     dotenvy::var("DATABASE_URL").unwrap_or_else(|_| {
-        "postgres://postgres:changeme@localhost:5432/meeseeks_nuntius".to_string()
+        panic!("DATABASE_URL environment variable must be set and should not use insecure defaults.");
     })
 }
 
