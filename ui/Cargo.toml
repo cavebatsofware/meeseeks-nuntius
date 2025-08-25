@@ -5,11 +5,15 @@ edition = "2021"
 
 [dependencies]
 dioxus = { workspace = true }
-api = { workspace = true }
-rust-i18n = { workspace = true }
+shared = { workspace = true }
 serde_yml = { workspace = true }
 serde = { workspace = true }
 
 [dev-dependencies]
 dioxus-ssr = "0.7.0-rc.0"
 pretty_assertions = "1.4.1"
+
+[features]
+default = []
+mobile = []
+desktop = []

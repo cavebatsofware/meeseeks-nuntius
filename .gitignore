@@ -8,3 +8,5 @@
 
 /test_db
 /*/app.sled
+
+.env

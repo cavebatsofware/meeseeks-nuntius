@@ -15,16 +15,23 @@
  *  along with meeseeks-nuntius.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-//! This crate contains all shared api functions.
-// use dioxus::prelude::*;
-
 #[cfg(not(target_arch = "wasm32"))]
-pub mod crypto;
-
+pub mod entities;
+#[cfg(not(target_arch = "wasm32"))]
+pub mod migration;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod persistence;
+use dioxus::prelude::*;
 
-#[cfg(not(target_arch = "wasm32"))]
-pub mod local;
-
-pub mod user_data;
+#[server]
+pub async fn get_server_data() -> Result<String, ServerFnError> {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        // Test database connection
+        let _db = crate::persistence::postgres::establish_connection()
+            .await
+            .map_err(|e| ServerFnError::new(format!("Database connection failed: {}", e)))?;
+        println!("Database connection test successful");
+    }
+    Ok("Hello from the Meeseeks Nuntius server! Database connection verified.".to_string())
+}

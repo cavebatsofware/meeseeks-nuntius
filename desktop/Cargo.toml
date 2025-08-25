@@ -5,13 +5,15 @@ edition = "2021"
 
 [dependencies]
 dioxus = { workspace = true, features = ["router"] }
-ui = { workspace = true }
+ui = { workspace = true, features = ["desktop"] }
+shared = { workspace = true, features = ["desktop"] }
 api = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 dioxus-primitives = { git = "https://github.com/DioxusLabs/components", version = "0.0.1" }
 
 [features]
-default = []
+default = ["desktop"]
 desktop = ["dioxus/desktop"]
+server = ["dioxus/server"]
 bundle = []

@@ -1,0 +1,6 @@
+/* iOS-specific messages styles */
+.mm-header-custom {
+    /* Use iOS safe area insets for notch/status bar */
+    height: calc(40px + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+}

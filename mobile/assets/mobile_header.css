@@ -3,7 +3,7 @@
     background-color: var(--color-bg-secondary);
     border-bottom: 1px solid var(--color-border-primary);
     padding: 0;
-    height: calc(40px + env(safe-area-inset-top, 0px));
+    /* Platform-specific height and padding are defined in platform CSS files */
     display: flex;
     align-items: flex-end;
     position: sticky;
