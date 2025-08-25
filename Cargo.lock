@@ -1611,11 +1611,12 @@ dependencies = [
 [[package]]
 name = "dioxus-primitives"
 version = "0.0.1"
-source = "git+https://github.com/DioxusLabs/components#e4aa62249937fa77eb810000b767c7a69d80bd75"
+source = "git+https://github.com/DioxusLabs/components#562ade5eee405911e1da28a6ca70dc72b0e82550"
 dependencies = [
  "dioxus",
  "dioxus-time",
  "lazy-js-bundle 0.6.2",
+ "time",
  "tracing",
 ]
 
@@ -6188,15 +6189,15 @@ checksum = "61c41af27dd6d1e27b1b16b489db798443478cef1f06a660c96db617ba5de3b1"
 
 [[package]]
 name = "tempfile"
-version = "3.20.0"
+version = "3.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e8a64e3985349f2441a1a9ef0b853f869006c3855f2cda6862a94d26ebb9d6a1"
+checksum = "15b61f8f20e3a6f7e0649d825294eaf317edce30f82cf6026e7e4cb9222a7d1e"
 dependencies = [
  "fastrand",
  "getrandom 0.3.3",
  "once_cell",
  "rustix 1.0.8",
- "windows-sys 0.59.0",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]
