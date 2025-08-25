@@ -36,10 +36,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             match run_migrations_sync() {
                 Ok(_) => return Ok(()),
                 Err(e) => {
-                    return Err(Box::new(
-                        std::io::Error::other(
-                        format!("Migration failed: {}", e),
-                    )))
+                    return Err(Box::new(std::io::Error::other(format!(
+                        "Migration failed: {}",
+                        e
+                    ))))
                 }
             }
         }
