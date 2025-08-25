@@ -40,10 +40,11 @@ const SHARED_CSS: Asset = asset!("/assets/shared.css");
 
 fn main() {
     // Set the server endpoint for desktop app to connect to
-    let server_url = env::var("DIOXUS_SERVER_URL").unwrap_or_else(|_| "http://localhost:8080".to_string());
-    env::set_var("DIOXUS_SERVER_URL", &server_url);
+    let server_url =
+        std::env::var("DIOXUS_SERVER_URL").unwrap_or_else(|_| "http://localhost:8080".to_string());
+    std::env::set_var("DIOXUS_SERVER_URL", &server_url);
     #[cfg(not(feature = "server"))]
-    dioxus::fullstack::set_server_url(&server_url);
+    dioxus::fullstack::set_server_url(Box::leak(server_url.into_boxed_str()));
     dioxus::launch(App);
 }
 

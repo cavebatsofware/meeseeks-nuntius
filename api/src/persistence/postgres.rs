@@ -35,7 +35,9 @@ pub async fn establish_connection() -> Result<DatabaseConnection, DbErr> {
 
 fn get_database_url() -> String {
     dotenvy::var("DATABASE_URL").unwrap_or_else(|_| {
-        panic!("DATABASE_URL environment variable must be set and should not use insecure defaults.");
+        panic!(
+            "DATABASE_URL environment variable must be set and should not use insecure defaults."
+        );
     })
 }
 
