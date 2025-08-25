@@ -166,7 +166,9 @@ dependencies = [
  "sea-orm",
  "sea-orm-migration",
  "serde",
+ "serial_test",
  "shared",
+ "tempfile",
  "tokio",
 ]
 
