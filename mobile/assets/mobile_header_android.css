@@ -1,0 +1,14 @@
+/* Android-specific header styles */
+.mh-header {
+    /* Android status bar height (typically 24-28px) */
+    height: calc(40px + 28px);
+    padding-top: 28px;
+}
+
+/* For devices with larger status bars or navigation bars */
+@media screen and (min-height: 800px) {
+    .mh-header {
+        height: calc(40px + 32px);
+        padding-top: 32px;
+    }
+}

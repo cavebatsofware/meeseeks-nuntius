@@ -21,153 +21,185 @@
 use crate::crypto::message::{Contact, Room};
 use crate::persistence::database::{Database, Entity};
 use crate::user_data::UserData;
-use dioxus::prelude::*;
+
+#[derive(Debug, Clone)]
+pub struct LocalApiError {
+    pub message: String,
+}
+
+impl LocalApiError {
+    pub fn new(message: impl Into<String>) -> Self {
+        Self {
+            message: message.into(),
+        }
+    }
+}
+
+impl std::fmt::Display for LocalApiError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Local API Error: {}", self.message)
+    }
+}
+
+impl std::error::Error for LocalApiError {}
+
+impl From<serde_json::Error> for LocalApiError {
+    fn from(error: serde_json::Error) -> Self {
+        Self::new(error.to_string())
+    }
+}
+
+impl From<hex::FromHexError> for LocalApiError {
+    fn from(error: hex::FromHexError) -> Self {
+        Self::new(error.to_string())
+    }
+}
 
 // Room management functions (local database operations)
 pub async fn create_room(
     name: String,
     description: Option<String>,
-) -> Result<String, ServerFnError> {
+) -> Result<String, LocalApiError> {
     let db = Database::new();
     let mut room = Room::new(&name);
     if let Some(desc) = description {
         room.description = desc;
     }
     db.save_entity(&mut room)
-        .map_err(|e| ServerFnError::new(e.to_string()))
+        .map_err(|e| LocalApiError::new(e.to_string()))
 }
 
-pub async fn get_room(id: String) -> Result<Option<String>, ServerFnError> {
+pub async fn get_room(id: String) -> Result<Option<String>, LocalApiError> {
     let db = Database::new();
     match db
         .load_entity::<Room>(&id)
-        .map_err(|e| ServerFnError::new(e.to_string()))?
+        .map_err(|e| LocalApiError::new(e.to_string()))?
     {
         Some(room) => Ok(Some(
             room.to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         )),
         None => Ok(None),
     }
 }
 
-pub async fn update_room(room_json: String) -> Result<(), ServerFnError> {
+pub async fn update_room(room_json: String) -> Result<(), LocalApiError> {
     let db = Database::new();
-    let room = Room::from_json(&room_json).map_err(|e| ServerFnError::new(e.to_string()))?;
+    let room = Room::from_json(&room_json).map_err(|e| LocalApiError::new(e.to_string()))?;
     db.update_entity(&room)
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     Ok(())
 }
 
-pub async fn delete_room(id: String) -> Result<(), ServerFnError> {
+pub async fn delete_room(id: String) -> Result<(), LocalApiError> {
     let db = Database::new();
     db.delete::<Room>(&id)
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     Ok(())
 }
 
-pub async fn get_all_rooms() -> Result<Vec<String>, ServerFnError> {
+pub async fn get_all_rooms() -> Result<Vec<String>, LocalApiError> {
     let db = Database::new();
     let rooms = db
         .load_all_entities::<Room>(Room::key_prefix())
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     let mut result = Vec::new();
     for room in rooms {
         result.push(
             room.to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         );
     }
     Ok(result)
 }
 
-pub async fn find_room_by_name(name: String) -> Result<Option<String>, ServerFnError> {
+pub async fn find_room_by_name(name: String) -> Result<Option<String>, LocalApiError> {
     let db = Database::new();
     match db
         .find_entity::<Room, _>(Room::key_prefix(), |room| room.name == name)
-        .map_err(|e| ServerFnError::new(e.to_string()))?
+        .map_err(|e| LocalApiError::new(e.to_string()))?
     {
         Some(room) => Ok(Some(
             room.to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         )),
         None => Ok(None),
     }
 }
 
 // Contact management functions (local database + crypto operations)
-pub async fn create_contact(name: String, public_key: String) -> Result<String, ServerFnError> {
+pub async fn create_contact(name: String, public_key: String) -> Result<String, LocalApiError> {
     let db = Database::new();
     use crypto_box::PublicKey;
 
     let public_key_bytes: [u8; 32] = hex::decode(&public_key)
-        .map_err(|e| ServerFnError::new(e.to_string()))?
+        .map_err(|e| LocalApiError::new(e.to_string()))?
         .try_into()
-        .map_err(|_| ServerFnError::new("Invalid public key length"))?;
+        .map_err(|_| LocalApiError::new("Invalid public key length"))?;
     let public_key = PublicKey::from(public_key_bytes);
 
     let mut contact = Contact::new(&name, &public_key);
     db.save_entity(&mut contact)
-        .map_err(|e| ServerFnError::new(e.to_string()))
+        .map_err(|e| LocalApiError::new(e.to_string()))
 }
 
-pub async fn get_contact(id: String) -> Result<Option<String>, ServerFnError> {
+pub async fn get_contact(id: String) -> Result<Option<String>, LocalApiError> {
     let db = Database::new();
     match db
         .load_entity::<Contact>(&id)
-        .map_err(|e| ServerFnError::new(e.to_string()))?
+        .map_err(|e| LocalApiError::new(e.to_string()))?
     {
         Some(contact) => Ok(Some(
             contact
                 .to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         )),
         None => Ok(None),
     }
 }
 
-pub async fn update_contact(contact_json: String) -> Result<(), ServerFnError> {
+pub async fn update_contact(contact_json: String) -> Result<(), LocalApiError> {
     let db = Database::new();
     let contact =
-        Contact::from_json(&contact_json).map_err(|e| ServerFnError::new(e.to_string()))?;
+        Contact::from_json(&contact_json).map_err(|e| LocalApiError::new(e.to_string()))?;
     db.update_entity(&contact)
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     Ok(())
 }
 
-pub async fn delete_contact(id: String) -> Result<(), ServerFnError> {
+pub async fn delete_contact(id: String) -> Result<(), LocalApiError> {
     let db = Database::new();
     db.delete::<Contact>(&id)
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     Ok(())
 }
 
-pub async fn get_all_contacts() -> Result<Vec<String>, ServerFnError> {
+pub async fn get_all_contacts() -> Result<Vec<String>, LocalApiError> {
     let db = Database::new();
     let contacts = db
         .load_all_entities::<Contact>(Contact::key_prefix())
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     let mut result = Vec::new();
     for contact in contacts {
         result.push(
             contact
                 .to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         );
     }
     Ok(result)
 }
 
-pub async fn find_contact_by_name(name: String) -> Result<Option<String>, ServerFnError> {
+pub async fn find_contact_by_name(name: String) -> Result<Option<String>, LocalApiError> {
     let db = Database::new();
     match db
         .find_entity::<Contact, _>(Contact::key_prefix(), |contact| contact.name == name)
-        .map_err(|e| ServerFnError::new(e.to_string()))?
+        .map_err(|e| LocalApiError::new(e.to_string()))?
     {
         Some(contact) => Ok(Some(
             contact
                 .to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         )),
         None => Ok(None),
     }
@@ -177,90 +209,90 @@ pub async fn find_contact_by_name(name: String) -> Result<Option<String>, Server
 pub async fn create_user_data(
     username: String,
     display_name: String,
-) -> Result<String, ServerFnError> {
+) -> Result<String, LocalApiError> {
     let db = Database::new();
     let mut user_data = UserData::new(&username, &display_name);
     db.save_entity(&mut user_data)
-        .map_err(|e| ServerFnError::new(e.to_string()))
+        .map_err(|e| LocalApiError::new(e.to_string()))
 }
 
-pub async fn get_user_data(id: String) -> Result<Option<String>, ServerFnError> {
+pub async fn get_user_data(id: String) -> Result<Option<String>, LocalApiError> {
     let db = Database::new();
     match db
         .load_entity::<UserData>(&id)
-        .map_err(|e| ServerFnError::new(e.to_string()))?
+        .map_err(|e| LocalApiError::new(e.to_string()))?
     {
         Some(user_data) => Ok(Some(
             user_data
                 .to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         )),
         None => Ok(None),
     }
 }
 
-pub async fn update_user_data(user_data_json: String) -> Result<(), ServerFnError> {
+pub async fn update_user_data(user_data_json: String) -> Result<(), LocalApiError> {
     let db = Database::new();
     let user_data =
-        UserData::from_json(&user_data_json).map_err(|e| ServerFnError::new(e.to_string()))?;
+        UserData::from_json(&user_data_json).map_err(|e| LocalApiError::new(e.to_string()))?;
     db.update_entity(&user_data)
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     Ok(())
 }
 
-pub async fn delete_user_data(id: String) -> Result<(), ServerFnError> {
+pub async fn delete_user_data(id: String) -> Result<(), LocalApiError> {
     let db = Database::new();
     db.delete::<UserData>(&id)
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     Ok(())
 }
 
-pub async fn get_all_user_data() -> Result<Vec<String>, ServerFnError> {
+pub async fn get_all_user_data() -> Result<Vec<String>, LocalApiError> {
     let db = Database::new();
     let user_data_list = db
         .load_all_entities::<UserData>(UserData::key_prefix())
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
     let mut result = Vec::new();
     for user_data in user_data_list {
         result.push(
             user_data
                 .to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         );
     }
     Ok(result)
 }
 
-pub async fn find_user_data_by_username(username: String) -> Result<Option<String>, ServerFnError> {
+pub async fn find_user_data_by_username(username: String) -> Result<Option<String>, LocalApiError> {
     let db = Database::new();
     match db
         .find_entity::<UserData, _>(UserData::key_prefix(), |user_data| {
             user_data.username == username
         })
-        .map_err(|e| ServerFnError::new(e.to_string()))?
+        .map_err(|e| LocalApiError::new(e.to_string()))?
     {
         Some(user_data) => Ok(Some(
             user_data
                 .to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         )),
         None => Ok(None),
     }
 }
 
-pub async fn get_current_user_data() -> Result<Option<String>, ServerFnError> {
+pub async fn get_current_user_data() -> Result<Option<String>, LocalApiError> {
     // For now, we'll just get the first user data entry
     // Eventually I would allow multiple profiles and track the current user session
     let db = Database::new();
     let user_data_list = db
         .load_all_entities::<UserData>(UserData::key_prefix())
-        .map_err(|e| ServerFnError::new(e.to_string()))?;
+        .map_err(|e| LocalApiError::new(e.to_string()))?;
 
     if let Some(user_data) = user_data_list.into_iter().next() {
         Ok(Some(
             user_data
                 .to_json()
-                .map_err(|e| ServerFnError::new(e.to_string()))?,
+                .map_err(|e| LocalApiError::new(e.to_string()))?,
         ))
     } else {
         Ok(None)

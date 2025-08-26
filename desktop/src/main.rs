@@ -1,3 +1,20 @@
+/*  This file is part of a secure messaging project codename meeseeks-nuntius
+ *  Copyright (C) 2025  Grant DeFayette
+ *
+ *  meeseeks-nuntius is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  meeseeks-nuntius is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with meeseeks-nuntius.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 use dioxus::prelude::*;
 use views::{ContactsManager, DesktopUserProfileEdit, Messages, RoomDashboard};
 mod components;
@@ -22,7 +39,12 @@ const VARIABLES_CSS: Asset = asset!("/assets/variables.css");
 const SHARED_CSS: Asset = asset!("/assets/shared.css");
 
 fn main() {
-    //dioxus_logger::init(Level::INFO).expect("failed to init logger");
+    // Set the server endpoint for desktop app to connect to
+    let server_url =
+        std::env::var("DIOXUS_SERVER_URL").unwrap_or_else(|_| "http://localhost:8080".to_string());
+    std::env::set_var("DIOXUS_SERVER_URL", &server_url);
+    #[cfg(not(feature = "server"))]
+    dioxus::fullstack::set_server_url(Box::leak(server_url.into_boxed_str()));
     dioxus::launch(App);
 }
 

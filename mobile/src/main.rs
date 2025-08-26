@@ -19,7 +19,20 @@ pub enum Route {
 const VARIABLES_CSS: Asset = asset!("/assets/variables.css");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
 
+// Platform-specific CSS assets
+const MOBILE_HEADER_IOS_CSS: Asset = asset!("/assets/mobile_header_ios.css");
+const MOBILE_MESSAGES_IOS_CSS: Asset = asset!("/assets/mobile_messages_ios.css");
+const MOBILE_HEADER_ANDROID_CSS: Asset = asset!("/assets/mobile_header_android.css");
+const MOBILE_MESSAGES_ANDROID_CSS: Asset = asset!("/assets/mobile_messages_android.css");
+
 fn main() {
+    // Set the server endpoint for mobile app to connect to
+    // Read server URL from environment variable, fallback to default if not set
+    let server_url =
+        std::env::var("DIOXUS_SERVER_URL").unwrap_or_else(|_| "http://127.0.0.1:8080".to_string());
+    std::env::set_var("DIOXUS_SERVER_URL", &server_url);
+    #[cfg(not(feature = "server"))]
+    dioxus::fullstack::set_server_url(Box::leak(server_url.into_boxed_str()));
     dioxus::launch(App);
 }
 
@@ -31,6 +44,15 @@ fn App() -> Element {
         // Global app resources
         document::Stylesheet { href: VARIABLES_CSS }
         document::Stylesheet { href: MAIN_CSS }
+
+        // Platform-specific styles
+        if cfg!(target_os = "ios") {
+            document::Stylesheet { href: MOBILE_HEADER_IOS_CSS }
+            document::Stylesheet { href: MOBILE_MESSAGES_IOS_CSS }
+        } else {
+            document::Stylesheet { href: MOBILE_HEADER_ANDROID_CSS }
+            document::Stylesheet { href: MOBILE_MESSAGES_ANDROID_CSS }
+        }
 
         // Enable safe area support for iOS
         document::Meta {

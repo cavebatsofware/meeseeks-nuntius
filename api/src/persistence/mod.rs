@@ -15,7 +15,4 @@
  *  along with meeseeks-nuntius.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-pub mod database;
-
-#[cfg(test)]
-mod test_database;
+pub mod postgres;

@@ -1,0 +1,26 @@
+[package]
+name = "shared"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dioxus = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+hex = { workspace = true }
+# Optional
+aes-gcm = { workspace = true, optional = true }
+crypto_box = { workspace = true, features = ["chacha20"], optional = true }
+rand = { workspace = true, optional = true }
+sled = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }
+
+[dev-dependencies]
+serial_test = { version = "3.2.0" }
+tempfile = { version = "3.0" }
+
+[features]
+default = []
+mobile = ["dep:sled", "dep:tokio", "dep:rand", "dep:aes-gcm", "dep:crypto_box"]
+desktop = ["dep:sled", "dep:tokio", "dep:rand", "dep:aes-gcm", "dep:crypto_box"]
+test = ["dioxus/server", "dep:sled", "dep:tokio", "dep:rand", "dep:aes-gcm", "dep:crypto_box"]

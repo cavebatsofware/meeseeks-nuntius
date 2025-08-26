@@ -1,6 +1,24 @@
+/*  This file is part of a secure messaging project codename meeseeks-nuntius
+ *  Copyright (C) 2025  Grant DeFayette
+ *
+ *  meeseeks-nuntius is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  meeseeks-nuntius is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with meeseeks-nuntius.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 use crate::{DesktopLayout, Route};
-use api::local::{create_room, get_all_rooms};
+use api::get_server_data;
 use dioxus::prelude::*;
+use shared::local::{create_room, get_all_rooms};
 use ui::{get_language_name, get_text_direction, I18nContext, Icon, IconName, RoomData};
 
 const PARTY_DASH_CSS: Asset = asset!("/assets/room_dash.css");
@@ -22,6 +40,7 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
     #[allow(clippy::redundant_closure)] // use_signal requires closures, not function pointers
     let mut rooms = use_signal(|| Vec::<RoomData>::new());
     let mut loading_rooms = use_signal(|| true);
+    let mut server_data = use_signal(|| None::<String>);
     let locale = props.i18n.get_current_locale();
     // Keep for debugging until language switcher is implemented
     println!("Language: {}", get_language_name(locale));
@@ -187,6 +206,35 @@ pub fn RoomDashboard(props: RoomDashboardProps) -> Element {
                         CreateRoomCard {
                             i18n: props.i18n.clone(),
                             on_room_created: refresh_rooms
+                        }
+                    }
+
+                    // Test Server Connection Section
+                    div {
+                        class: "test-server-section",
+                        style: "margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;",
+
+                        h3 { "Test Server Connection" }
+
+                        button {
+                            onclick: move |_| {
+                                spawn(async move {
+                                    println!("Received server data on desktop");
+                                    match get_server_data().await {
+                                        Ok(data) => server_data.set(Some(data)),
+                                        Err(e) => server_data.set(Some(format!("Error: {}", e))),
+                                    }
+                                });
+                            },
+                            style: "padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;",
+                            "Test Server Connection"
+                        }
+
+                        if let Some(data) = server_data() {
+                            p {
+                                style: "margin-top: 15px; padding: 10px; background-color: #f0f0f0; border-radius: 5px;",
+                                "{data}"
+                            }
                         }
                     }
                 }

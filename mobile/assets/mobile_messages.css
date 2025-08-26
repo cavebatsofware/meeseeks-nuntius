@@ -14,7 +14,7 @@
     background-color: var(--color-bg-secondary);
     border-bottom: 1px solid var(--color-border-primary);
     padding: var(--spacing-sm);
-    height: calc(40px + env(safe-area-inset-top, 0px));
+    /* Platform-specific height and padding are defined in platform CSS files */
     display: flex;
     justify-content: space-between;
     align-items: flex-end;

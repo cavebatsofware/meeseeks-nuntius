@@ -1,6 +1,7 @@
 use crate::components::MobileLayout;
-use api::local::{create_room, get_all_rooms};
+use api::get_server_data;
 use dioxus::prelude::*;
+use shared::local::{create_room, get_all_rooms};
 use ui::{get_language_name, get_text_direction, I18nContext, Icon, IconName, RoomData};
 
 const MOBILE_ROOM_DASH_CSS: Asset = asset!("/assets/mobile_room_dash.css");
@@ -21,6 +22,7 @@ pub fn MobileRoomDashboard(props: MobileRoomDashboardProps) -> Element {
     let mut rooms = use_signal(|| Vec::<RoomData>::new());
     let mut loading_rooms = use_signal(|| true);
     let mut active_tab = use_signal(|| "rooms".to_string());
+    let mut server_data = use_signal(|| None::<String>);
     let locale = props.i18n.get_current_locale();
 
     // Keep for debugging until language switcher is implemented
@@ -136,6 +138,38 @@ pub fn MobileRoomDashboard(props: MobileRoomDashboardProps) -> Element {
                             MobileCreateRoomCard {
                                 i18n: props.i18n.clone(),
                                 on_room_created: refresh_rooms
+                            }
+                        }
+                    }
+
+                    // Test Server Connection Section
+                    div {
+                        class: "mrd-test-server-section",
+                        style: "margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px;",
+
+                        h3 {
+                            style: "margin-bottom: 10px; font-size: 16px;",
+                            "Test Server Connection"
+                        }
+
+                        button {
+                            onclick: move |_| {
+                                spawn(async move {
+                                    println!("Received server data");
+                                    match get_server_data().await {
+                                        Ok(data) => server_data.set(Some(data)),
+                                        Err(e) => server_data.set(Some(format!("Error: {}", e))),
+                                    }
+                                });
+                            },
+                            style: "width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 14px;",
+                            "Test Server Connection"
+                        }
+
+                        if let Some(data) = server_data() {
+                            p {
+                                style: "margin-top: 15px; padding: 12px; background-color: #f0f0f0; border-radius: 5px; font-size: 14px; line-height: 1.4;",
+                                "{data}"
                             }
                         }
                     }
