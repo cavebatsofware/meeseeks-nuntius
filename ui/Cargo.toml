@@ -10,7 +10,7 @@ serde_yml = { workspace = true }
 serde = { workspace = true }
 
 [dev-dependencies]
-dioxus-ssr = "0.7.0-rc.0"
+dioxus-ssr = "0.7.0-rc.1"
 pretty_assertions = "1.4.1"
 
 [features]
