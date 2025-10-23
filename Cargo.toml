@@ -25,7 +25,7 @@ tokio = { version = "1.46.1", features = ["full"] }
 dioxus-logger = { version = "0.7.0-rc.3" }
 axum = { version = "0.8.6" }
 dotenvy = { version = "0.15.7" }
-sea-orm = { version = "1.1.16", features = ["sqlx-postgres", "runtime-tokio-rustls", "with-time", "with-uuid", "macros"] }
+sea-orm = { version = "1.1.17", features = ["sqlx-postgres", "runtime-tokio-rustls", "with-time", "with-uuid", "macros"] }
 sea-orm-migration = { version = "1.1.16" }
 
 # workspace
