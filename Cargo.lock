@@ -1703,7 +1703,7 @@ dependencies = [
 [[package]]
 name = "dioxus-primitives"
 version = "0.0.1"
-source = "git+https://github.com/DioxusLabs/components#d1d14fd00520d36f435f9950d4f6c4b2e350f315"
+source = "git+https://github.com/DioxusLabs/components#1443c71520c03f8ac8086b93ee68eda8c221c2ad"
 dependencies = [
  "dioxus",
  "dioxus-sdk-time",
@@ -7135,7 +7135,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
