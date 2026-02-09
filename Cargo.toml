@@ -19,7 +19,7 @@ base64 = { version = "1.48.0" }
 hex = { version = "0.4.3" }
 aes-gcm = { version = "0.10.3" }
 crypto_box = { version = "0.9.1" }
-rand = { version = "0.9.2" }
+rand = { version = "0.10.0" }
 sled = { version = "0.34.7" }
 tokio = { version = "1.49.0", features = ["full"] }
 dioxus-logger = { version = "0.7.3" }
