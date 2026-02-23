@@ -16,7 +16,7 @@ sled = { workspace = true, optional = true }
 tokio = { workspace = true, optional = true }
 
 [dev-dependencies]
-serial_test = { version = "3.3.1" }
+serial_test = { version = "3.4.0" }
 tempfile = { version = "3.25" }
 
 [features]
