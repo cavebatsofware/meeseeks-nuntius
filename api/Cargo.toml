@@ -11,7 +11,7 @@ dioxus-logger = { workspace = true }
 
 [dev-dependencies]
 serial_test = { version = "3.3.1" }
-tempfile = { version = "3.25" }
+tempfile = { version = "3.26" }
 # Platform-specific dependencies - only for non-WASM targets
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = { workspace = true }
